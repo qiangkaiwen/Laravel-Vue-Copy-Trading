@@ -1,91 +1,94 @@
 <template>
-	<div>
-		<page-title-bar></page-title-bar>
-    <app-section-loader :status="loader"></app-section-loader>
-		<v-container fluid class="grid-list-xl pt-0 mt-n3">
-			<v-row v-if="usersList !== null">
-				<app-card colClasses="col-12 col-sm-6 col-md-4" v-for="(users, index) in usersList" :key="index">
-					<div class="user-image text-sm-center mb-4">
-						<img :src="users.profileImage" class="img-responsive rounded-circle" alt="user images" width="95" height="95" />
-					</div>
-					<div class="user-list-content">
-						<div class="text-center">
-							<h3 class="fw-bold">{{users.name}}</h3>
-							<p>{{ users.technology }}</p>
-							<div class="social-list clearfix mb-5">
-								<ul class="list-inline d-inline-block">
-								<li v-for="(links, index) in users.socialLinks" :key="index"><a :href="links.url" class="text-pink"><i :class="links.icon"></i></a></li>
-								</ul>
-							</div>
-						</div>
-						<div class="layout justify-space-between border-tb-1 pa-2 mb-4">
-							<div class="align-item-start">
-								<span>{{$t("message.connections")}}</span>
-							</div>
-							<div class="align-item-end">
-								<ul class="list-inline">
-								<li class="pa-0" v-for="(user, index) in users.connections" :key="index">
-									<img :src="getImgSrc(user)" alt="user images" class="rounded-circle" width="24" height="24">
-								</li>
-								</ul>
-							</div>
-						</div>
-						<a class="v-btn btn-success white--text ma-0 px-3 py-2 fs-14" href="javascript:void(0);" @click="users.status = !users.status" v-if="users.status">{{$t("message.follow")}}</a>
-						<a class="v-btn btn-danger white--text ma-0 px-3 py-2 fs-14" href="javascript:void(0);" @click="users.status = !users.status" v-else>{{$t("message.unfollow")}}</a>
-					</div>
-				</app-card>
-			</v-row>
-		</v-container>
-	</div>
+    <div>
+        <page-title-bar></page-title-bar>
+        <app-section-loader :status="loader"></app-section-loader>
+        <v-container fluid class="grid-list-xl pt-0 mt-n3">
+            <v-row>
+                <app-card :heading="$t('message.selectableRows')" :fullBlock="true"
+                    colClasses="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <v-data-table :headers="headers" :items="users_data" :search="search" item-key="name">
+                        <template slot="headerCell" slot-scope="props">
+                            <v-tooltip bottom>
+                                <span slot="activator">
+                                    {{ props.header.text }}
+                                </span>
+                                <span>
+                                    {{ props.header.text }}
+                                </span>
+                            </v-tooltip>
+                        </template>
+                        <template slot="items" slot-scope="props">
+                            <td>{{ props.item.name }}</td>
+                            <td>{{ props.item.name }}</td>
+                            <td>{{ props.item.email }}</td>
+                            <td>{{ props.item.phone }}</td>
+                            <td>{{ props.item.active }}</td>
+                        </template>
+                    </v-data-table>
+                </app-card>
+            </v-row>
+        </v-container>
+    </div>
 </template>
 
 <script>
-import api from "Api";
+    import { mapGetters, mapActions } from "vuex";
+    export default {
+        data() {
+            return {
+                loader: true,
+                usersList: null,
+                connectUsersList: null,
+                search: "",
+                headers: [
+                    {
+                        text: "#",
+                        align: "left",
+                        sortable: false,
+                    },
+                    { text: "Name", value: "name" },
+                    { text: "Email", value: "email" },
+                    { text: "Phone", value: "phone" },
+                    { text: "active", value: "active" },
+                ],
+            };
+        },
+        mounted() {
+            this.getUsers();
+        },
+        methods: {
+            ...mapActions([
+                'getUsersAction'
+            ]),
+            ...{
+                getImgSrc(connectedUsers) {
+                    if (this.connectUsersList) {
+                        for (var i = 0; i < this.connectUsersList.length; i++) {
+                            var user = this.connectUsersList[i];
+                            if (connectedUsers === user.id) {
+                                return user.img;
+                            }
+                        }
+                    }
+                },
+                getUsers() {
+                    this.getUsersAction(1);
+                },
+            }
+        },
+        computed: {
+            ...mapGetters([
+                "users_data",
+                "users_perPage",
+                "users_total",
+                "users_page"
+            ]),
+        },
 
-export default {
-  data() {
-    return {
-      loader: true,
-      usersList: null,
-      connectUsersList: null
-    };
-  },
-  mounted() {
-    this.getUsers();
-    this.getConnections();
-  },
-  methods: {
-    getImgSrc(connectedUsers) {
-      if (this.connectUsersList) {
-        for (var i = 0; i < this.connectUsersList.length; i++) {
-          var user = this.connectUsersList[i];
-          if (connectedUsers === user.id) {
-            return user.img;
-          }
+        watch: {
+            users_data: function(newval) {
+                console.log(newval);
+            }
         }
-      }
-    },
-    getUsers() {
-      api
-        .get("vuely/users.js")
-        .then(response => {
-          this.loader = false;
-          this.usersList = response.data;
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    getConnections() {
-      api
-        .get("vuely/connections.js")
-        .then(response => {
-          this.connectUsersList = response.data;
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
-  }
-};
+    };
 </script>

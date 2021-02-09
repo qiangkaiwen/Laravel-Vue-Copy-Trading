@@ -20,6 +20,7 @@ class Accounts extends Migration
             $table->timestamp('expiry');
             $table->integer('online_status');
             $table->double('lots_traded');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

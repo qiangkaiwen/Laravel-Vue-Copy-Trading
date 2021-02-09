@@ -18,17 +18,25 @@ use Illuminate\Http\Request;
 // });
 Route::group([
     'prefix' => 'auth',
+    'middleware' => 'api',
 ], function () {
     Route::any('login', 'AuthController@login')->name('login');
     Route::any('signup', 'AuthController@signup');
+    Route::any('logout', 'AuthController@logout');
 });
 
+Route::group([
+    'middleware' => 'api'
+], function () {
+    Route::resource('users', 'UserController');
+});
 
-Route::any('/{any}',function(){
-    return response()->json(['response' =>[
-                               'api_status'=>0,
-                               'code'=>404,
-                               'message'=> 'not found'
-                               ]
-                        ],404);
-})->where('any','.*');
+Route::any('/{any}', function () {
+    return response()->json([
+        'response' => [
+            'api_status' => 0,
+            'code' => 404,
+            'message' => 'not found'
+        ]
+    ], 404);
+})->where('any', '.*');

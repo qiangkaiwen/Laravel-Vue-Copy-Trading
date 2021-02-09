@@ -38,7 +38,7 @@
 					<v-icon color="grey">forum</v-icon>
 				</v-btn>
 				<notifications></notifications>
-				<cart :horizontal="horizontal"></cart>
+				<!-- <cart :horizontal="horizontal"></cart> -->
 				<language-provider></language-provider>
 				<user></user>
 			</div>
@@ -59,7 +59,7 @@
 	import LanguageProvider from "./LanguageProvider";
 	import Notifications from "./Notifications";
 	import User from "./User";
-	import Cart from "./Cart";
+	// import Cart from "./Cart";
 	import QuickLinks from "./QuickLinks";
 	import MobileSearchForm from "./MobileSearchForm";
 	import { getCurrentAppLayout } from "Helpers/helpers";
@@ -122,7 +122,7 @@
 			ChatSidebar,
 			LanguageProvider,
 			Notifications,
-			Cart,
+			// Cart,
 			QuickLinks,
 			MobileSearchForm,
 			User

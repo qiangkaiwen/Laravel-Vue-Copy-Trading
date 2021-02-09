@@ -30,42 +30,44 @@ const getters = {
 
 // actions
 const actions = {
-    signupUserWithLaravelPassport(context, payload){
-        webServices.post('/auth/signup', JSON.stringify(payload.userDetail),{ headers: {'Content-Type':'application/json'}})
-        .then(response => {
-                if(response.data.response.api_status){
+    signupUserWithLaravelPassport(context, payload) {
+        webServices.post('/auth/signup', JSON.stringify(payload.userDetail), { headers: { 'Content-Type': 'application/json' } })
+            .then(response => {
+                if (response.data.response.api_status) {
                     context.commit('signUpUser');
                     Nprogress.done();
                     setTimeout(() => {
                         context.commit('signUpUserSuccess', payload);
                     }, 500);
-                }else{
+                } else {
                     context.commit('signUpUserFailure', response.data.response);
                 }
-        })
-        .catch(error => {
-            console.log(error);
-            console.log("Failed");
-        })           
+            })
+            .catch(error => {
+                console.log(error);
+                console.log("Failed");
+            })
     },
-    signInWithLaravelPassport(context, payload){
+    signInWithLaravelPassport(context, payload) {
         const { user } = payload;
         context.commit('loginUser');
-        webServices.post('/auth/login', JSON.stringify(user), { headers: {'Content-Type':'application/json'}})
+        webServices.post('/auth/login', JSON.stringify(user), { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
-                if(response.data.response.api_status){
+                console.log(response.data.response)
+                if (response.data.response.api_status) {
                     Nprogress.done();
                     setTimeout(() => {
                         context.commit('loginUserSuccess', user);
                     }, 500);
-                }else{
+                } else {
                     context.commit('loginUserFailure', response.data.response);
                 }
-        })
-        .catch(error => {
-            console.log(error);
-            console.log("Failed");
-        })
+            })
+            .catch(error => {
+                context.commit('loginUserFailure', response.data.response);
+                console.log(error);
+                console.log("Failed");
+            })
     },
     signinUserInFirebase(context, payload) {
         const { user } = payload;
@@ -167,16 +169,17 @@ const mutations = {
     },
     loginUserSuccess(state, user) {
         state.user = user;
-        localStorage.setItem('user',user);
+        console.log(user);
+        localStorage.setItem('user', user);
         state.isUserSigninWithAuth0 = false
-        router.push("/default/dashboard/ecommerce");
-        setTimeout(function(){
+        router.push("/users-list");
+        setTimeout(function () {
             Vue.notify({
                 group: 'loggedIn',
                 type: 'success',
                 text: 'User Logged In Success!'
             });
-       },1500);
+        }, 1500);
     },
     loginUserFailure(state, error) {
         Nprogress.done();
@@ -196,7 +199,7 @@ const mutations = {
     },
     signUpUserSuccess(state, user) {
         state.user = localStorage.setItem('user', user);
-        router.push("/default/dashboard/ecommerce");
+        router.push("/session/login");
         Vue.notify({
             group: 'loggedIn',
             type: 'success',
@@ -205,7 +208,7 @@ const mutations = {
     },
     signUpUserFailure(state, error) {
         Nprogress.done();
-         Vue.notify({
+        Vue.notify({
             group: 'loggedIn',
             type: 'error',
             text: error.message
@@ -213,7 +216,7 @@ const mutations = {
     },
     signInUserWithAuth0Success(state, user) {
         state.user = user;
-        localStorage.setItem('user',JSON.stringify(user));
+        localStorage.setItem('user', JSON.stringify(user));
         state.isUserSigninWithAuth0 = true;
     },
     signOutUserFromAuth0Success(state) {

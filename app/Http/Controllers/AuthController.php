@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\User;
 use DB;
 use Validator;
+use Lcobucci\JWT\Parser;
 
 class AuthController extends Controller
 {
@@ -61,6 +62,7 @@ class AuthController extends Controller
                         'api_status' => 1,
                         'code' => 201,
                         'message' => 'Successfully registered.',
+                        'access_token' => $token
                     ]
                 ], 201);
             }
@@ -97,5 +99,34 @@ class AuthController extends Controller
             }
         }
         return response()->json($this->wrongHTTP, 400);
+    }
+
+    public function logout(Request $request)
+    {
+        $user = Auth::user();
+        if ($user) {
+            return response()->json([
+                'response' => [
+                    'api_status' => 1,
+                    'code' => 200,
+                    'user' => $user,
+                ]
+            ], 200);
+        } else {
+            return response()->json([
+                'response' =>
+                [
+                    'api_status' => 0,
+                    'code' => 403,
+                    'message' => 'Authorization required.',
+                    'user' => $user
+                ]
+            ], 403);
+        }
+        // $value = $request->bearerToken();
+        // $id = (new Parser())->parse($value);
+        // $token = Auth::user()->tokens->find($id);
+        // $token->revoke();
+        // return response('You have been successfully logged out!', 200);
     }
 }

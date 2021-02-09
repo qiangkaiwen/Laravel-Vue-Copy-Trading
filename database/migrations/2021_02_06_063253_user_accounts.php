@@ -17,6 +17,8 @@ class UserAccounts extends Migration
             $table->increments('id');
             $table->integer('user_idx');
             $table->integer('account_idx');
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 
