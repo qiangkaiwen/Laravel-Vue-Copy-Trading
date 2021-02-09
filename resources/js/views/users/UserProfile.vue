@@ -49,6 +49,7 @@
 			Education,
 			ContactRequest,
 			UserActivity
-		}
+		},
+		props: ['id'],
 	};
 </script>

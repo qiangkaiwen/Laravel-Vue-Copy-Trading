@@ -15,6 +15,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $page = $request->get('page', 1);
+        $page = intval($page);
         $perPage = $request->get('perPage', 10);
         $users = User::all()->skip(($page - 1) * $perPage)->take($perPage);
         $total = User::all()->count();

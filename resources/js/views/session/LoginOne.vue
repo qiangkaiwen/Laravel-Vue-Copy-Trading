@@ -17,8 +17,8 @@
 						<router-link class="mb-2" to="/session/forgot-password">{{$t('message.forgotPassword')}}?
 						</router-link>
 						<div>
-							<!-- <v-btn large @click="submit" block color="primary" class="mb-2">{{$t('message.loginNow')}}
-							</v-btn> -->
+							<v-btn large @click="submit" block color="primary" class="mb-2">{{$t('message.loginNow')}}
+							</v-btn>
 							<v-btn large class="mb-2" @click="signInWithLaravelPassport" block color="primary">
 								{{$t('message.loginWithLaravelPassport')}}</v-btn>
 							<v-btn large @click="onCreateAccount" block color="warning" class="mb-2">
@@ -81,14 +81,14 @@
 			return {
 				checkbox: false,
 				valid: false,
-				email: "",
+				email: "demo@example.com",
 				emailRules: [
 					v => !!v || "E-mail is required",
 					v =>
 						/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
 						"E-mail must be valid"
 				],
-				password: "",
+				password: "test#123",
 				passwordRules: [v => !!v || "Password is required"],
 				appLogo: AppConfig.appLogo2,
 				brand: AppConfig.brand

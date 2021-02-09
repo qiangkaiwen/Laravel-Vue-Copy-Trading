@@ -53,6 +53,7 @@ const actions = {
         context.commit('loginUser');
         webServices.post('/auth/login', JSON.stringify(user), { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
+                console.log(response.data.response)
                 if (response.data.response.api_status) {
                     Nprogress.done();
                     setTimeout(() => {
@@ -63,6 +64,7 @@ const actions = {
                 }
             })
             .catch(error => {
+                context.commit('loginUserFailure', response.data.response);
                 console.log(error);
                 console.log("Failed");
             })
@@ -167,6 +169,7 @@ const mutations = {
     },
     loginUserSuccess(state, user) {
         state.user = user;
+        console.log(user);
         localStorage.setItem('user', user);
         state.isUserSigninWithAuth0 = false
         router.push("/users-list");

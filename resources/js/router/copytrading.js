@@ -11,8 +11,9 @@ export default {
     children: [
         // users
         {
-            path: '/user-profile',
+            path: '/user-profile/:user_id',
             component: UserProfile,
+            props: true,
             meta: {
                 requiresAuth: true,
                 title: 'message.userProfile',
