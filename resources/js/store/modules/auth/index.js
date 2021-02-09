@@ -31,7 +31,7 @@ const getters = {
 // actions
 const actions = {
     signupUserWithLaravelPassport(context, payload){
-        webServices.post('/signup', JSON.stringify(payload.userDetail),{ headers: {'Content-Type':'application/json'}})
+        webServices.post('/auth/signup', JSON.stringify(payload.userDetail),{ headers: {'Content-Type':'application/json'}})
         .then(response => {
                 if(response.data.response.api_status){
                     context.commit('signUpUser');
@@ -51,7 +51,7 @@ const actions = {
     signInWithLaravelPassport(context, payload){
         const { user } = payload;
         context.commit('loginUser');
-        webServices.post('/login', JSON.stringify(user), { headers: {'Content-Type':'application/json'}})
+        webServices.post('/auth/login', JSON.stringify(user), { headers: {'Content-Type':'application/json'}})
             .then(response => {
                 if(response.data.response.api_status){
                     Nprogress.done();
