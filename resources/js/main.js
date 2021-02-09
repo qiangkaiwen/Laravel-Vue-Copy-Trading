@@ -64,15 +64,15 @@ router.afterEach(() => {
 	Nprogress.done()
 	setTimeout(() => {
 		const contentWrapper = document.querySelector(".v-content__wrap");
-		if(contentWrapper !== null){
+		if (contentWrapper !== null) {
 			contentWrapper.scrollTop = 0;
 		}
 		const boxedLayout = document.querySelector('.app-boxed-layout .app-content');
-		if(boxedLayout !==  null){
+		if (boxedLayout !== null) {
 			boxedLayout.scrollTop = 0;
 		}
 		const miniLayout = document.querySelector('.app-mini-layout .app-content');
-		if(miniLayout !== null){
+		if (miniLayout !== null) {
 			miniLayout.scrollTop = 0;
 		}
 	}, 200);
@@ -104,10 +104,10 @@ const i18n = new VueI18n({
 
 
 new Vue({
-  store,
+	store,
 	i18n,
 	router,
-  vuetify,
-  render: h => h(App),
+	vuetify,
+	render: h => h(App),
 	components: { App }
 }).$mount('#app')
