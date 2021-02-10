@@ -22,11 +22,17 @@ Route::group([
 ], function () {
     Route::any('login', 'AuthController@login')->name('login');
     Route::any('signup', 'AuthController@signup');
+});
+
+Route::group([
+    'prefix' => 'auth',
+    'middleware' => 'auth:api',
+], function () {
     Route::any('logout', 'AuthController@logout');
 });
 
 Route::group([
-    'middleware' => 'api'
+    'middleware' => 'auth:api'
 ], function () {
     Route::resource('users', 'UserController');
 });

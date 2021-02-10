@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class UserAccounts extends Model
 {
     use SoftDeletes;
+    protected $table = "tbl_user_account";
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'user_idx', 'account_idx'
+        'user_id', 'account_id'
     ];
 
     /**
@@ -32,10 +33,10 @@ class UserAccounts extends Model
     protected $casts = [];
 
     public function user() {
-        return $this->belongsTo(User::class, 'user_idx');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function account() {
-        return $this->belongsTo(Accounts::class, 'account_idx');
+        return $this->belongsTo(Accounts::class, 'account_id');
     }
 }
