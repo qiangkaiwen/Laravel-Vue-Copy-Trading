@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 
+use function PHPSTORM_META\type;
+
 class UserController extends Controller
 {
     /**
@@ -96,7 +98,41 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::where('id', $id)->first();
+        if (!$user) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User not found",
+                ]
+                ], 400);
+        }
+        $name = $request->get('name');
+        $email = $request->get('email');
+        $phone = $request->get('phone');
+        $password = $request->get('password');
+        if ($name) {
+            $user['name'] = $name;
+        }
+        if ($email) {
+            $user['email'] = $email;
+        }
+        if ($phone) {
+            $user['phone'] = $phone;
+        }
+        if ($password) {
+            $user['password'] = bcrypt($password);
+        }
+        $user->save();
+
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'message' => $user,
+            ]
+        ]);
     }
 
     /**

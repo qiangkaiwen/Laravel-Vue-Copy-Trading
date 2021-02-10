@@ -8,7 +8,7 @@ export const menus = {
 			label: 'Old',
 			items: [
 				{ title: 'message.usersList', path: '/users-list', exact: true, label: 'Old' },
-				{ title: 'message.userProfile', path: '/user-profile', label: 'Old', exact: true },
+				// { title: 'message.userProfile', path: '/user-profile', label: 'Old', exact: true },
 			]
 		},
 	],
