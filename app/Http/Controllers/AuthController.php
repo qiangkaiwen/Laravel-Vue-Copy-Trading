@@ -97,7 +97,9 @@ class AuthController extends Controller
                         'api_status' => 1,
                         'code' => 200,
                         'message' => 'Logged in Successfully.',
-                        'access_token' => $api_token
+                        'access_token' => $api_token,
+                        'name' => $user->name,
+                        'email' => $user->email,
                     ]
                 ], 200);
             } else {

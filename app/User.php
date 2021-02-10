@@ -42,6 +42,6 @@ class User extends Authenticatable
     ];
 
     public function user_account() {
-        return $this->hasMany(UserAccounts::class, 'user_idx');
+        return $this->hasMany(UserAccounts::class, 'user_id');
     }
 }

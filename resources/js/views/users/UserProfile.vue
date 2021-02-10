@@ -122,6 +122,7 @@
     import UserActivity from "Components/Widgets/UserActivity";
     import webServices from "WebServices";
     import dateformat from "dateformat";
+    import axios from "axios";
 
     export default {
         props: ["user_id"],
@@ -151,8 +152,8 @@
         },
         mounted() {
             this.loading = true;
-            webServices
-                .get(`/users/${this.user_id}`, {
+            axios
+                .get(`${webServices.baseURL}/users/${this.user_id}`, {
                     headers: { "Content-Type": "application/json" },
                 })
                 .then(({ data }) => {
@@ -171,7 +172,7 @@
             },
             deleteUser() {
                 console.log('confirm');
-                webServices.delete(`users/${this.user_id}`).then(() => {
+                axios.delete(`${webServices.baseURL}/users/${this.user_id}`).then(() => {
                     this.$router.push('/users-list');
                     this.$refs.deleteConfirmationDialog.close();
                 })
@@ -192,7 +193,7 @@
                     if (password && password != '') {
                         userdata = { ...userdata, ...{ password } }
                     }
-                    webServices.patch(`users/${this.user_id}`, userdata).then(() => {
+                    axios.patch(`${webServices.baseURL}/users/${this.user_id}`, userdata).then(() => {
                         this.user = { ...this.user, ...userdata };
                         this.open = false;
                     })

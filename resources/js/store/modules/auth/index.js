@@ -1,20 +1,14 @@
 /**
  * Auth Module
  */
-import Vue from 'vue'
-import webServices from 'WebServices'
-import firebase from 'firebase/app';
+import Vue from 'vue';
+import webServices from 'WebServices';
+import axios from "axios";
 import Nprogress from 'nprogress';
 import router from '../../../router';
-import {
-    facebookAuthProvider,
-    googleAuthProvider,
-    twitterAuthProvider,
-    githubAuthProvider
-} from '../../../firebase';
 
 const state = {
-    user: localStorage.getItem('user'),
+    user: JSON.parse(localStorage.getItem('user')),
     isUserSigninWithAuth0: Boolean(localStorage.getItem('isUserSigninWithAuth0'))
 }
 
@@ -31,7 +25,7 @@ const getters = {
 // actions
 const actions = {
     signupUserWithLaravelPassport(context, payload) {
-        webServices.post('/auth/signup', JSON.stringify(payload.userDetail), { headers: { 'Content-Type': 'application/json' } })
+        axios.post(`${webServices.baseURL}/auth/signup`, payload.userDetail, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
                 if (response.data.response.api_status) {
                     context.commit('signUpUser');
@@ -51,13 +45,14 @@ const actions = {
     signInWithLaravelPassport(context, payload) {
         const { user } = payload;
         context.commit('loginUser');
-        webServices.post('/auth/login', JSON.stringify(user), { headers: { 'Content-Type': 'application/json' } })
+        axios.post(`${webServices.baseURL}/auth/login`, JSON.stringify(user), { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
-                console.log(response.data.response)
-                if (response.data.response.api_status) {
+                const { api_status, access_token, name, email } = response.data.response;
+                if (api_status) {
                     Nprogress.done();
+                    localStorage.setItem("access_token", access_token);
                     setTimeout(() => {
-                        context.commit('loginUserSuccess', user);
+                        context.commit('loginUserSuccess', { name, email });
                     }, 500);
                 } else {
                     context.commit('loginUserFailure', response.data.response);
@@ -69,89 +64,10 @@ const actions = {
                 console.log("Failed");
             })
     },
-    signinUserInFirebase(context, payload) {
-        const { user } = payload;
-        context.commit('loginUser');
-        firebase.auth().signInWithEmailAndPassword(user.email, user.password)
-            .then(user => {
-                Nprogress.done();
-                setTimeout(() => {
-                    context.commit('loginUserSuccess', user);
-                }, 500)
-            })
-            .catch(error => {
-                context.commit('loginUserFailure', error);
-            });
-    },
-    logoutUserFromFirebase(context) {
-        Nprogress.start();
-        firebase.auth().signOut()
-            .then(() => {
-                Nprogress.done();
-                setTimeout(() => {
-                    context.commit('logoutUser');
-                }, 500)
-            })
-            .catch(error => {
-                context.commit('loginUserFailure', error);
-            })
-    },
-    signinUserWithFacebook(context) {
-        context.commit('loginUser');
-        firebase.auth().signInWithPopup(facebookAuthProvider).then((result) => {
-            Nprogress.done();
-            setTimeout(() => {
-                context.commit('loginUserSuccess', result.user);
-            }, 500)
-        }).catch(error => {
-            context.commit('loginUserFailure', error);
-        });
-    },
-    signinUserWithGoogle(context) {
-        context.commit('loginUser');
-        firebase.auth().signInWithPopup(googleAuthProvider).then((result) => {
-            Nprogress.done();
-            setTimeout(() => {
-                context.commit('loginUserSuccess', result.user);
-            }, 500)
-        }).catch(error => {
-            context.commit('loginUserFailure', error);
-        });
-    },
-    signinUserWithTwitter(context) {
-        context.commit('loginUser');
-        firebase.auth().signInWithPopup(twitterAuthProvider).then((result) => {
-            Nprogress.done();
-            setTimeout(() => {
-                context.commit('loginUserSuccess', result.user);
-            }, 500)
-        }).catch(error => {
-            context.commit('loginUserFailure', error);
-        });
-    },
-    signinUserWithGithub(context) {
-        context.commit('loginUser');
-        firebase.auth().signInWithPopup(githubAuthProvider).then((result) => {
-            Nprogress.done();
-            setTimeout(() => {
-                context.commit('loginUserSuccess', result.user);
-            }, 500)
-        }).catch(error => {
-            context.commit('loginUserFailure', error);
-        });
-    },
-    signupUserInFirebase(context, payload) {
-        let { userDetail } = payload;
-        context.commit('signUpUser');
-        firebase.auth().createUserWithEmailAndPassword(userDetail.email, userDetail.password)
-            .then(() => {
-                Nprogress.done();
-                setTimeout(() => {
-                    context.commit('signUpUserSuccess', userDetail);
-                }, 500)
-            })
-            .catch(error => {
-                context.commit('signUpUserFailure', error);
+    signOutWithLaravelPassport(context) {
+        axios.post(`${webServices.baseURL}/auth/logout`, {}, { headers: { 'Content-Type': 'application/json' } })
+            .finally(() => {
+                context.commit('logoutUser');
             })
     },
     signInUserWithAuth0(context, payload) {
@@ -169,8 +85,7 @@ const mutations = {
     },
     loginUserSuccess(state, user) {
         state.user = user;
-        console.log(user);
-        localStorage.setItem('user', user);
+        localStorage.setItem('user', JSON.stringify(user));
         state.isUserSigninWithAuth0 = false
         router.push("/users-list");
         setTimeout(function () {
@@ -192,13 +107,14 @@ const mutations = {
     logoutUser(state) {
         state.user = null
         localStorage.removeItem('user');
+        localStorage.removeItem('access_token');
         router.push("/session/login");
     },
     signUpUser() {
         Nprogress.start();
     },
     signUpUserSuccess(state, user) {
-        state.user = localStorage.setItem('user', user);
+        // state.user = localStorage.setItem('user', user);
         router.push("/session/login");
         Vue.notify({
             group: 'loggedIn',

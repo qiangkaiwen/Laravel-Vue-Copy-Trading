@@ -34,7 +34,13 @@ class Accounts extends Model
         'expiry' => 'datetime',
     ];
 
-    public function user_account() {
-        return $this->hasMany(UserAccounts::class, 'account_idx');
+    public function user_account()
+    {
+        return $this->hasMany(UserAccounts::class, 'account_id');
+    }
+
+    public function sources()
+    {
+        return $this->hasMany(Source::class, 'account_number', 'account_number');
     }
 }
