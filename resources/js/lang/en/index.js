@@ -1,6 +1,10 @@
 //messages.js
 export default {
+    admin: 'Admin',
     general: 'General',
+    provideSignal: "Provide Signal",
+    copySignal: "Copy Signal",
+    tradingAccounts: "Trading Accounts",
     overview: 'Overview',
     customizer: 'Customizer',
     applications: 'Applications',
