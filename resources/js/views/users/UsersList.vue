@@ -4,7 +4,7 @@
         <app-section-loader :status="users_loading"></app-section-loader>
         <v-container fluid class="grid-list-xl pt-0 mt-n3">
             <v-row>
-                <app-card :heading="$t('message.selectableRows')" :fullBlock="true"
+                <app-card :fullBlock="true"
                     colClasses="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                     <v-data-table :headers="headers" :items="users_data" :search="search" item-key="email"
                         :server-items-length="users_total" :options.sync="options" :loading="users_loading"
