@@ -10,6 +10,7 @@ const state = {
     users_perPage: 10,
     users_total: 0,
     users_page: 1,
+    users_loading: false,
 }
 
 const getters = {
@@ -25,12 +26,14 @@ const getters = {
     users_page: state => {
         return state.users_page;
     },
+    users_loading: state => state.users_loading,
 }
 
 const actions = {
-    getUsersAction(context, page) {
+    getUsersAction(context, option) {
+        context.commit('setUsersLoadingHandler', false);
         Nprogress.start();
-        webServices.get(`/users?page=${page}`, { headers: { 'Content-Type': 'application/json' } })
+        webServices.get(`/users?page=${option.page}&perPage=${option.perPage}`, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
                 const { api_status, page, perPage, total, users } = response.data.response;
                 if (api_status) {
@@ -55,6 +58,10 @@ const mutations = {
         state.users_perPage = perPage;
         state.users_total = total;
         state.users_data = users;
+        state.loading = false;
+    },
+    setUsersLoadingHandler(state, loading) {
+        state.loading = loading;
     }
 }
 

@@ -17,8 +17,14 @@ class UserController extends Controller
         $page = $request->get('page', 1);
         $page = intval($page);
         $perPage = $request->get('perPage', 10);
-        $users = User::all()->skip(($page - 1) * $perPage)->take($perPage);
+        $perPage = intval($perPage);
         $total = User::all()->count();
+        if ($perPage == -1)
+            $users = User::all();
+        else
+            $users = User::skip(($page - 1) * $perPage)->take($perPage)->get();
+        $users->toArray();
+        // dd($users);
         return response()->json([
             'response' => [
                 'code' => 200,

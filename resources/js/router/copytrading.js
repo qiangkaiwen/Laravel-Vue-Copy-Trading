@@ -12,6 +12,7 @@ export default {
         // users
         {
             path: '/user-profile/:user_id',
+            name: 'user-profile',
             component: UserProfile,
             props: true,
             meta: {
@@ -29,6 +30,7 @@ export default {
         },
         {
             path: '/users-list',
+            name: 'users-list',
             component: UsersList,
             meta: {
                 requiresAuth: true,
