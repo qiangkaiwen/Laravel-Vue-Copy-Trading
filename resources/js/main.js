@@ -38,6 +38,20 @@ import './firebase'
 // messages
 import messages from './lang';
 
+import axios from 'axios';
+
+axios.interceptors.request.use(
+	config => {
+		const authToken = localStorage.getItem("access_token");
+		if (authToken) {
+			config.headers.Authorization = `Bearer ${authToken}`;
+		}
+		return config;
+	},
+	err => Promise.reject(err)
+);
+
+
 Vue.config.productionTip = false
 
 // navigation guards before each

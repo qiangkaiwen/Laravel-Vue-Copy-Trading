@@ -5,22 +5,16 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SourcePositions extends Model
+class Source extends Model
 {
     use SoftDeletes;
+    protected $table = "tbl_source";
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        'account_number', 'symbol', 'lots', 'ticket', 'direction',
-        'type', 'magic', 'openPrice', 'stopLossPrice', 'takeProfitPrice',
-        'openTime', 'openTimeGMT', 'expiration', 'expirationGMT', 'comment_str',
-        'sourceTicket', 'sourceLots', 'sourceType', 
-        'originalLots', 'originalTickets', 
-        'sourceOriginalLots', 'sourceOriginalTickets'
-    ];
+    protected $fillable = [];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -35,4 +29,9 @@ class SourcePositions extends Model
      * @var array
      */
     protected $casts = [];
+
+    public function account()
+    {
+        $this->belongsTo(Accounts::class, 'account_number', 'account_number');
+    }
 }

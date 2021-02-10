@@ -1,0 +1,55 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class Source extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('tbl_source', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('account_number');
+            $table->string('symbol');
+            $table->double('lots');
+            $table->bigInteger('ticket');
+            $table->integer('direction');
+            $table->string('type');
+            $table->bigInteger('magic');
+            $table->double('openPrice');
+            $table->double('stopLossPrice');
+            $table->double('takeProfitPrice');
+            $table->bigInteger('openTime');
+            $table->bigInteger('openTimeGMT');
+            $table->bigInteger('expiration');
+            $table->bigInteger('expirationGMT');
+            $table->string('comment_str');
+            $table->bigInteger('sourceTicket');
+            $table->double('sourceLots');
+            $table->string('sourceType');
+            $table->bigInteger('originalTickets');
+            $table->double('originalLots');
+            $table->bigInteger('sourceOriginalTickets');
+            $table->double('sourceOriginalLots');
+
+            $table->softDeletes();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('tbl_source');
+    }
+}

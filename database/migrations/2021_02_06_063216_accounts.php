@@ -13,13 +13,13 @@ class Accounts extends Migration
      */
     public function up()
     {
-        Schema::create('accounts', function (Blueprint $table) {
+        Schema::create('tbl_account', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('account_number');
-            $table->integer('authorization');
-            $table->timestamp('expiry');
-            $table->integer('online_status');
-            $table->double('lots_traded');
+            $table->integer('authorization')->nullable();
+            $table->timestamp('expiry')->nullable();
+            $table->integer('online_status')->nullable();
+            $table->double('lots_traded')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -32,6 +32,6 @@ class Accounts extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('accounts');
+        Schema::dropIfExists('tbl_account');
     }
 }

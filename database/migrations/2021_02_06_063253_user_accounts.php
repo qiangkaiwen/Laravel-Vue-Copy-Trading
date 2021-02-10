@@ -13,10 +13,10 @@ class UserAccounts extends Migration
      */
     public function up()
     {
-        Schema::create('user_accounts', function (Blueprint $table) {
+        Schema::create('tbl_user_account', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_idx');
-            $table->integer('account_idx');
+            $table->integer('user_id');
+            $table->integer('account_id');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ class UserAccounts extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_accounts');
+        Schema::dropIfExists('tbl_user_account');
     }
 }

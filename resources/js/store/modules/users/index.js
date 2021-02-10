@@ -1,7 +1,8 @@
 /**
  * Users Module
  */
-import webServices from 'WebServices'
+import webServices from 'WebServices';
+import axios from "axios";
 import Nprogress from 'nprogress';
 import router from '../../../router';
 
@@ -33,7 +34,7 @@ const actions = {
     getUsersAction(context, option) {
         context.commit('setUsersLoadingHandler', false);
         Nprogress.start();
-        webServices.get(`/users?page=${option.page}&perPage=${option.perPage}`, { headers: { 'Content-Type': 'application/json' } })
+        axios.get(`${webServices.baseURL}/users?page=${option.page}&perPage=${option.perPage}`, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
                 const { api_status, page, perPage, total, users } = response.data.response;
                 if (api_status) {
@@ -44,6 +45,7 @@ const actions = {
                 }
             })
             .catch(error => {
+                Nprogress.done();
                 context.commit('setUsersHandler', { page: 1, perPage: 10, total: 0, users: [] });
                 console.log(error);
                 console.log("Failed");

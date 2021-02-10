@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\User;
+use App\Accounts;
+use App\UserAccounts;
 use DB;
 use Validator;
 use Lcobucci\JWT\Parser;
@@ -41,7 +43,10 @@ class AuthController extends Controller
                 ]);
             }
             $email = $request->email;
-            $eid = DB::table('users')->where('email', $email)->exists();
+            $eid = User::where('email', $email)->exists();
+            $aid = null;
+            if ($request->account_number)
+                $aid = Accounts::where('account_number', $request->account_number)->exists();
             if ($eid == true) {
                 return response()->json([
                     'response' => [
@@ -50,19 +55,28 @@ class AuthController extends Controller
                         'message' => 'This email already exist.'
                     ]
                 ], 200);
+            } else if ($aid) {
+                return response()->json([
+                    'response' => [
+                        'api_status' => 0,
+                        'code' => 200,
+                        'message' => 'This account number already exist.'
+                    ]
+                ], 200);
             } else {
                 $input = $request->all();
                 $input['password'] = bcrypt($input['password']);
                 $user = User::create($input);
-                $token =  $user->createToken('Personal Access Token')->accessToken;
-                $name =  $user->name;
-                $email = $user->email;
+                if ($request->account_number) {
+                    $account = Accounts::create(['account_number' => $input['account_number']]);
+                    UserAccounts::create(['user_id' => $user['id'], 'account_id' => $account['id']]);
+                }
+
                 return response()->json([
                     'response' => [
                         'api_status' => 1,
                         'code' => 201,
                         'message' => 'Successfully registered.',
-                        'access_token' => $token
                     ]
                 ], 201);
             }
@@ -73,9 +87,8 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         if ($request->isMethod('post')) {
-            if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
+            if (Auth::attempt(['email' => request('email'), 'password' => request('password')], true)) {
                 $user = Auth::user();
-                $name = $user->name;
                 $api_token =  $user->createToken('Personal Access Token')->accessToken;
                 $user->api_token = $api_token;
                 $user->save();
@@ -84,7 +97,9 @@ class AuthController extends Controller
                         'api_status' => 1,
                         'code' => 200,
                         'message' => 'Logged in Successfully.',
-                        'access_token' => $api_token
+                        'access_token' => $api_token,
+                        'name' => $user->name,
+                        'email' => $user->email,
                     ]
                 ], 200);
             } else {
@@ -105,11 +120,13 @@ class AuthController extends Controller
     {
         $user = Auth::user();
         if ($user) {
+            $user->token()->revoke();
+
             return response()->json([
                 'response' => [
                     'api_status' => 1,
                     'code' => 200,
-                    'user' => $user,
+                    'message' => 'Logged out.',
                 ]
             ], 200);
         } else {
@@ -119,14 +136,8 @@ class AuthController extends Controller
                     'api_status' => 0,
                     'code' => 403,
                     'message' => 'Authorization required.',
-                    'user' => $user
                 ]
             ], 403);
         }
-        // $value = $request->bearerToken();
-        // $id = (new Parser())->parse($value);
-        // $token = Auth::user()->tokens->find($id);
-        // $token->revoke();
-        // return response('You have been successfully logged out!', 200);
     }
 }
