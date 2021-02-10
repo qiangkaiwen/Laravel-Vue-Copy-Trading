@@ -1,13 +1,15 @@
 <template>
     <div>
         <page-title-bar></page-title-bar>
-        <app-section-loader :status="loader"></app-section-loader>
+        <app-section-loader :status="users_loading"></app-section-loader>
         <v-container fluid class="grid-list-xl pt-0 mt-n3">
             <v-row>
                 <app-card :heading="$t('message.selectableRows')" :fullBlock="true"
                     colClasses="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                    <v-data-table :headers="headers" :items="users_data" :search="search" item-key="name">
-                        <template slot="headerCell" slot-scope="props">
+                    <v-data-table :headers="headers" :items="users_data" :search="search" item-key="email"
+                        :server-items-length="users_total" :options.sync="options" :loading="users_loading"
+                        :footer-props="{showFirstLastPage: true,}" :items-per-page-options="[5, 10, 15, 20, -1]">
+                        <template slot="headerCell" slot-scope="props" loading-text="Loading... Please wait">
                             <v-tooltip bottom>
                                 <span slot="activator">
                                     {{ props.header.text }}
@@ -17,12 +19,22 @@
                                 </span>
                             </v-tooltip>
                         </template>
-                        <template slot="items" slot-scope="props">
-                            <td>{{ props.item.name }}</td>
-                            <td>{{ props.item.name }}</td>
-                            <td>{{ props.item.email }}</td>
-                            <td>{{ props.item.phone }}</td>
-                            <td>{{ props.item.active }}</td>
+                        <template v-slot:item="props">
+                            <tr>
+                                <td>{{ props.index + 1 }}</td>
+                                <td>
+                                    <router-link :to="{ name: 'user-profile', params: { user_id: props.item.id } }">
+                                        {{props.item.name}}
+                                    </router-link>
+                                </td>
+                                <td>
+                                    <router-link :to="{ name: 'user-profile', params: { user_id: props.item.id } }">
+                                        {{ props.item.email }}
+                                    </router-link>
+                                </td>
+                                <td>{{ props.item.phone }}</td>
+                                <td>{{ props.item.active }}</td>
+                            </tr>
                         </template>
                     </v-data-table>
                 </app-card>
@@ -36,25 +48,23 @@
     export default {
         data() {
             return {
-                loader: true,
-                usersList: null,
-                connectUsersList: null,
                 search: "",
                 headers: [
                     {
                         text: "#",
                         align: "left",
                         sortable: false,
+                        value: 'id'
                     },
-                    { text: "Name", value: "name" },
-                    { text: "Email", value: "email" },
-                    { text: "Phone", value: "phone" },
-                    { text: "active", value: "active" },
+                    { text: "Name", value: "name", sortable: false },
+                    { text: "Email", value: "email", sortable: false },
+                    { text: "Phone", value: "phone", sortable: false },
+                    { text: "Active", value: "active", sortable: false },
                 ],
+                options: {}
             };
         },
         mounted() {
-            this.getUsers();
         },
         methods: {
             ...mapActions([
@@ -71,8 +81,13 @@
                         }
                     }
                 },
-                getUsers() {
-                    this.getUsersAction(1);
+                getUsers(props) {
+                    console.log(props)
+                    return 1;
+                    // this.getUsersAction({
+                    //     page: 1,
+                    //     perPage: 10
+                    // });
                 },
             }
         },
@@ -81,13 +96,14 @@
                 "users_data",
                 "users_perPage",
                 "users_total",
-                "users_page"
+                "users_page",
+                "users_loading"
             ]),
         },
 
         watch: {
-            users_data: function(newval) {
-                console.log(newval);
+            options: function (options) {
+                this.getUsersAction({ page: options.page, perPage: options.itemsPerPage });
             }
         }
     };
