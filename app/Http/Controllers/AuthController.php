@@ -4,13 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 use App\User;
 use App\Accounts;
 use App\UserAccounts;
-use DB;
 use Validator;
-use Lcobucci\JWT\Parser;
 
 class AuthController extends Controller
 {
