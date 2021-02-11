@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 
-use function PHPSTORM_META\type;
-
 class UserController extends Controller
 {
     /**

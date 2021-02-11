@@ -25,16 +25,22 @@ Route::group([
 });
 
 Route::group([
-    'prefix' => 'auth',
-    'middleware' => 'auth:api',
-], function () {
-    Route::any('logout', 'AuthController@logout');
-});
-
-Route::group([
     'middleware' => 'auth:api'
 ], function () {
+    Route::group([
+        'prefix' => 'auth',
+    ], function () {
+        Route::any('logout', 'AuthController@logout');
+    });
+    //admin
     Route::resource('users', 'UserController');
+    Route::get('/accounts/{user_id}', 'AccountController@getAccounts');
+    Route::post('/accounts/{user_id}', 'AccountController@addAccounts');
+
+    //user
+    Route::get('/accounts', 'AccountController@getMyAccounts');
+    Route::post('/accounts', 'AccountController@addMyAccounts');
+    Route::post('/sources', 'SourceController@addSource');
 });
 
 Route::any('/{any}', function () {
