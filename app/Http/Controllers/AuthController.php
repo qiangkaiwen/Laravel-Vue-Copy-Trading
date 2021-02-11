@@ -51,18 +51,18 @@ class AuthController extends Controller
                 return response()->json([
                     'response' => [
                         'api_status' => 0,
-                        'code' => 200,
+                        'code' => 400,
                         'message' => 'This email already exist.'
                     ]
-                ], 200);
+                ], 400);
             } else if ($aid) {
                 return response()->json([
                     'response' => [
                         'api_status' => 0,
-                        'code' => 200,
+                        'code' => 400,
                         'message' => 'This account number already exist.'
                     ]
-                ], 200);
+                ], 400);
             } else {
                 $input = $request->all();
                 $input['password'] = bcrypt($input['password']);
