@@ -33,9 +33,9 @@ class Source extends Migration
             $table->bigInteger('sourceTicket');
             $table->double('sourceLots');
             $table->string('sourceType');
-            $table->bigInteger('originalTickets');
+            $table->bigInteger('originalTicket');
             $table->double('originalLots');
-            $table->bigInteger('sourceOriginalTickets');
+            $table->bigInteger('sourceOriginalTicket');
             $table->double('sourceOriginalLots');
 
             $table->softDeletes();

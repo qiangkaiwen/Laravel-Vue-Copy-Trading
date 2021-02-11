@@ -14,7 +14,13 @@ class Source extends Model
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        "account_number", "symbol", "lots", "ticket", "direction",
+        "type", "magic", "openPrice", "stopLossPrice", "takeProfitPrice",
+        "openTime", "openTimeGMT", "expiration", "expirationGMT", "comment_str",
+        "sourceTicket", "sourceLots", "sourceType", "originalLots", "originalTicket",
+        "sourceOriginalLots", "sourceOriginalTicket"
+    ];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -28,7 +34,24 @@ class Source extends Model
      *
      * @var array
      */
-    protected $casts = [];
+    protected $casts = [
+        "lots" => "double",
+        "ticket" => "bigint",
+        "magic" => "bigint",
+        "openPrice" => "double",
+        "stopLossPrice" => "double",
+        "takeProfitPrice" => "double",
+        "openTime" => "bigint",
+        "openTimeGMT" => "bigint",
+        "expiration" => "bigint",
+        "expirationGMT" => "bigint",
+        "sourceTicket" => "bigint",
+        "sourceLots" => "double",
+        "originalLots" => "double",
+        "originalTicket" => "bigint",
+        "sourceOriginalLots" => "double",
+        "sourceOriginalTicket" => "bigint"
+    ];
 
     public function account()
     {

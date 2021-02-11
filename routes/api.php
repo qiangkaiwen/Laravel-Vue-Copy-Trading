@@ -40,6 +40,7 @@ Route::group([
     //user
     Route::get('/accounts', 'AccountController@getMyAccounts');
     Route::post('/accounts', 'AccountController@addMyAccounts');
+    Route::post('/sources', 'SourceController@addSource');
 });
 
 Route::any('/{any}', function () {
