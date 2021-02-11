@@ -13,7 +13,7 @@ import {
 const state = {                                       // dark mode
 	collapseSidebar: false,                                // mini sidevar
 	rtlLayout: false,                                    // rtl layout
-	backgroundImage: false,                                // enable sidebar background image
+	backgroundImage: true,                                // enable sidebar background image
 	horizontalLayoutSidebar: false,                        // horizontal layout sidebar
 	languages,                                             // languages
 	selectedLocale: languages[0],                          // selected locale

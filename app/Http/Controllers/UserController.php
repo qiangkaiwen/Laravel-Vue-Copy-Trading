@@ -24,7 +24,8 @@ class UserController extends Controller
         if ($perPage == -1)
             $users = User::all();
         else
-            $users = User::skip(($page - 1) * $perPage)->take($perPage)->get();
+            $users = User::skip(($page - 1) * $perPage)->take($perPage)
+                ->get(['id', 'name', 'email', 'phone', 'active', 'created_at']);
         $users->toArray();
         // dd($users);
         return response()->json([
@@ -68,7 +69,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::where('id', $id)->first();
+        $user = User::where('id', $id)->get(['id', 'name', 'email', 'phone', 'active', 'created_at'])->first();
         return response()->json([
             'response' => [
                 'code' => 200,
@@ -106,7 +107,7 @@ class UserController extends Controller
                     'api_status' => 0,
                     'message' => "User not found",
                 ]
-                ], 400);
+            ], 400);
         }
         $name = $request->get('name');
         $email = $request->get('email');
@@ -130,7 +131,7 @@ class UserController extends Controller
             'response' => [
                 'code' => 200,
                 'api_status' => 1,
-                'message' => $user,
+                'message' => "Successfully updated.",
             ]
         ]);
     }
