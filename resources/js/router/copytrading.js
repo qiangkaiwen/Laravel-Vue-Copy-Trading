@@ -6,6 +6,7 @@ const UsersList = () => import('Views/users/UsersList');
 const Statistics = () => import('Views/statistics/Statistics');
 const TradingAccount = () => import('Views/trading/TradingAccount');
 const ProvideSignal = () => import('Views/trading/ProvideSignal');
+const ProvideSignalDetail = () => import('Views/trading/ProvideSignalDetail');
 const CopySignal = () => import('Views/trading/CopySignal');
 
 export default {
@@ -77,7 +78,7 @@ export default {
                 title: 'message.tradingAccounts',
                 breadcrumb: [
                     {
-                        breadcrumbInactive: 'Admin /'
+                        breadcrumbInactive: 'User /'
                     },
                     {
                         breadcrumbActive: 'Trading Accounts'
@@ -95,10 +96,28 @@ export default {
                 title: 'message.provideSignal',
                 breadcrumb: [
                     {
-                        breadcrumbInactive: 'Admin /'
+                        breadcrumbInactive: 'User /'
                     },
                     {
                         breadcrumbActive: 'Provide Signal'
+                    }
+                ]
+            }
+        },
+
+        {
+            path: '/provide-signal-detail/:account_number',
+            name: 'provide-signal-detail',
+            component: ProvideSignalDetail,
+            meta: {
+                requiresAuth: true,
+                title: 'message.provideSignalDetail',
+                breadcrumb: [
+                    {
+                        breadcrumbInactive: 'User /'
+                    },
+                    {
+                        breadcrumbActive: 'Provide Signal Detail'
                     }
                 ]
             }
@@ -113,7 +132,7 @@ export default {
                 title: 'message.copySignal',
                 breadcrumb: [
                     {
-                        breadcrumbInactive: 'Admin /'
+                        breadcrumbInactive: 'User /'
                     },
                     {
                         breadcrumbActive: 'Copy Signal'

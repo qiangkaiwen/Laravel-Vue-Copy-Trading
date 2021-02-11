@@ -32,23 +32,24 @@ const getters = {
 
 const actions = {
     getUsersAction(context, option) {
-        context.commit('setUsersLoadingHandler', false);
+        context.commit('setUsersLoadingHandler', true);
         Nprogress.start();
         axios.get(`${webServices.baseURL}/users?page=${option.page}&perPage=${option.perPage}`, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
                 const { api_status, page, perPage, total, users } = response.data.response;
                 if (api_status) {
-                    Nprogress.done();
                     context.commit('setUsersHandler', { page, perPage, total, users });
                 } else {
                     context.commit('setUsersHandler', { page: 1, perPage: 10, total: 0, users: [] });
                 }
             })
             .catch(error => {
-                Nprogress.done();
                 context.commit('setUsersHandler', { page: 1, perPage: 10, total: 0, users: [] });
                 console.log(error);
                 console.log("Failed");
+            })
+            .finally(() => {
+                Nprogress.done();
             })
     },
 }
@@ -60,10 +61,10 @@ const mutations = {
         state.users_perPage = perPage;
         state.users_total = total;
         state.users_data = users;
-        state.loading = false;
+        state.users_loading = false;
     },
     setUsersLoadingHandler(state, loading) {
-        state.loading = loading;
+        state.users_loading = loading;
     }
 }
 

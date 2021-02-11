@@ -23,14 +23,28 @@ class AccountController extends Controller
             ], 400);
         }
         $user_accounts = $user->user_accounts;
+
+        $page = $request->get('page', 1);
+        $page = intval($page);
+        $perPage = $request->get('perPage', 10);
+        $perPage = intval($perPage);
+
+        $total = count($user_accounts);
+
+        $user_accounts = $user_accounts->skip(($page - 1) * $perPage)->take($perPage);
         $accounts = array();
-        for ($i = 0; $i < count($user_accounts); $i++) {
-            $accounts[] = $user_accounts[$i]->account;
+
+        foreach ($user_accounts as $key => $value) {
+            $accounts[] = $value->account;
         }
+
         return response()->json([
             'response' => [
                 'code' => 200,
                 'api_status' => 1,
+                'total' => $total,
+                'perPage' => $perPage,
+                'page' => $page,
                 'accounts' => $accounts,
             ]
         ]);
@@ -86,14 +100,28 @@ class AccountController extends Controller
             ], 400);
         }
         $user_accounts = $user->user_accounts;
+
+        $page = $request->get('page', 1);
+        $page = intval($page);
+        $perPage = $request->get('perPage', 10);
+        $perPage = intval($perPage);
+
+        $total = count($user_accounts);
+
+        $user_accounts = $user_accounts->skip(($page - 1) * $perPage)->take($perPage);
         $accounts = array();
-        for ($i = 0; $i < count($user_accounts); $i++) {
-            $accounts[] = $user_accounts[$i]->account;
+
+        foreach ($user_accounts as $key => $value) {
+            $accounts[] = $value->account;
         }
+
         return response()->json([
             'response' => [
                 'code' => 200,
                 'api_status' => 1,
+                'page' => $page,
+                'perPage' => $perPage,
+                'total' => $total,
                 'accounts' => $accounts,
             ]
         ]);

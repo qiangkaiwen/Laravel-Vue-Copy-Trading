@@ -4,8 +4,7 @@
         <app-section-loader :status="users_loading"></app-section-loader>
         <v-container fluid class="grid-list-xl pt-0 mt-n3">
             <v-row>
-                <app-card :fullBlock="true"
-                    colClasses="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <app-card :fullBlock="true" colClasses="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                     <v-data-table :headers="headers" :items="users_data" :search="search" item-key="email"
                         :server-items-length="users_total" :options.sync="options" :loading="users_loading"
                         :footer-props="{showFirstLastPage: true,}" :items-per-page-options="[5, 10, 15, 20, -1]">
@@ -70,26 +69,7 @@
             ...mapActions([
                 'getUsersAction'
             ]),
-            ...{
-                getImgSrc(connectedUsers) {
-                    if (this.connectUsersList) {
-                        for (var i = 0; i < this.connectUsersList.length; i++) {
-                            var user = this.connectUsersList[i];
-                            if (connectedUsers === user.id) {
-                                return user.img;
-                            }
-                        }
-                    }
-                },
-                getUsers(props) {
-                    console.log(props)
-                    return 1;
-                    // this.getUsersAction({
-                    //     page: 1,
-                    //     perPage: 10
-                    // });
-                },
-            }
+            ...{}
         },
         computed: {
             ...mapGetters([
