@@ -41,6 +41,8 @@ Route::group([
     Route::get('/accounts', 'AccountController@getMyAccounts');
     Route::post('/accounts', 'AccountController@addMyAccounts');
     Route::post('/sources', 'SourceController@addSource');
+    Route::get('/providesources', 'SourceController@getProvideSource');
+    Route::get('/providesources/{account_number}', 'SourceController@getProvideSourceDetail');
 });
 
 Route::any('/{any}', function () {

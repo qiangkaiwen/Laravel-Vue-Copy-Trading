@@ -7,6 +7,7 @@ import settings from './modules/settings';
 import mail from './modules/mail';
 import sidebar from './modules/sidebar';
 import users from "./modules/users";
+import trading from "./modules/trading";
 
 Vue.use(Vuex);
 
@@ -16,6 +17,7 @@ export const store = new Vuex.Store({
         settings,
         mail,
         sidebar,
-        users
+        users,
+        trading
     }
 })

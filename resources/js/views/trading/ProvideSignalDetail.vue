@@ -1,13 +1,13 @@
 <template>
     <div>
         <page-title-bar></page-title-bar>
-        <app-section-loader :status="provideSignal_loading"></app-section-loader>
+        <app-section-loader :status="provideSignalDetail_loading"></app-section-loader>
         <v-container fluid class="grid-list-xl pt-0 mt-n3">
             <v-row>
                 <app-card :fullBlock="true" colClasses="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                    <v-data-table :headers="headers" :items="provideSignal_data" :search="search" item-key="email"
-                        :server-items-length="provideSignal_total" :options.sync="options"
-                        :loading="provideSignal_loading" :footer-props="{showFirstLastPage: true,}"
+                    <v-data-table :headers="headers" :items="provideSignalDetail_data" :search="search" item-key="email"
+                        :server-items-length="provideSignalDetail_total" :options.sync="options"
+                        :loading="provideSignalDetail_loading" :footer-props="{showFirstLastPage: true,}"
                         :items-per-page-options="[5, 10, 15, 20, -1]">
                         <template slot="headerCell" slot-scope="props" :loading-text="'Loading... Please wait'">
                             <v-tooltip bottom>
@@ -28,17 +28,7 @@
                                 <td>{{ getDateFormat(props.item.openTime) }}</td>
                                 <td>25</td>
                                 <td>10%</td>
-                                <td>
-                                    <v-btn text icon color="primary" @click="gotoDetail(props.item.account_number)">
-                                        <v-icon class="zmdi zmdi-eye"></v-icon>
-                                    </v-btn>
-                                    <v-btn text icon color="success" @click="provideSignal(props.item.account_number)">
-                                        <v-icon class="zmdi zmdi-share"></v-icon>
-                                    </v-btn>
-                                    <v-btn text icon color="error" @click="deleteSignal(props.item.account_number)">
-                                        <v-icon class="zmdi zmdi-delete"></v-icon>
-                                    </v-btn>
-                                </td>
+                                <td></td>
                             </tr>
                         </template>
                     </v-data-table>
@@ -76,38 +66,30 @@
         },
         methods: {
             ...mapActions([
-                'getProvideSignalAction'
+                'getProvideSignalDetailAction'
             ]),
             ...{
                 getDateFormat(date) {
                     return dateformat(new Date(date), "mmm, dd yyyy HH:MM")
-                },
-                gotoDetail(account_number) {
-                    this.$router.push({ path: `provide-signal-detail/${account_number}` });
-                },
-                deleteSignal(account_number) {
-                    console.log(account_number)
-                },
-                provideSignal(account_number) {
-                    console.log(account_number);
                 }
             }
         },
         computed: {
             ...mapGetters([
-                "provideSignal_data",
-                "provideSignal_perPage",
-                "provideSignal_total",
-                "provideSignal_page",
-                "provideSignal_loading"
+                "provideSignalDetail_data",
+                "provideSignalDetail_perPage",
+                "provideSignalDetail_total",
+                "provideSignalDetail_page",
+                "provideSignalDetail_loading"
             ]),
         },
 
         watch: {
             options: function (options) {
-                this.getProvideSignalAction({
+                this.getProvideSignalDetailAction({
                     page: options.page,
-                    perPage: options.itemsPerPage
+                    perPage: options.itemsPerPage,
+                    account_number: this.$route.params.account_number,
                 });
             }
         }
