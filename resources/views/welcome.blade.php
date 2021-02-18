@@ -10,7 +10,7 @@
   <link href="https://cdn.materialdesignicons.com/2.5.94/css/materialdesignicons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
   <link rel="stylesheet" type="text/css" href="{{asset('css/style.css')}}">
-  <title>Vuely Vuex App | A Powerfull Material Design VueJS Admin Template</title>
+  <title>Copy Trading</title>
 </head>
 
 <body>

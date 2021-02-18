@@ -34,6 +34,7 @@ Route::group([
     });
     //admin
     Route::resource('users', 'UserController')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
+    Route::get('newusers', 'UserController@newUsers')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
     Route::get('/accounts/{user_id}', 'AccountController@getAccounts')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
     Route::post('/accounts/{user_id}', 'AccountController@addAccounts')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
 

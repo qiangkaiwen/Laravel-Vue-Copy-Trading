@@ -45,14 +45,14 @@ const actions = {
     signInWithLaravelPassport(context, payload) {
         const { user } = payload;
         context.commit('loginUser');
-        axios.post(`${webServices.baseURL}/auth/login`, JSON.stringify(user), { headers: { 'Content-Type': 'application/json' } })
+        axios.post(`${webServices.baseURL}/auth/login`, user, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
-                const { api_status, access_token, name, email } = response.data.response;
+                const { api_status, access_token, name, email, roles } = response.data.response;
                 if (api_status) {
                     Nprogress.done();
                     localStorage.setItem("access_token", access_token);
                     setTimeout(() => {
-                        context.commit('loginUserSuccess', { name, email });
+                        context.commit('loginUserSuccess', { name, email, roles });
                     }, 500);
                 } else {
                     context.commit('loginUserFailure', response.data.response);
@@ -86,8 +86,13 @@ const mutations = {
     loginUserSuccess(state, user) {
         state.user = user;
         localStorage.setItem('user', JSON.stringify(user));
-        state.isUserSigninWithAuth0 = false
-        router.push("/users-list");
+        state.isUserSigninWithAuth0 = false;
+        if (user.roles.findIndex(role => role == 'ROLE_ADMIN') !== -1)
+            router.push("/users-list");
+        else if (user.roles.findIndex(role => role == 'ROLE_MANAGER') !== -1)
+            router.push("/users-list");
+        else router.push("/trading-accounts");
+
         setTimeout(function () {
             Vue.notify({
                 group: 'loggedIn',

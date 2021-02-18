@@ -7,6 +7,7 @@ import { RotateSquare2 } from "vue-loading-spinner";
 
 // delete Confirmation Dialog
 import DeleteConfirmationDialog from "Components/DeleteConfirmationDialog/DeleteConfirmationDialog";
+import ConfirmationDialog from "Components/ConfirmationDialog/ConfirmationDialog";
 
 // page title bar
 import PageTitleBar from "Components/PageTitleBar/PageTitleBar";
@@ -25,18 +26,19 @@ import StatsCardV2 from 'Components/StatsCardV2/StatsCardV2';
 import SectionTooltip from "Components/SectionTooltip/SectionTooltip"
 
 const GlobalComponents = {
-   install(Vue) {
-      Vue.component('appCard', AppCard);
-      Vue.component('sectionTooltip', SectionTooltip);
-      Vue.component('statsCard', StatsCard);
-      Vue.component('statsCardV2', StatsCardV2);
-      Vue.component('deleteConfirmationDialog', DeleteConfirmationDialog);
-      Vue.component('vuePerfectScrollbar', VuePerfectScrollbar);
-      Vue.component('appSectionLoader', AppSectionLoader);
-      Vue.component('pageTitleBar', PageTitleBar);
-      Vue.component('rotateSquare2', RotateSquare2);
-       Vue.component('cryptoSlider', CryptoSlider);
-   }
+    install(Vue) {
+        Vue.component('appCard', AppCard);
+        Vue.component('sectionTooltip', SectionTooltip);
+        Vue.component('statsCard', StatsCard);
+        Vue.component('statsCardV2', StatsCardV2);
+        Vue.component('deleteConfirmationDialog', DeleteConfirmationDialog);
+        Vue.component('confirmationDialog', ConfirmationDialog);
+        Vue.component('vuePerfectScrollbar', VuePerfectScrollbar);
+        Vue.component('appSectionLoader', AppSectionLoader);
+        Vue.component('pageTitleBar', PageTitleBar);
+        Vue.component('rotateSquare2', RotateSquare2);
+        Vue.component('cryptoSlider', CryptoSlider);
+    }
 }
 
 export default GlobalComponents

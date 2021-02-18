@@ -591,5 +591,7 @@ export default {
     appBars: "App Bars",
     loginWithLaravelPassport: "Login With Laravel Passport",
     loginWithOrigin: "Login",
-    signUpWithLaravelPassport: "SignUp With Laravel Passport"
+    signUpWithLaravelPassport: "SignUp With Laravel Passport",
+    existingUsers: "Existing Users",
+    newUsers: "New Users",
 }

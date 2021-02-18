@@ -6,7 +6,7 @@
             <v-card-actions class="pa-0">
                 <v-spacer></v-spacer>
                 <v-btn color="primary" @click="open = false">Cancel</v-btn>
-                <v-btn color="error" @click="$emit('onConfirm')">Yes</v-btn>
+                <v-btn :color="confirmColor" @click="$emit('onConfirm')">Yes</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -14,7 +14,7 @@
 
 <script>
     export default {
-        props: ["heading", "message", "onConfirm"],
+        props: ["heading", "message", "onConfirm", "confirmColor"],
         data() {
             return {
                 open: false

@@ -31,7 +31,7 @@
 						<v-text-field label="Password" v-model="password" :rules="passwordRules" type="password"
 							required></v-text-field>
 						<v-btn large @click="signupWithLaravel" block color="primary" class="mb-3">
-							{{$t('message.signUpWithLaravelPassport')}} </v-btn>
+							{{$t('message.signUp')}} </v-btn>
 						<router-link to="">{{$t('message.termsOfService')}}</router-link>
 					</v-form>
 				</div>

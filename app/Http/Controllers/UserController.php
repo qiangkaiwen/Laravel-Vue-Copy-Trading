@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -18,12 +19,37 @@ class UserController extends Controller
         $page = intval($page);
         $perPage = $request->get('perPage', 10);
         $perPage = intval($perPage);
-        $total = User::all()->count();
+        $total = User::where('active', 1)->count();
         if ($perPage == -1)
-            $users = User::all();
+            $users = User::where('active', 1);
         else
-            $users = User::skip(($page - 1) * $perPage)->take($perPage)
-                ->get(['id', 'name', 'email', 'phone', 'active', 'created_at']);
+            $users = User::where('active', 1)->skip(($page - 1) * $perPage)->take($perPage)
+                ->get(['id', 'name', 'email', 'phone', 'date_of_birth', 'active', 'created_at']);
+        $users->toArray();
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'page' => $page,
+                'perPage' => $perPage,
+                'total' => $total,
+                'users' => $users,
+            ]
+        ]);
+    }
+
+    public function newUsers(Request $request)
+    {
+        $page = $request->get('page', 1);
+        $page = intval($page);
+        $perPage = $request->get('perPage', 10);
+        $perPage = intval($perPage);
+        $total = User::where('active', 0)->count();
+        if ($perPage == -1)
+            $users = User::where('active', 0);
+        else
+            $users = User::where('active', 0)->skip(($page - 1) * $perPage)->take($perPage)
+                ->get(['id', 'name', 'email', 'phone', 'date_of_birth', 'active', 'created_at']);
         $users->toArray();
         return response()->json([
             'response' => [
@@ -110,6 +136,7 @@ class UserController extends Controller
         $email = $request->get('email');
         $phone = $request->get('phone');
         $password = $request->get('password');
+        $active = $request->get('active');
         if ($name) {
             $user['name'] = $name;
         }
@@ -121,6 +148,9 @@ class UserController extends Controller
         }
         if ($password) {
             $user['password'] = bcrypt($password);
+        }
+        if ($active) {
+            $user['active'] = $active;
         }
         $user->save();
 
@@ -141,7 +171,18 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        $me = Auth::user();
+        if ($me['id'] == $id) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "You can't delete your account.",
+                ]
+            ], 400);
+        }
         $user = User::where('id', $id)->first();
+
         if ($user) {
             $user->delete();
             return response()->json([

@@ -66,6 +66,7 @@ class AuthController extends Controller
                 $input['password'] = bcrypt($input['password']);
                 $user = User::create($input);
                 $user->addRole(UserRole::ROLE_USER);
+                $user->save();
                 if ($request->account_number) {
                     $account = Accounts::create(['account_number' => $input['account_number']]);
                     UserAccounts::create(['user_id' => $user['id'], 'account_id' => $account['id']]);
@@ -90,6 +91,8 @@ class AuthController extends Controller
                 $user = Auth::user();
                 $api_token =  $user->createToken('Personal Access Token')->accessToken;
                 $user->api_token = $api_token;
+                if (!$user->roles)
+                    $user->roles = [];
                 $user->save();
                 if ($request->account_number) {
                     $aid = Accounts::where('account_number', $request->account_number)->exists();
@@ -106,6 +109,7 @@ class AuthController extends Controller
                         'access_token' => $api_token,
                         'name' => $user->name,
                         'email' => $user->email,
+                        'roles' => $user->roles,
                     ]
                 ], 200);
             } else {

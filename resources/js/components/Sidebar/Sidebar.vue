@@ -4,10 +4,9 @@
 		<vue-perfect-scrollbar class="scroll-area" :settings="settings">
 			<div class="transparent navigation">
 				<v-list>
-					<app-logo></app-logo>
 					<user-block></user-block>
 					<template v-for="(category, key) in menus">
-						<div :key="key">
+						<div v-if="checkAvailable(key)" :key="key">
 							<div class="sidebar-title px-4">
 								<span>{{$t(key)}}</span>
 							</div>
@@ -75,7 +74,6 @@
 	import UserBlock from "./UserBlock";
 	import { textTruncate, getCurrentAppLayout } from "Helpers/helpers";
 	import { mapGetters } from "vuex";
-	import AppLogo from "Components/AppLogo/AppLogo";
 
 	export default {
 		data() {
@@ -87,10 +85,9 @@
 		},
 		components: {
 			UserBlock,
-			AppLogo
 		},
 		computed: {
-			...mapGetters(["sidebarSelectedFilter", "menus"])
+			...mapGetters(["sidebarSelectedFilter", "menus", "getUser"])
 		},
 		methods: {
 			textTruncate(text) {
@@ -98,6 +95,22 @@
 			},
 			getCurrentAppLayoutHandler() {
 				return getCurrentAppLayout(this.$router);
+			},
+			checkAvailable(key) {
+				if (!this.getUser) return false;
+				switch (key) {
+					case 'message.user':
+						return true;
+					case 'message.admin':
+						if (this.getUser.roles.findIndex(role => role == 'ROLE_ADMIN') !== -1)
+							return true;
+						if (this.getUser.roles.findIndex(role => role == 'ROLE_MANAGER') !== -1)
+							return true;
+						return false;
+					default:
+						return false;
+				}
+				return true;
 			}
 		}
 	};

@@ -15,66 +15,88 @@
                     </div>
                     <div v-else>
                         <div v-if="user" class="profile-head app-card mb-30">
-                            <div class="profile-top">
-                                <img src="/static/img/profile-banner.jpg" alt="profile banner" width="1920"
-                                    height="150" />
-                            </div>
-                            <div class="profile-bottom border-bottom-light-1">
-                                <div class="user-image text-center mb-4">
-                                    <img src="/static/avatars/user-7.jpg" width="150" height="150"
-                                        class="img-responsive rounded-circle" alt="user images" />
-                                </div>
-                                <div class="user-list-content">
-                                    <div class="text-center">
-                                        <h3 class="fw-bold">{{ user.name }}</h3>
-                                        <p>{{ user.email }}</p>
-                                        <p>{{ user.phone }}</p>
-                                        <div class="social-list clearfix mb-5">
-                                            <ul class="list-inline d-inline-block">
-                                                <li>
-                                                    <a href="javascript:void(0);" class="pink--text"><i
-                                                            class="ti-facebook"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:void(0);" class="pink--text"><i
-                                                            class="ti-twitter-alt"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:void(0);" class="pink--text"><i
-                                                            class="ti-google"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:void(0);" class="pink--text"><i
-                                                            class="ti-linkedin"></i></a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="clearfix mb-5">
-                                            <v-btn class="mr-1" icon @click="onEditUser()">
-                                                <v-icon class="grey--text font-lg">edit</v-icon>
-                                            </v-btn>
-                                            <v-btn icon @click="onDeleteUser()">
-                                                <v-icon class="grey--text font-lg">delete</v-icon>
-                                            </v-btn>
+                            <div class="user-profile-widget top-author-wrap">
+                                <div class="avatar-wrap mb-50 pos-relative">
+                                    <span class="overlay-content"></span>
+                                    <div class="user-info">
+                                        <img src="/static/avatars/user-7.jpg" alt="reviwers" width="100" height="100"
+                                            class="img-responsive rounded-circle mr-3">
+                                        <div class="white--text pt-7">
+                                            <h1 class="mb-0" style="text-transform: uppercase;">{{ user.name }}</h1>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="user-activity text-center">
-                                <ul class="list-inline d-inline-block">
-                                    <li>
-                                        <span class="fw-bold">Member Since</span>
-                                        <span>{{ getFormattedDate(user.created_at) }}</span>
-                                    </li>
-                                    <li>
-                                        <span class="fw-bold">Status</span>
-                                        <span>Active</span>
-                                    </li>
-                                    <li>
-                                        <span class="fw-bold">Level</span>
-                                        <span>{{ user.level }}</span>
-                                    </li>
-                                </ul>
+                                <div class="author-detail-wrap">
+                                    <div class="pa-3 authors-info">
+                                        <ul class="list-unstyled author-contact-info mb-2">
+                                            <li class="d-flex px-4 align-center">
+                                                <span class="mr-3 d-custom-flex align-items-left w-30">
+                                                    <span><i class="zmdi zmdi-email"></i> Email</span>
+                                                </span>
+                                                <span
+                                                    class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-70">{{
+                                                    user.email }}</span>
+                                            </li>
+                                            <li class="d-flex px-4 align-center">
+                                                <span class="mr-3 d-custom-flex align-items-left w-30">
+                                                    <span><i class="zmdi zmdi-phone-msg"></i> Phone</span>
+                                                </span>
+                                                <span
+                                                    class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-70">{{
+                                                    user.phone }}</span>
+                                            </li>
+                                            <li class="d-flex px-4 align-center">
+                                                <span class="mr-3 d-custom-flex align-items-left w-30">
+                                                    <span><i class="zmdi zmdi-calendar-alt"></i> Birthday</span>
+                                                </span>
+                                                <span
+                                                    class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-70">{{
+                                                    getFormattedDate(user.date_of_birth) }}</span>
+                                            </li>
+                                            <li class="d-flex px-4 align-center">
+                                                <span class="mr-3 d-custom-flex align-items-left w-30">
+                                                    <span><i class="zmdi zmdi-calendar-check"></i> Member Since</span>
+                                                </span>
+                                                <span
+                                                    class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-70">{{
+                                                    getFormattedDate(user.created_at) }}</span>
+                                            </li>
+                                        </ul>
+                                        <ul class="d-custom-flex social-info list-unstyled">
+                                            <li><a class="facebook" href="www.facebook.com"><i
+                                                        class="zmdi zmdi-facebook-box"></i></a></li>
+                                            <li><a class="twitter" href="www.twitter.com"><i
+                                                        class="zmdi zmdi-twitter-box"></i></a></li>
+                                            <li><a class="linkedin" href="www.linkedin.com"><i
+                                                        class="zmdi zmdi-linkedin-box"></i></a></li>
+                                            <li><a class="instagram" href="www.instagram.com"><i
+                                                        class="zmdi zmdi-instagram"></i></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="d-custom-flex align-center px-3 pb-3">
+                                        <v-btn fab class="mr-3" dark color="cyan" @click="onEditUser()">
+                                            <v-icon dark>edit</v-icon>
+                                        </v-btn>
+                                        <v-btn fab @click="onDeleteUser()"  dark color="red">
+                                            <v-icon class="grey--text font-lg">delete</v-icon>
+                                        </v-btn>
+                                    </div>
+                                    <ul
+                                        class="d-custom-flex list-unstyled footer-content text-center w-100 border-top-1 align-end">
+                                        <li>
+                                            <h5 class="mb-0">80</h5>
+                                            <span class="fs-12 grey--text fw-normal">Providers</span>
+                                        </li>
+                                        <li>
+                                            <h5 class="mb-0">150</h5>
+                                            <span class="fs-12 grey--text fw-normal">Followers</span>
+                                        </li>
+                                        <li>
+                                            <h5 class="mb-0">2k</h5>
+                                            <span class="fs-12 grey--text fw-normal">Copiers</span>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                         <div v-else class="profile-head app-card mb-30 mt-30">
@@ -115,11 +137,6 @@
 </template>
 
 <script>
-    import UserDetail from "Components/Widgets/UserDetail";
-    import Skills from "Components/Widgets/Skills";
-    import Education from "Components/Widgets/Education";
-    import ContactRequest from "Components/Widgets/ContactRequest";
-    import UserActivity from "Components/Widgets/UserActivity";
     import webServices from "WebServices";
     import dateformat from "dateformat";
     import axios from "axios";
@@ -165,16 +182,16 @@
         },
         methods: {
             getFormattedDate(date) {
+                if (!date) return '';
                 return dateformat(new Date(date), "longDate");
             },
             onDeleteUser() {
                 this.$refs.deleteConfirmationDialog.openDialog();
             },
             deleteUser() {
-                console.log('confirm');
                 axios.delete(`${webServices.baseURL}/users/${this.user_id}`).then(() => {
-                    this.$router.push('/users-list');
                     this.$refs.deleteConfirmationDialog.close();
+                    this.$router.push('/users-list');
                 })
             },
             onEditUser() {

@@ -51,7 +51,6 @@ axios.interceptors.request.use(
 	err => Promise.reject(err)
 );
 
-
 Vue.config.productionTip = false
 
 // navigation guards before each
