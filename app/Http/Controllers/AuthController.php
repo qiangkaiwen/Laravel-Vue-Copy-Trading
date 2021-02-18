@@ -91,6 +91,13 @@ class AuthController extends Controller
                 $api_token =  $user->createToken('Personal Access Token')->accessToken;
                 $user->api_token = $api_token;
                 $user->save();
+                if ($request->account_number) {
+                    $aid = Accounts::where('account_number', $request->account_number)->exists();
+                    if (!$aid) {
+                        $account = Accounts::create(['account_number' => $input['account_number']]);
+                        UserAccounts::create(['user_id' => $user['id'], 'account_id' => $account['id']]);
+                    }
+                }
                 return response()->json([
                     'response' => [
                         'api_status' => 1,

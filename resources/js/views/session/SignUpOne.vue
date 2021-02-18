@@ -1,10 +1,10 @@
 <template>
 	<div class="session-wrapper">
 		<div class="session-left">
-			<!-- <session-slider-widget></session-slider-widget> -->
+			<session-slider-widget></session-slider-widget>
 		</div>
 		<div class="session-right text-center">
-			<div class="session-table-cell">
+			<div class="session-table-cell-signup">
 				<div class="session-content">
 					<!-- <img :src="appLogo" class="img-responsive mb-4" width="78" height="78" /> -->
 					<h2 class="mb-4">{{$t('message.signUp')}}</h2>
@@ -12,9 +12,22 @@
 						<router-link to="/session/login">{{$t('message.login')}}</router-link>
 					</p>
 					<v-form v-model="valid" class="mb-5">
-						<v-text-field label="Username" v-model="name" :rules="nameRules" :counter="20" required>
+						<v-text-field label="Username" v-model="name" :rules="nameRules" :counter="30" required>
 						</v-text-field>
-						<v-text-field label="E-mail ID" v-model="email" :rules="emailRules" required></v-text-field>
+						<v-text-field label="E-mail" v-model="email" :rules="emailRules" required></v-text-field>
+						<v-menu ref="dateref" :close-on-content-click="false" v-model="dateref" transition="scale-transition"
+							offset-y :nudge-right="40" min-width="290px" :return-value.sync="date">
+							<template v-slot:activator="{ on }">
+								<v-text-field v-on="on" label="Date Of Birth" v-model="date" prepend-icon="event"
+									readonly></v-text-field>
+							</template>
+							<v-date-picker v-model="date" no-title scrollable>
+								<v-spacer></v-spacer>
+								<v-btn color="primary" @click="dateref = false">Cancel</v-btn>
+								<v-btn color="warning" @click="$refs.dateref.save(date)">OK</v-btn>
+							</v-date-picker>
+						</v-menu>
+						<v-text-field label="Phone Number" v-model="phone" type="text" required></v-text-field>
 						<v-text-field label="Password" v-model="password" :rules="passwordRules" type="password"
 							required></v-text-field>
 						<v-btn large @click="signupWithLaravel" block color="primary" class="mb-3">
@@ -53,7 +66,10 @@
 				password: "",
 				passwordRules: [v => !!v || "Password is required"],
 				appLogo: AppConfig.appLogo2,
-				brand: AppConfig.brand
+				brand: AppConfig.brand,
+				phone: "",
+				dateref: false,
+				date: null,
 			};
 		},
 		methods: {
@@ -61,12 +77,15 @@
 				let userDetail = {
 					name: this.name,
 					email: this.email,
-					password: this.password
+					password: this.password,
+					date_of_birth: this.date,
+					phone: this.phone,
 				};
 				this.$store.dispatch("signupUserWithLaravelPassport", {
 					userDetail
 				});
 			},
+			
 		}
 	};
 </script>

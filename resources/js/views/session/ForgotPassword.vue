@@ -1,9 +1,8 @@
 <template>
 	<div class="session-wrapper">
-		<!-- <div class="session-left"> -->
-		<!-- <session-slider-widget></session-slider-widget> -->
-		<!-- </div> -->
-		<!-- <div class="session-right text-center"> -->
+		<div class="session-left">
+		<session-slider-widget></session-slider-widget>
+		</div>
 		<div class="session-right text-center">
 			<div class="session-table-cell">
 				<div class="session-content">
