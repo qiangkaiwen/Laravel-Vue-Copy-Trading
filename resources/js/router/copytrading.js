@@ -3,6 +3,7 @@ import Full from 'Container/Full'
 // CRM components
 const UserProfile = () => import('Views/users/UserProfile');
 const UsersList = () => import('Views/users/UsersList');
+const MyProfile = () => import('Views/users/MyProfile');
 const Statistics = () => import('Views/statistics/Statistics');
 const TradingAccount = () => import('Views/trading/TradingAccount');
 const ProvideSignal = () => import('Views/trading/ProvideSignal');
@@ -15,6 +16,24 @@ export default {
     redirect: '/users-list',
     children: [
         // users
+        {
+            path: '/my-profile',
+            name: 'my-profile',
+            component: MyProfile,
+            props: true,
+            meta: {
+                requiresAuth: true,
+                title: 'message.myProfile',
+                breadcrumb: [
+                    {
+                        breadcrumbInactive: 'User /'
+                    },
+                    {
+                        breadcrumbActive: 'My Profile'
+                    }
+                ]
+            }
+        },
         {
             path: '/user-profile/:user_id',
             name: 'user-profile',

@@ -75,6 +75,7 @@ export default {
     inbox: 'Inbox',
     users: 'Users',
     userProfile: 'User Profile',
+    myProfile: 'My Profile',
     usersList: 'Users List',
     calendar: 'Calendar',
     editor: 'Editor',

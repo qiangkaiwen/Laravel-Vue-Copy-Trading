@@ -2,7 +2,7 @@
 export const menus = {
 	'message.admin': [
 		{
-			action: 'zmdi-view-dashboard',
+			action: 'zmdi-accounts-list',
 			title: 'message.usersList',
 			label: 'Old',
 			path: '/users-list',
@@ -36,6 +36,13 @@ export const menus = {
 			title: 'message.copySignal',
 			label: 'Old',
 			path: '/copy-signal',
+			exact: true
+		},
+		{
+			action: 'zmdi-account-box',
+			title: 'message.myProfile',
+			label: 'Old',
+			path: '/my-profile',
 			exact: true
 		},
 	],

@@ -201,4 +201,66 @@ class UserController extends Controller
             ]
         ], 400);
     }
+
+    public function myProfile(Request $request) {
+        $me = Auth::user();
+        if(!$me) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User doesn't exist.",
+                ]
+            ], 400);
+        }
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'profile' => $me
+            ]
+        ]);
+    }
+
+    public function updateMyProfile(Request $request) {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User not found",
+                ]
+            ], 400);
+        }
+        $name = $request->get('name');
+        $email = $request->get('email');
+        $phone = $request->get('phone');
+        $password = $request->get('password');
+        $active = $request->get('active');
+        if ($name) {
+            $user['name'] = $name;
+        }
+        if ($email) {
+            $user['email'] = $email;
+        }
+        if ($phone) {
+            $user['phone'] = $phone;
+        }
+        if ($password) {
+            $user['password'] = bcrypt($password);
+        }
+        if ($active) {
+            $user['active'] = $active;
+        }
+        $user->save();
+
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'message' => "Successfully updated.",
+            ]
+        ]);
+    }
 }

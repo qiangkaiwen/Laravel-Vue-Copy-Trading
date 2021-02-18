@@ -44,6 +44,8 @@ Route::group([
     Route::post('/sources', 'SourceController@addSource');
     Route::get('/providesources', 'SourceController@getProvideSource');
     Route::get('/providesources/{account_number}', 'SourceController@getProvideSourceDetail');
+    Route::get('/profile/me', 'UserController@myProfile');
+    Route::patch('/profile/me', 'UserController@updateMyProfile');
 });
 
 Route::any('/{any}', function () {
