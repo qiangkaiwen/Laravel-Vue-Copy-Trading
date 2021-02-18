@@ -23,8 +23,18 @@
                                 <td>{{ props.index + 1 }}</td>
                                 <td>{{props.item.account_number}}</td>
                                 <td>{{ props.item.broker }}</td>
-                                <td>-</td>
+                                <td>
+                                    <v-badge :value=false :class="props.item.statusColor">{{ props.item.status }}
+                                    </v-badge>
+                                </td>
                                 <td>{{ convertDate(props.item.created_at) }}</td>
+                                <td>
+                                    <!-- <router-link :to="{ name: 'user-profile', params: { user_id: props.item.id } }"> -->
+                                    <v-btn text icon color="primary">
+                                        <v-icon class="zmdi zmdi-eye"></v-icon>
+                                    </v-btn>
+                                    <!-- </router-link> -->
+                                </td>
                             </tr>
                         </template>
                     </v-data-table>
@@ -53,6 +63,7 @@
                     { text: "Broker", value: "account_number", sortable: false },
                     { text: "Status", value: "online_status", sortable: false },
                     { text: "Created At", value: "created_at", sortable: false },
+                    { text: "", sortable: false },
                 ],
                 options: {}
             };

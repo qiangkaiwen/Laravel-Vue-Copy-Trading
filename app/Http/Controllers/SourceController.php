@@ -77,13 +77,13 @@ class SourceController extends Controller
                     tbl_source.symbol,
                     MIN( tbl_source.openTime ) AS openTime,
                     COUNT( 1 ) AS signal_number
-                FROM
+                    FROM
                     tbl_source
                     LEFT JOIN tbl_account ON tbl_account.account_number = tbl_source.account_number
                     LEFT JOIN tbl_user_account ON tbl_account.id = tbl_user_account.account_id
-                WHERE
+                    WHERE
                     tbl_user_account.user_id = $user_id
-                GROUP BY
+                    GROUP BY
                     tbl_source.account_number,
                     tbl_source.symbol ";
         $total = DB::select("SELECT COUNT(1) as total from 
