@@ -7,7 +7,7 @@ const MyProfile = () => import('Views/users/MyProfile');
 const Statistics = () => import('Views/statistics/Statistics');
 const TradingAccount = () => import('Views/trading/TradingAccount');
 const ProvideSignal = () => import('Views/trading/ProvideSignal');
-const ProvideSignalDetail = () => import('Views/trading/ProvideSignalDetail');
+const SignalDetail = () => import('Views/trading/SignalDetail');
 const CopySignal = () => import('Views/trading/CopySignal');
 
 export default {
@@ -125,12 +125,12 @@ export default {
         },
 
         {
-            path: '/provide-signal-detail/:account_number',
-            name: 'provide-signal-detail',
-            component: ProvideSignalDetail,
+            path: '/signal-detail/:account_number/:broker',
+            name: 'signal-detail',
+            component: SignalDetail,
             meta: {
                 requiresAuth: true,
-                title: 'message.provideSignalDetail',
+                title: 'message.signalDetail',
                 breadcrumb: [
                     {
                         breadcrumbInactive: 'User /'

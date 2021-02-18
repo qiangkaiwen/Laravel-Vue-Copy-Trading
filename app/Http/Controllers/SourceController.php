@@ -26,15 +26,15 @@ class SourceController extends Controller
             ], 400);
         }
         $user_accounts = $user->user_accounts;
-        $confirmed = false;
+        $account_id = null;
         for ($i = 0; $i < count($user_accounts); $i++) {
             $account = $user_accounts[$i]->account;
-            if ($account['account_number'] == $input['account_number']) {
-                $confirmed = true;
+            if ($account['account_number'] == $input['account_number'] && $account['broker'] == $input['broker']) {
+                $account_id = $account['id'];
                 break;
             }
         }
-        if (!$confirmed) {
+        if (!$account_id) {
             return response()->json([
                 'response' => [
                     'code' => 400,
@@ -43,6 +43,10 @@ class SourceController extends Controller
                 ]
             ], 400);
         }
+        $input['account_id'] = $account_id;
+        unset($input['account_number']);
+        unset($input['broker']);
+
         Source::create($input);
         return response()->json([
             'response' => [
@@ -73,19 +77,27 @@ class SourceController extends Controller
         }
         $user_id = $user->id;
         $query = "SELECT
-                    tbl_source.account_number,
-                    tbl_source.symbol,
+                tbl_account.account_number,
+                tbl_account.broker,
+                sources.*,
+                IFNULL( copiers.copier_number, 0 ) AS copier_number 
+                FROM
+                (
+                SELECT
+                    tbl_source.account_id,
                     MIN( tbl_source.openTime ) AS openTime,
-                    COUNT( 1 ) AS signal_number
-                    FROM
+                    COUNT( 1 ) AS signal_number 
+                FROM
                     tbl_source
-                    LEFT JOIN tbl_account ON tbl_account.account_number = tbl_source.account_number
-                    LEFT JOIN tbl_user_account ON tbl_account.id = tbl_user_account.account_id
-                    WHERE
-                    tbl_user_account.user_id = $user_id
-                    GROUP BY
-                    tbl_source.account_number,
-                    tbl_source.symbol ";
+                    INNER JOIN tbl_user_account ON tbl_source.account_id = tbl_user_account.account_id 
+                WHERE
+                    tbl_user_account.user_id = 1 
+                GROUP BY
+                    tbl_source.account_id,
+                    tbl_source.symbol 
+                ) AS sources
+                INNER JOIN tbl_account ON tbl_account.id = sources.account_id
+                LEFT JOIN ( SELECT COUNT( 1 ) AS copier_number, tbl_copy.master_id FROM tbl_copy GROUP BY tbl_copy.master_id ) AS copiers ON copiers.master_id = sources.account_id ";
         $total = DB::select("SELECT COUNT(1) as total from 
                             ( " . $query . ") as result");
         $total = $total[0]->total;
@@ -102,16 +114,10 @@ class SourceController extends Controller
         ], 200);
     }
 
-    public function getProvideSourceDetail(Request $request, $account_number)
+    public function getProvideSourceDetail(Request $request)
     {
-        $page = $request->get('page', 1);
-        $page = intval($page);
-        $perPage = $request->get('perPage', 10);
-        $perPage = intval($perPage);
-        $offset = ($page - 1) * $perPage;
-
-        $user = Auth::user();
-        if (!$user) {
+        $me = Auth::user();
+        if (!$me) {
             return response()->json([
                 'response' => [
                     'code' => 400,
@@ -120,22 +126,77 @@ class SourceController extends Controller
                 ]
             ], 400);
         }
-        $user_id = $user->id;
+
+        $account_number = $request->get('account_number');
+        $broker = $request->get('broker');
+        if (!$account_number || !$broker) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account number and Broker are required.",
+                ]
+            ], 400);
+        }
+        $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
+        if (!$account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account doesn't exist.",
+                ]
+            ], 400);
+        }
+        $account_id = $account->id;
+        $user_account = $account->user_account->first();
+        if (!$user_account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account doesn't exist.",
+                ]
+            ], 400);
+        }
+
+        $user = $user_account->user->first();
+        if (!$user) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User doesn't exist.",
+                ]
+            ], 400);
+        }
+
+        $detail = DB::select("SELECT * FROM
+                            (SELECT COUNT( 1 ) AS copier_number FROM tbl_copy WHERE master_id = $account_id) AS copier,
+                            (SELECT MIN(openTime) as openTime FROM tbl_source WHERE account_id = $account_id) AS source");
+        $detail = $detail[0];
+
+        $page = $request->get('page', 1);
+        $page = intval($page);
+        $perPage = $request->get('perPage', 10);
+        $perPage = intval($perPage);
+        $offset = ($page - 1) * $perPage;
+
         $query = "SELECT
-                    tbl_source.account_number,
-                    tbl_source.symbol,
-                    tbl_source.openTime,
-                    tbl_source.type,
-                    tbl_source.openPrice,
-                    tbl_source.takeProfitPrice,
-                    tbl_source.stopLossPrice 
+                tbl_source.account_id,
+                tbl_source.symbol,
+                tbl_source.openTime,
+                tbl_source.lots,
+                tbl_source.type,
+                tbl_source.openPrice,
+                tbl_source.takeProfitPrice,
+                tbl_source.stopLossPrice,
+                tbl_source.ticket 
                 FROM
-                    tbl_source
-                    LEFT JOIN tbl_account ON tbl_account.account_number = tbl_source.account_number
-                    LEFT JOIN tbl_user_account ON tbl_account.id = tbl_user_account.account_id 
+                tbl_source
                 WHERE
-                    tbl_user_account.user_id = $user_id 
-                    AND tbl_source.account_number = '$account_number' ";
+                tbl_source.account_id = $account_id 
+                ORDER BY openTime DESC ";
         $total = DB::select("SELECT COUNT(1) as total from 
                             ( " . $query . ") as result");
         $total = $total[0]->total;
@@ -144,10 +205,17 @@ class SourceController extends Controller
             'response' => [
                 'code' => 200,
                 'api_status' => 1,
+                'information' => [
+                    'provider' => $user->name,
+                    'account_number' => $account->account_number,
+                    'broker' => $account->broker,
+                    'openTime' => $detail->openTime,
+                    'copier_number' => $detail->copier_number,
+                ],
                 'total' => $total,
                 'page' => $page,
                 'perPage' => $perPage,
-                'provideSignalDetail' => $provideSignalDetail,
+                'signalDetail' => $provideSignalDetail,
             ]
         ], 200);
     }

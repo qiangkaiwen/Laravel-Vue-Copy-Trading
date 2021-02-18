@@ -18,11 +18,12 @@ const state = {
     provideSignal_page: 1,
     provideSignal_loading: false,
 
-    provideSignalDetail_data: [],
-    provideSignalDetail_perPage: 10,
-    provideSignalDetail_total: 0,
-    provideSignalDetail_page: 1,
-    provideSignalDetail_loading: false,
+    signalDetail_data: [],
+    signalDetail_perPage: 10,
+    signalDetail_total: 0,
+    signalDetail_page: 1,
+    signalDetail_information: {},
+    signalDetail_loading: false,
 
     copySignal_data: [],
     copySignal_perPage: 10,
@@ -44,11 +45,12 @@ const getters = {
     provideSignal_page: state => state.provideSignal_page,
     provideSignal_loading: state => state.provideSignal_loading,
 
-    provideSignalDetail_data: state => state.provideSignalDetail_data,
-    provideSignalDetail_perPage: state => state.provideSignalDetail_perPage,
-    provideSignalDetail_total: state => state.provideSignalDetail_total,
-    provideSignalDetail_page: state => state.provideSignalDetail_page,
-    provideSignalDetail_loading: state => state.provideSignalDetail_loading,
+    signalDetail_data: state => state.signalDetail_data,
+    signalDetail_perPage: state => state.signalDetail_perPage,
+    signalDetail_total: state => state.signalDetail_total,
+    signalDetail_page: state => state.signalDetail_page,
+    signalDetail_loading: state => state.signalDetail_loading,
+    signalDetail_information: state => state.signalDetail_information,
 
     copySignal_data: state => state.copySignal_data,
     copySignal_perPage: state => state.copySignal_perPage,
@@ -102,20 +104,20 @@ const actions = {
             })
     },
 
-    getProvideSignalDetailAction(context, option) {
-        context.commit('setProvideSignalDetailLoadingHandler', false);
+    signalDetailAction(context, option) {
+        context.commit('setSignalDetailLoadingHandler', false);
         Nprogress.start();
-        axios.get(`${webServices.baseURL}/providesources/${option.account_number}?page=${option.page}&perPage=${option.perPage}`, { headers: { 'Content-Type': 'application/json' } })
+        axios.post(`${webServices.baseURL}/signaldetail`, option, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
-                const { api_status, page, perPage, total, provideSignalDetail } = response.data.response;
+                const { api_status, page, perPage, total, signalDetail, information } = response.data.response;
                 if (api_status) {
-                    context.commit('setProvideSignalDetailHandler', { page, perPage, total, provideSignalDetail });
+                    context.commit('setSignalDetailHandler', { page, perPage, total, signalDetail, information });
                 } else {
-                    context.commit('setProvideSignalDetailHandler', { page: 1, perPage: 10, total: 0, provideSignalDetail: [] });
+                    context.commit('setSignalDetailHandler', { page: 1, perPage: 10, total: 0, signalDetail: [], information: {} });
                 }
             })
             .catch(error => {
-                context.commit('setProvideSignalDetailHandler', { page: 1, perPage: 10, total: 0, provideSignalDetail: [] });
+                context.commit('setSignalDetailHandler', { page: 1, perPage: 10, total: 0, signalDetail: [], information: {} });
                 console.log(error);
                 console.log("Failed");
             })
@@ -150,16 +152,17 @@ const mutations = {
         state.provideSignal_loading = loading;
     },
 
-    setProvideSignalDetailHandler(state, payload) {
-        const { page, perPage, total, provideSignalDetail } = payload;
-        state.provideSignalDetail_page = page;
-        state.provideSignalDetail_perPage = perPage;
-        state.provideSignalDetail_total = total;
-        state.provideSignalDetail_data = provideSignalDetail;
-        state.provideSignalDetail_loading = false;
+    setSignalDetailHandler(state, payload) {
+        const { page, perPage, total, signalDetail, information } = payload;
+        state.signalDetail_page = page;
+        state.signalDetail_perPage = perPage;
+        state.signalDetail_total = total;
+        state.signalDetail_data = signalDetail;
+        state.signalDetail_information = information;
+        state.signalDetail_loading = false;
     },
-    setProvideSignalDetailLoadingHandler(state, loading) {
-        state.provideSignalDetail_loading = loading;
+    setSignalDetailLoadingHandler(state, loading) {
+        state.signalDetail_loading = loading;
     }
 }
 

@@ -23,21 +23,32 @@ class AccountController extends Controller
                 ]
             ], 400);
         }
-        $user_accounts = $user->user_accounts;
 
         $page = $request->get('page', 1);
         $page = intval($page);
         $perPage = $request->get('perPage', 10);
         $perPage = intval($perPage);
+        $skip = ($page - 1) * $perPage;
 
-        $total = count($user_accounts);
+        $query = "SELECT
+                tbl_account.id,
+                tbl_account.account_number,
+                tbl_account.broker,
+                tbl_account.created_at,
+                ( CASE WHEN ISNULL( qryProvider.account_id ) = FALSE THEN 'success' WHEN ISNULL( qryCopy.slave_id ) = FALSE THEN 'danger' ELSE 'secondary' END ) AS `statusColor`, 
+                ( CASE WHEN ISNULL( qryProvider.account_id ) = FALSE THEN 'PROVIDE' WHEN ISNULL( qryCopy.slave_id ) = FALSE THEN 'COPY' ELSE 'NONE' END ) AS `status` 
+                FROM
+                tbl_user_account
+                INNER JOIN tbl_account ON tbl_user_account.account_id = tbl_account.id
+                LEFT JOIN ( SELECT account_id FROM tbl_source GROUP BY tbl_source.account_id ) AS qryProvider ON qryProvider.account_id = tbl_account.id
+                LEFT JOIN ( SELECT slave_id FROM tbl_copy GROUP BY tbl_copy.slave_id ) AS qryCopy ON qryCopy.slave_id = tbl_account.id 
+                WHERE
+                tbl_user_account.user_id = $user_id ";
 
-        $user_accounts = $user_accounts->skip(($page - 1) * $perPage)->take($perPage);
-        $accounts = array();
+        $total = DB::select("SELECT COUNT(1) as total from ( " . $query . ") as result");
+        $total = $total[0]->total;
 
-        foreach ($user_accounts as $key => $value) {
-            $accounts[] = $value->account;
-        }
+        $accounts = DB::select($query . "LIMIT $skip, $perPage");
 
         return response()->json([
             'response' => [
@@ -65,7 +76,8 @@ class AccountController extends Controller
         }
 
         $account_number = $request->account_number;
-        $aid = Accounts::where('account_number', $account_number)->exists();
+        $broker = $request->broker;
+        $aid = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->exists();
         if ($aid) {
             return response()->json([
                 'response' => [
@@ -75,7 +87,7 @@ class AccountController extends Controller
                 ]
             ], 400);
         }
-        $account = Accounts::create(['account_number' => $account_number]);
+        $account = Accounts::create(['account_number' => $account_number, 'broker' => $broker]);
         UserAccounts::create(['user_id' => $user['id'], 'account_id' => $account['id']]);
 
         return response()->json([
@@ -83,7 +95,6 @@ class AccountController extends Controller
                 'code' => 200,
                 'api_status' => 1,
                 'message' => "Account Created",
-                'account' => $account,
             ]
         ]);
     }
@@ -154,7 +165,8 @@ class AccountController extends Controller
         }
 
         $account_number = $request->account_number;
-        $aid = Accounts::where('account_number', $account_number)->exists();
+        $broker = $request->broker;
+        $aid = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->exists();
         if ($aid) {
             return response()->json([
                 'response' => [
@@ -164,7 +176,7 @@ class AccountController extends Controller
                 ]
             ], 400);
         }
-        $account = Accounts::create(['account_number' => $account_number]);
+        $account = Accounts::create(['account_number' => $account_number, 'broker' => $broker]);
         UserAccounts::create(['user_id' => $user['id'], 'account_id' => $account['id']]);
 
         return response()->json([
@@ -172,7 +184,6 @@ class AccountController extends Controller
                 'code' => 200,
                 'api_status' => 1,
                 'message' => "Account Created",
-                'account' => $account,
             ]
         ]);
     }

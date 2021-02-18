@@ -15,7 +15,7 @@ class Source extends Model
      * @var array
      */
     protected $fillable = [
-        "account_number", "symbol", "lots", "ticket", "direction",
+        "account_id", "symbol", "lots", "ticket", "direction",
         "type", "magic", "openPrice", "stopLossPrice", "takeProfitPrice",
         "openTime", "openTimeGMT", "expiration", "expirationGMT", "comment_str",
         "sourceTicket", "sourceLots", "sourceType", "originalLots", "originalTicket",

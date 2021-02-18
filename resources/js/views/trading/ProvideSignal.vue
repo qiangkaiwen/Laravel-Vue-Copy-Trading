@@ -22,20 +22,15 @@
                         <template v-slot:item="props">
                             <tr>
                                 <td>{{ props.index + 1 }}</td>
+                                <td>{{ props.item.broker }}</td>
                                 <td>{{ props.item.account_number }}</td>
-                                <td>{{ props.item.symbol }}</td>
                                 <td>{{ props.item.signal_number }}</td>
                                 <td>{{ getDateFormat(props.item.openTime) }}</td>
-                                <td>25</td>
-                                <td>10%</td>
+                                <td>{{ props.item.copier_number }}</td>
                                 <td>
-                                    <v-btn text icon color="primary" @click="gotoDetail(props.item.account_number)">
-                                        <v-icon class="zmdi zmdi-eye"></v-icon>
+                                    <v-btn text icon color="primary" @click="gotoDetail(props.item.account_number, props.item.broker)">                                        <v-icon class="zmdi zmdi-eye"></v-icon>
                                     </v-btn>
-                                    <v-btn text icon color="success" @click="provideSignal(props.item.account_number)">
-                                        <v-icon class="zmdi zmdi-share"></v-icon>
-                                    </v-btn>
-                                    <v-btn text icon color="error" @click="deleteSignal(props.item.account_number)">
+                                    <v-btn text icon color="error" @click="deleteSignal(props.item.account_number, props.item.broker)">
                                         <v-icon class="zmdi zmdi-delete"></v-icon>
                                     </v-btn>
                                 </td>
@@ -61,12 +56,11 @@
                         align: "left",
                         sortable: false,
                     },
-                    { text: "Source ID", sortable: false },
-                    { text: "Symbol", sortable: false },
+                    { text: "Broker", sortable: false },
+                    { text: "Source Account", sortable: false },
                     { text: "Number of Signals", sortable: false },
-                    { text: "Start From", sortable: false },
-                    { text: "Number Of Followers", sortable: false },
-                    { text: "Gross Profit", sortable: false },
+                    { text: "Since", sortable: false },
+                    { text: "Number Of Copiers", sortable: false },
                     { text: "", sortable: false },
                 ],
                 options: {}
@@ -82,11 +76,11 @@
                 getDateFormat(date) {
                     return dateformat(new Date(date), "mmm, dd yyyy HH:MM")
                 },
-                gotoDetail(account_number) {
-                    this.$router.push({ path: `provide-signal-detail/${account_number}` });
+                gotoDetail(account_number, broker) {
+                    this.$router.push({ path: `signal-detail/${account_number}/${broker}` });
                 },
-                deleteSignal(account_number) {
-                    console.log(account_number)
+                deleteSignal(account_number, broker) {
+                    console.log(account_number, broker);
                 },
                 provideSignal(account_number) {
                     console.log(account_number);

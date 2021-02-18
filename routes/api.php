@@ -43,7 +43,7 @@ Route::group([
     Route::post('/accounts', 'AccountController@addMyAccounts');
     Route::post('/sources', 'SourceController@addSource');
     Route::get('/providesources', 'SourceController@getProvideSource');
-    Route::get('/providesources/{account_number}', 'SourceController@getProvideSourceDetail');
+    Route::post('/signaldetail', 'SourceController@getProvideSourceDetail');
     Route::get('/profile/me', 'UserController@myProfile');
     Route::patch('/profile/me', 'UserController@updateMyProfile');
 });

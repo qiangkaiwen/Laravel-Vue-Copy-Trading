@@ -3,7 +3,7 @@ export default {
     admin: 'Admin',
     general: 'General',
     provideSignal: "Provide Signal",
-    provideSignalDetail: "Provide Signal Detail",
+    signalDetail: "Signal Detail",
     copySignal: "Copy Signal",
     tradingAccounts: "Trading Accounts",
     overview: 'Overview',
