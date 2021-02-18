@@ -15,7 +15,7 @@ class AccountUserSeeder extends Seeder
     public function run()
     {
         for ($i = 0; $i < count(AccountSeeder::ACCOUNT_NUMBERS); $i++)
-            DB::table('tbl_user_account')->insert([
+            UserAccounts::create([
                 'id' => $i + 1,
                 'user_id' => 1,
                 'account_id' => $i + 1,

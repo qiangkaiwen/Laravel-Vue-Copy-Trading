@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Accounts;
 
 class AccountSeeder extends Seeder
 {
@@ -28,7 +29,7 @@ class AccountSeeder extends Seeder
     {
 
         for ($i = 0; $i < count(self::ACCOUNT_NUMBERS); $i++)
-            DB::table('tbl_account')->insert([
+            Accounts::create([
                 'id' => $i + 1,
                 "account_number" => self::ACCOUNT_NUMBERS[$i],
                 "broker" => Str::random(10),

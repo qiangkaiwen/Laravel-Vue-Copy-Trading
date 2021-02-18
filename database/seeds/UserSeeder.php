@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
                 'name' => "admin",
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('password'),
-                'roles' => implode(", ", [UserRole::ROLE_ADMIN]),
+                'roles' => [UserRole::ROLE_ADMIN],
                 'date_of_birth' => '1993-05-14',
                 'active' => 1,
             ],
@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
                 'name' => "user",
                 'email' => 'user@gmail.com',
                 'password' => Hash::make('password'),
-                'roles' => implode(", ", [UserRole::ROLE_USER]),
+                'roles' => [UserRole::ROLE_USER],
                 'date_of_birth' => '1993-05-14',
                 'active' => 1,
             ],
@@ -40,13 +40,13 @@ class UserSeeder extends Seeder
                 'name' => "manager",
                 'email' => 'manager@gmail.com',
                 'password' => Hash::make('password'),
-                'roles' => implode(", ", [UserRole::ROLE_MANAGER]),
+                'roles' => [UserRole::ROLE_MANAGER],
                 'date_of_birth' => '1993-05-14',
                 'active' => 1,
             ],
         );
 
         for ($i = 0; $i < count($data); $i++)
-            DB::table('tbl_users')->insert($data[$i]);
+            User::create($data[$i]);
     }
 }

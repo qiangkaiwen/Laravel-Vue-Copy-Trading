@@ -22,11 +22,9 @@
                             <tr>
                                 <td>{{ props.index + 1 }}</td>
                                 <td>{{props.item.account_number}}</td>
-                                <td>{{ props.item.authorization }}</td>
-                                <td>{{ props.item.expiry }}</td>
-                                <td>{{ props.item.online_status }}</td>
-                                <td>{{ props.item.lots_traded }}</td>
-                                <td>{{ props.item.created_at }}</td>
+                                <td>{{ props.item.broker }}</td>
+                                <td>-</td>
+                                <td>{{ convertDate(props.item.created_at) }}</td>
                             </tr>
                         </template>
                     </v-data-table>
@@ -52,10 +50,8 @@
                         value: 'id'
                     },
                     { text: "Account Number", value: "account_number", sortable: false },
-                    { text: "Authorization", value: "authorization", sortable: false },
-                    { text: "Expiry", value: "expiry", sortable: false },
-                    { text: "Online Status", value: "online_status", sortable: false },
-                    { text: "Lots Traded", value: "lots_traded", sortable: false },
+                    { text: "Broker", value: "account_number", sortable: false },
+                    { text: "Status", value: "online_status", sortable: false },
                     { text: "Created At", value: "created_at", sortable: false },
                 ],
                 options: {}
