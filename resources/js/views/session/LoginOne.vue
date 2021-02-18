@@ -1,12 +1,12 @@
 <template>
 	<div class="session-wrapper">
 		<div class="session-left">
-			<session-slider-widget></session-slider-widget>
+			<!-- <session-slider-widget></session-slider-widget> -->
 		</div>
 		<div class="session-right text-center">
 			<div class="session-table-cell">
 				<div class="session-content">
-					<img :src="appLogo" class="img-responsive mb-4" width="78" height="78" />
+					<!-- <img :src="appLogo" class="img-responsive mb-4" width="78" height="78" /> -->
 					<h2 class="mb-4">{{$t('message.loginToAdmin')}}</h2>
 					<p class="fs-14">{{$t('message.enterUsernameAndPasswordToAccessControlPanelOf')}} {{brand}}.</p>
 					<v-form v-model="valid" class="mb-5">
