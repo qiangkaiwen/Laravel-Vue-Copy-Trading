@@ -43,13 +43,12 @@ class SourceController extends Controller
                 ]
             ], 400);
         }
-        $source = Source::create($input);
+        Source::create($input);
         return response()->json([
             'response' => [
                 'code' => 201,
                 'api_status' => 1,
-                'message' => "Source Created.",
-                'source' => $source
+                'message' => "success.",
             ]
         ], 201);
     }
