@@ -16,6 +16,7 @@ class Accounts extends Migration
         Schema::create('tbl_account', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('account_number');
+            $table->string('broker');
             $table->integer('authorization')->nullable();
             $table->timestamp('expiry')->nullable();
             $table->integer('online_status')->nullable();

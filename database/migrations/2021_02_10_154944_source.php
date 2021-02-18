@@ -15,7 +15,7 @@ class Source extends Migration
     {
         Schema::create('tbl_source', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('account_number');
+            $table->integer('account_id');
             $table->string('symbol');
             $table->double('lots');
             $table->bigInteger('ticket');

@@ -38,6 +38,8 @@
 
 <script>
     import { mapGetters, mapActions } from "vuex";
+    import dateformat from 'dateformat';
+
     export default {
         data() {
             return {
@@ -65,7 +67,12 @@
             ...mapActions([
                 'getAccountsAction'
             ]),
-            ...{}
+            ...{
+                convertDate(date) {
+                    if (!date) return '';
+                    return dateformat(new Date(date), "mediumDate");
+                },
+            }
         },
         computed: {
             ...mapGetters([

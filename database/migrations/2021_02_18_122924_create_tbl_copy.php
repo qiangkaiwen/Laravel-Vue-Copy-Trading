@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddRolesToUsersTable extends Migration
+class CreateTblCopy extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AddRolesToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('tbl_users', function (Blueprint $table) {
-            $table->text('roles')->nullable();
+        Schema::create('tbl_copy', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->integer('master_id');
+            $table->integer('slave_id');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ class AddRolesToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('tbl_users', function (Blueprint $table) {
-            $table->dropColumn('roles');
-        });
+        Schema::dropIfExists('tbl_copy');
     }
 }
