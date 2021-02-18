@@ -590,5 +590,6 @@ export default {
     banners: "Banners",
     appBars: "App Bars",
     loginWithLaravelPassport: "Login With Laravel Passport",
+    loginWithOrigin: "Login",
     signUpWithLaravelPassport: "SignUp With Laravel Passport"
 }

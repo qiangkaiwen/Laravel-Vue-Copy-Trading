@@ -6,9 +6,9 @@
 		<div class="session-right text-center">
 			<div class="session-table-cell">
 				<div class="session-content">
-					<img :src="appLogo" class="img-responsive mb-4" width="78" height="78" />
-					<h2 class="mb-4">{{$t('message.loginToAdmin')}}</h2>
-					<p class="fs-14">{{$t('message.enterUsernameAndPasswordToAccessControlPanelOf')}} {{brand}}.</p>
+					<!-- <img :src="appLogo" class="img-responsive mb-4" width="78" height="78" /> -->
+					<!-- <h2 class="mb-4">{{$t('message.loginToAdmin')}}</h2> -->
+					<!-- <p class="fs-14">{{$t('message.enterUsernameAndPasswordToAccessControlPanelOf')}} {{brand}}.</p> -->
 					<v-form v-model="valid" class="mb-5">
 						<v-text-field label="E-mail ID" v-model="email" :rules="emailRules" required></v-text-field>
 						<v-text-field label="Password" v-model="password" type="password" :rules="passwordRules"
@@ -18,11 +18,11 @@
 						</router-link>
 						<div>
 							<v-btn large class="mb-2" @click="signInWithLaravelPassport" block color="primary">
-								{{$t('message.loginWithLaravelPassport')}}</v-btn>
+								{{$t('message.loginWithOrigin')}}</v-btn>
 							<v-btn large @click="onCreateAccount" block color="warning" class="mb-2">
 								{{$t('message.createAccount')}}</v-btn>
 						</div>
-						<router-link to="">{{$t('message.termsOfService')}}</router-link>
+						<!-- <router-link to="">{{$t('message.termsOfService')}}</router-link> -->
 					</v-form>
 				</div>
 			</div>
