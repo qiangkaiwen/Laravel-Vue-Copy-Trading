@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Accounts;
 use App\UserAccounts;
+use App\Role\UserRole;
 use Validator;
 
 class AuthController extends Controller
@@ -64,6 +65,7 @@ class AuthController extends Controller
                 $input = $request->all();
                 $input['password'] = bcrypt($input['password']);
                 $user = User::create($input);
+                $user->addRole(UserRole::ROLE_USER);
                 if ($request->account_number) {
                     $account = Accounts::create(['account_number' => $input['account_number']]);
                     UserAccounts::create(['user_id' => $user['id'], 'account_id' => $account['id']]);
@@ -84,7 +86,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         if ($request->isMethod('post')) {
-            if (Auth::attempt(['email' => request('email'), 'password' => request('password')], true)) {
+            if (Auth::attempt(['email' => request('email'), 'password' => request('password'), 'active' => 1], true)) {
                 $user = Auth::user();
                 $api_token =  $user->createToken('Personal Access Token')->accessToken;
                 $user->api_token = $api_token;

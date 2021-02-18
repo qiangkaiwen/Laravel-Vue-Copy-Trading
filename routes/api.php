@@ -33,9 +33,9 @@ Route::group([
         Route::any('logout', 'AuthController@logout');
     });
     //admin
-    Route::resource('users', 'UserController');
-    Route::get('/accounts/{user_id}', 'AccountController@getAccounts');
-    Route::post('/accounts/{user_id}', 'AccountController@addAccounts');
+    Route::resource('users', 'UserController')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
+    Route::get('/accounts/{user_id}', 'AccountController@getAccounts')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
+    Route::post('/accounts/{user_id}', 'AccountController@addAccounts')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
 
     //user
     Route::get('/accounts', 'AccountController@getMyAccounts');

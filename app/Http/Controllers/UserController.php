@@ -25,7 +25,6 @@ class UserController extends Controller
             $users = User::skip(($page - 1) * $perPage)->take($perPage)
                 ->get(['id', 'name', 'email', 'phone', 'active', 'created_at']);
         $users->toArray();
-        // dd($users);
         return response()->json([
             'response' => [
                 'code' => 200,
