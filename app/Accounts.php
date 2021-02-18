@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Accounts extends Model
 {
     use SoftDeletes;
+    const STATUS_NONE = "NONE";
+    const STATUS_PROVIDE = "PROVIDE";
+    const STATUS_COPY = "COPY";
+
     protected $table = "tbl_account";
     /**
      * The attributes that are mass assignable.

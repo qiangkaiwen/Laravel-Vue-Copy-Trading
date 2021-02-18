@@ -35,13 +35,11 @@ class AccountController extends Controller
                 tbl_account.account_number,
                 tbl_account.broker,
                 tbl_account.created_at,
-                ( CASE WHEN ISNULL( qryProvider.account_id ) = FALSE THEN 'success' WHEN ISNULL( qryCopy.slave_id ) = FALSE THEN 'danger' ELSE 'secondary' END ) AS `statusColor`, 
-                ( CASE WHEN ISNULL( qryProvider.account_id ) = FALSE THEN 'PROVIDE' WHEN ISNULL( qryCopy.slave_id ) = FALSE THEN 'COPY' ELSE 'NONE' END ) AS `status` 
+                tbl_account.`status`,
+                ( CASE WHEN tbl_account.`status` = 'PROVIDE' THEN 'success' WHEN tbl_account.`status` = 'COPY' THEN 'red' ELSE 'secondary' END ) AS `statusColor` 
                 FROM
                 tbl_user_account
                 INNER JOIN tbl_account ON tbl_user_account.account_id = tbl_account.id
-                LEFT JOIN ( SELECT account_id FROM tbl_source GROUP BY tbl_source.account_id ) AS qryProvider ON qryProvider.account_id = tbl_account.id
-                LEFT JOIN ( SELECT slave_id FROM tbl_copy GROUP BY tbl_copy.slave_id ) AS qryCopy ON qryCopy.slave_id = tbl_account.id 
                 WHERE
                 tbl_user_account.user_id = $user_id ";
 
@@ -124,13 +122,11 @@ class AccountController extends Controller
                 tbl_account.account_number,
                 tbl_account.broker,
                 tbl_account.created_at,
-                ( CASE WHEN ISNULL( qryProvider.account_id ) = FALSE THEN 'success' WHEN ISNULL( qryCopy.slave_id ) = FALSE THEN 'danger' ELSE 'secondary' END ) AS `statusColor`, 
-                ( CASE WHEN ISNULL( qryProvider.account_id ) = FALSE THEN 'PROVIDE' WHEN ISNULL( qryCopy.slave_id ) = FALSE THEN 'COPY' ELSE 'NONE' END ) AS `status` 
+                tbl_account.`status`,
+                ( CASE WHEN tbl_account.`status` = 'PROVIDE' THEN 'success' WHEN tbl_account.`status` = 'COPY' THEN 'red' ELSE 'secondary' END ) AS `statusColor` 
                 FROM
                 tbl_user_account
                 INNER JOIN tbl_account ON tbl_user_account.account_id = tbl_account.id
-                LEFT JOIN ( SELECT account_id FROM tbl_source GROUP BY tbl_source.account_id ) AS qryProvider ON qryProvider.account_id = tbl_account.id
-                LEFT JOIN ( SELECT slave_id FROM tbl_copy GROUP BY tbl_copy.slave_id ) AS qryCopy ON qryCopy.slave_id = tbl_account.id 
                 WHERE
                 tbl_user_account.user_id = $user_id ";
 

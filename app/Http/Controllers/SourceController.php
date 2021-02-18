@@ -27,10 +27,12 @@ class SourceController extends Controller
         }
         $user_accounts = $user->user_accounts;
         $account_id = null;
+        $account_status = Accounts::STATUS_NONE;
         for ($i = 0; $i < count($user_accounts); $i++) {
             $account = $user_accounts[$i]->account;
             if ($account['account_number'] == $input['account_number'] && $account['broker'] == $input['broker']) {
                 $account_id = $account['id'];
+                $account_status = $account['status'];
                 break;
             }
         }
@@ -43,6 +45,16 @@ class SourceController extends Controller
                 ]
             ], 400);
         }
+        if ($account_status != Accounts::STATUS_PROVIDE) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account isn't for provide.",
+                ]
+            ], 400);
+        }
+
         $input['account_id'] = $account_id;
         unset($input['account_number']);
         unset($input['broker']);
@@ -75,8 +87,9 @@ class SourceController extends Controller
                 ]
             ], 400);
         }
-        $user_id = $user->id;
+        $status = Accounts::STATUS_PROVIDE;
         $query = "SELECT
+                tbl_account.id,
                 tbl_account.account_number,
                 tbl_account.broker,
                 sources.*,
@@ -97,7 +110,9 @@ class SourceController extends Controller
                     tbl_source.symbol 
                 ) AS sources
                 INNER JOIN tbl_account ON tbl_account.id = sources.account_id
-                LEFT JOIN ( SELECT COUNT( 1 ) AS copier_number, tbl_copy.master_id FROM tbl_copy GROUP BY tbl_copy.master_id ) AS copiers ON copiers.master_id = sources.account_id ";
+                LEFT JOIN ( SELECT COUNT( 1 ) AS copier_number, tbl_copy.master_id FROM tbl_copy 
+                GROUP BY tbl_copy.master_id ) AS copiers ON copiers.master_id = sources.account_id 
+                WHERE tbl_account.status = '$status' ";
         $total = DB::select("SELECT COUNT(1) as total from 
                             ( " . $query . ") as result");
         $total = $total[0]->total;
@@ -148,6 +163,17 @@ class SourceController extends Controller
                 ]
             ], 400);
         }
+
+        if ($account->status == Accounts::STATUS_NONE) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Signal doesn't exist.",
+                ]
+            ], 400);
+        }
+
         $account_id = $account->id;
         $user_account = $account->user_account->first();
         if (!$user_account) {
@@ -209,6 +235,7 @@ class SourceController extends Controller
                     'provider' => $user->name,
                     'account_number' => $account->account_number,
                     'broker' => $account->broker,
+                    'status' => $account->status,
                     'openTime' => $detail->openTime,
                     'copier_number' => $detail->copier_number,
                 ],
@@ -216,6 +243,41 @@ class SourceController extends Controller
                 'page' => $page,
                 'perPage' => $perPage,
                 'signalDetail' => $provideSignalDetail,
+            ]
+        ], 200);
+    }
+
+    public function deleteProvideSource(Request $request, $id)
+    {
+        $me = Auth::user();
+        if (!$me) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User not found.",
+                ]
+            ], 400);
+        }
+
+        $account = Accounts::where('id',$id)->first();
+        if (!$account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account doesn't exist.",
+                ]
+            ], 400);
+        }
+
+        $account->status = Accounts::STATUS_NONE;
+        $account->save();
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'message' => "Deleted.",
             ]
         ], 200);
     }

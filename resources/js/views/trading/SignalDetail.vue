@@ -8,9 +8,12 @@
                     <app-card class="title-bar" v-if="signalDetail_information">
                         <h4 class="text-capitalize mb-0">
                             Provider:&nbsp;<b>{{ signalDetail_information.provider }}</b> &nbsp;&nbsp;&nbsp;&nbsp;
-                            Source&nbsp;Account:&nbsp;<b>{{ signalDetail_information.account_number }}</b> &nbsp;&nbsp;&nbsp;&nbsp;
-                            Since:&nbsp;<b>{{ getDateFormat(signalDetail_information.openTime) }}</b> &nbsp;&nbsp;&nbsp;&nbsp;
-                            Copied:&nbsp;<b>{{ signalDetail_information.copier_number }}</b>&nbsp;Times &nbsp;&nbsp;&nbsp;&nbsp;
+                            Source&nbsp;Account:&nbsp;<b>{{ signalDetail_information.account_number }}</b>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            Since:&nbsp;<b>{{ getDateFormat(signalDetail_information.openTime) }}</b>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            Copied:&nbsp;<b>{{ signalDetail_information.copier_number }}</b>&nbsp;Times
+                            &nbsp;&nbsp;&nbsp;&nbsp;
                         </h4>
                     </app-card>
                     <v-data-table :headers="headers" :items="signalDetail_data" :search="search" item-key="email"
