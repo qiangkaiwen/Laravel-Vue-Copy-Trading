@@ -96,6 +96,7 @@
     import dateformat from "dateformat";
     import axios from "axios";
     import webServices from "WebServices";
+    import Vue from "vue";
 
     export default {
         data() {

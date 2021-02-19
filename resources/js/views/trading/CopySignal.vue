@@ -48,12 +48,13 @@
                                 <td>{{ props.index + 1 }}</td>
                                 <td>{{ props.item.broker }}</td>
                                 <td>{{ props.item.account_number }}</td>
+                                <td>{{ props.item.provider_name }}</td>
+                                <td>{{ props.item.src_account_number }}</td>
+                                <td>{{ getDateFormat(props.item.created_at) }}</td>
                                 <td>{{ props.item.signal_number }}</td>
-                                <td>{{ getDateFormat(props.item.openTime) }}</td>
-                                <td>{{ props.item.copier_number }}</td>
                                 <td>
                                     <v-btn text icon color="primary"
-                                        @click="gotoDetail(props.item.account_number, props.item.broker)">
+                                        @click="gotoDetail(props.item.src_account_number, props.item.src_broker)">
                                         <v-icon class="zmdi zmdi-eye"></v-icon>
                                     </v-btn>
                                     <v-btn text icon color="error" @click="deleteSource(props.item.id)">
@@ -66,6 +67,9 @@
                 </app-card>
             </v-row>
         </v-container>
+        <delete-confirmation-dialog ref="deleteConfirmationDialog" heading="Are You Sure You Want To Delete?"
+            message="Are you sure you want to delete this Source permanently?" @onConfirm="deleteSourceConfirm">
+        </delete-confirmation-dialog>
     </div>
 </template>
 
@@ -74,6 +78,7 @@
     import dateformat from "dateformat";
     import axios from "axios";
     import webServices from "WebServices";
+    import Vue from "vue";
 
     export default {
         data() {
@@ -86,10 +91,11 @@
                         sortable: false,
                     },
                     { text: "Broker", sortable: false },
+                    { text: "Copied Account", sortable: false },
+                    { text: "Provider", sortable: false },
                     { text: "Source Account", sortable: false },
-                    { text: "Number of Signals", sortable: false },
-                    { text: "Since", sortable: false },
-                    { text: "Number Of Copiers", sortable: false },
+                    { text: "Copied Since", sortable: false },
+                    { text: "Number Of Copied Signals", sortable: false },
                     { text: "", sortable: false },
                 ],
                 options: {},
@@ -114,10 +120,8 @@
             ...{
                 getDateFormat(date) {
                     if (!date) return '';
-                    let ndate = parseInt(date);
-                    let dateObj = new Date(ndate);
+                    let dateObj = new Date(date);
                     if (isNaN(dateObj.getTime())) {
-                        console.log(date, ndate);
                         return '';
                     }
                     return dateformat(dateObj, "mmm, dd yyyy HH:MM")
@@ -133,10 +137,39 @@
                     this.$refs.deleteConfirmationDialog.openDialog();
                 },
                 deleteSourceConfirm() {
-                    axios.delete(`${webServices.baseURL}/copysource/${this.delete_id}`).then(() => {
-                        this.$refs.deleteConfirmationDialog.close();
-                        this.tableCopyKey++;
-                    })
+                    axios.delete(`${webServices.baseURL}/copysource/${this.delete_id}`)
+                        .then(({ data }) => {
+                            const { api_status, message } = data.response;
+                            this.tableCopyKey++;
+                            if (api_status) {
+                                Vue.notify({
+                                    group: 'signals',
+                                    type: 'success',
+                                    text: 'Delete success!'
+                                });
+                            } else {
+                                Vue.notify({
+                                    group: 'signals',
+                                    type: 'error',
+                                    text: message
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            let message = 'Delete copying failed.';
+                            if (error.response) {
+                                const { response } = error.response.data;
+                                message = response.message;
+                            }
+                            Vue.notify({
+                                group: 'signals',
+                                type: 'error',
+                                text: message
+                            });
+                        })
+                        .finally(() => {
+                            this.$refs.deleteConfirmationDialog.close();
+                        })
                 },
             }
         },
