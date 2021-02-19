@@ -183,4 +183,92 @@ class AccountController extends Controller
             ]
         ]);
     }
+
+    public function getAccountsForProvide(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User not found",
+                ]
+            ], 400);
+        }
+        $user_id = $user->id;
+        $accounts = DB::select("SELECT
+                                tbl_account.account_number,
+                                tbl_account.broker 
+                                FROM
+                                tbl_user_account
+                                INNER JOIN tbl_account ON tbl_account.id = tbl_user_account.account_id 
+                                WHERE
+                                tbl_user_account.user_id = $user_id 
+                                AND tbl_account.`status` = 'NONE'");
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'accounts' => $accounts,
+            ]
+        ]);
+    }
+
+    public function provideAccount(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User not found",
+                ]
+            ], 400);
+        }
+
+        $account_number = $request->account_number;
+        $broker = $request->broker;
+        $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
+        if (!$account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account Number doesn't exist.",
+                ]
+            ], 400);
+        }
+        $user_account = $account->user_account;
+        if($user_account->user_id != $user->id)
+        {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account Number is not yours.",
+                ]
+            ], 400);
+        }
+        if($account->status != Accounts::STATUS_NONE)
+        {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account Number is already in use.",
+                ]
+            ], 400);
+        }
+        $account->status = Accounts::STATUS_PROVIDE;
+        $account->save();
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'message' => "Provided",
+            ]
+        ], 200);
+    }
 }

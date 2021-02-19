@@ -5,6 +5,25 @@
         <v-container fluid class="grid-list-xl pt-0 mt-n3">
             <v-row>
                 <app-card :fullBlock="true" colClasses="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <v-row class="align-items-center search-wrap">
+                        <v-col cols="12" md="12" lg="12" class="align-items-center pt-0">
+                            <app-card customClasses="mb-0 pt-8">
+                                <v-row>
+                                    <v-col cols="12" md="12" lg="12" class="pb-0">
+                                        <div class="d-flex ">
+                                            <div class="w-50">
+                                                <v-text-field class=" pt-0 pr-3" label="Search Accounts">
+                                                </v-text-field>
+                                            </div>
+                                            <div>
+                                                <v-btn color="primary" class="my-0 ml-0 mr-2" medium><i class="material-icons">search</i>&nbsp;&nbsp;Search</v-btn>
+                                            </div>
+                                        </div>
+                                    </v-col>
+                                </v-row>
+                            </app-card>
+                        </v-col>
+                    </v-row>
                     <v-data-table :headers="headers" :items="accounts_data" :search="search" item-key="email"
                         :server-items-length="accounts_total" :options.sync="options" :loading="accounts_loading"
                         :footer-props="{showFirstLastPage: true,}" :items-per-page-options="[5, 10, 15, 20, -1]">
@@ -29,11 +48,12 @@
                                 </td>
                                 <td>{{ convertDate(props.item.created_at) }}</td>
                                 <td>
-                                    <!-- <router-link :to="{ name: 'user-profile', params: { user_id: props.item.id } }"> -->
-                                    <v-btn text icon color="primary">
-                                        <v-icon class="zmdi zmdi-eye"></v-icon>
-                                    </v-btn>
-                                    <!-- </router-link> -->
+                                    <router-link v-if="props.item.status == 'PROVIDE'"
+                                        :to="{ name: 'signal-detail', params: { account_number: props.item.account_number, broker: props.item.broker } }">
+                                        <v-btn text icon color="primary">
+                                            <v-icon class="zmdi zmdi-eye"></v-icon>
+                                        </v-btn>
+                                    </router-link>
                                 </td>
                             </tr>
                         </template>

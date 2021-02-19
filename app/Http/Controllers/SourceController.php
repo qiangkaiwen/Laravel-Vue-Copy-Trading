@@ -87,15 +87,18 @@ class SourceController extends Controller
                 ]
             ], 400);
         }
+        $user_id = $user->id;
         $status = Accounts::STATUS_PROVIDE;
         $query = "SELECT
                 tbl_account.id,
                 tbl_account.account_number,
                 tbl_account.broker,
-                sources.*,
+                sources.openTime,
+                IFNULL( sources.signal_number, 0 ) AS signal_number,
                 IFNULL( copiers.copier_number, 0 ) AS copier_number 
                 FROM
-                (
+                tbl_account
+                LEFT JOIN (
                 SELECT
                     tbl_source.account_id,
                     MIN( tbl_source.openTime ) AS openTime,
@@ -104,15 +107,15 @@ class SourceController extends Controller
                     tbl_source
                     INNER JOIN tbl_user_account ON tbl_source.account_id = tbl_user_account.account_id 
                 WHERE
-                    tbl_user_account.user_id = 1 
+                    tbl_user_account.user_id = $user_id 
                 GROUP BY
                     tbl_source.account_id,
                     tbl_source.symbol 
-                ) AS sources
-                INNER JOIN tbl_account ON tbl_account.id = sources.account_id
-                LEFT JOIN ( SELECT COUNT( 1 ) AS copier_number, tbl_copy.master_id FROM tbl_copy 
-                GROUP BY tbl_copy.master_id ) AS copiers ON copiers.master_id = sources.account_id 
-                WHERE tbl_account.status = '$status' ";
+                ) AS sources ON tbl_account.id = sources.account_id
+                LEFT JOIN ( SELECT COUNT( 1 ) AS copier_number, tbl_copy.master_id FROM tbl_copy GROUP BY tbl_copy.master_id ) AS copiers ON copiers.master_id = sources.account_id 
+                WHERE
+                tbl_account.`status` = '$status'";
+
         $total = DB::select("SELECT COUNT(1) as total from 
                             ( " . $query . ") as result");
         $total = $total[0]->total;
@@ -260,7 +263,7 @@ class SourceController extends Controller
             ], 400);
         }
 
-        $account = Accounts::where('id',$id)->first();
+        $account = Accounts::where('id', $id)->first();
         if (!$account) {
             return response()->json([
                 'response' => [

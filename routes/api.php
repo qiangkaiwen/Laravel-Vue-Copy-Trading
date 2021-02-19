@@ -43,6 +43,8 @@ Route::group([
     Route::post('/accounts', 'AccountController@addMyAccounts');
     Route::post('/sources', 'SourceController@addSource');
     Route::get('/providesources', 'SourceController@getProvideSource');
+    Route::get('/accounts-for-provide', 'AccountController@getAccountsForProvide');
+    Route::post('/provide-account', 'AccountController@provideAccount');
     Route::delete('/providesource/{id}', 'SourceController@deleteProvideSource');
     Route::post('/signaldetail', 'SourceController@getProvideSourceDetail');
     Route::get('/profile/me', 'UserController@myProfile');

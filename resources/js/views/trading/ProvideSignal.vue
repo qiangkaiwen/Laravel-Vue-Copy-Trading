@@ -5,6 +5,29 @@
         <v-container fluid class="grid-list-xl pt-0 mt-n3">
             <v-row>
                 <app-card :fullBlock="true" colClasses="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <v-row class="align-items-center search-wrap">
+                        <v-col cols="12" md="12" lg="12" class="align-items-center pt-0">
+                            <app-card customClasses="mb-0 pt-8">
+                                <v-row>
+                                    <v-col cols="12" md="12" lg="12" class="pb-0">
+                                        <div class="d-flex ">
+                                            <div class="w-50">
+                                                <v-text-field class=" pt-0 pr-3" label="Search Signal">
+                                                </v-text-field>
+                                            </div>
+                                            <div>
+                                                <v-btn color="primary" class="my-0 ml-0 mr-2" medium><i
+                                                        class="material-icons">search</i>&nbsp;&nbsp;Search</v-btn>
+                                                <v-btn color="primary m-0" medium @click="provideModal = true"><i
+                                                        class="material-icons">add</i>&nbsp;&nbsp;Add</v-btn>
+                                                </v-btn>
+                                            </div>
+                                        </div>
+                                    </v-col>
+                                </v-row>
+                            </app-card>
+                        </v-col>
+                    </v-row>
                     <v-data-table :key="tableProvideKey" :headers="headers" :items="provideSignal_data" :search="search"
                         item-key="email" :server-items-length="provideSignal_total" :options.sync="options"
                         :loading="provideSignal_loading" :footer-props="{showFirstLastPage: true,}"
@@ -45,6 +68,23 @@
         <delete-confirmation-dialog ref="deleteConfirmationDialog" heading="Are You Sure You Want To Delete?"
             message="Are you sure you want to delete this Source permanently?" @onConfirm="deleteSourceConfirm">
         </delete-confirmation-dialog>
+        <template>
+            <v-dialog v-model="provideModal" max-width="600">
+                <v-card class="pa-6">
+                    <v-form v-model="form.valid" ref="form" lazy-validation>
+                        <h2>Please select source account nummber to provide signal source.</h2>
+                        <v-select class="mb-3" hide-details v-bind:items="accounts" v-model="form.account"
+                            :rules="form.accountRules" label="Select Account" single-line menu-props="auto" required>
+                        </v-select>
+                        </v-row>
+                        <v-btn @click="provideSource" :disabled="!form.valid" color="success" class="mr-3">
+                            Add
+                        </v-btn>
+                        <v-btn color="primary" @click="provideModal = false" class="px-4">Cancel</v-btn>
+                    </v-form>
+                </v-card>
+            </v-dialog>
+        </template>
     </div>
 </template>
 
@@ -74,9 +114,31 @@
                 options: {},
                 delete_id: null,
                 tableProvideKey: 0,
+                provideModal: false,
+                form: {
+                    valid: true,
+                    account: null,
+                    accountRules: [
+                        v => !!v || "Please choose an account.",
+                    ],
+                },
+                accounts: [
+
+                ]
             };
         },
         mounted() {
+            axios.get(`${webServices.baseURL}/accounts-for-provide`, { headers: { 'Content-Type': 'application/json' } }).then(({ data }) => {
+                const { api_status, accounts } = data.response;
+                if (api_status) {
+                    this.accounts = accounts.map(account => {
+                        return {
+                            text: account.account_number + " (" + account.broker + ")",
+                            value: account,
+                        }
+                    })
+                }
+            })
         },
         methods: {
             ...mapActions([
@@ -84,6 +146,7 @@
             ]),
             ...{
                 getDateFormat(date) {
+                    if (!date) return '';
                     return dateformat(new Date(date), "mmm, dd yyyy HH:MM")
                 },
                 gotoDetail(account_number, broker) {
@@ -99,8 +162,17 @@
                         this.tableProvideKey++;
                     })
                 },
-                provideSource(account_number) {
-                    console.log(account_number);
+                provideSource() {
+                    if (!this.form.account) return;
+                    axios.post(`${webServices.baseURL}/provide-account`, this.form.account, { headers: { 'Content-Type': 'application/json' } })
+                        .then(({ data }) => {
+                            const { api_status, message } = data.response;
+                            if (api_status) {
+                                this.form.account = null;
+                                this.tableProvideKey++;
+                                this.provideModal = false;
+                            }
+                        })
                 }
             }
         },
