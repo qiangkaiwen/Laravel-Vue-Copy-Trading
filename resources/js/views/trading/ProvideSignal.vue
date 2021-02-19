@@ -85,6 +85,9 @@
                 </v-card>
             </v-dialog>
         </template>
+        <confirmation-dialog ref="provideConfirmationDialog" heading="Are You Sure You Want To Provide?"
+            message="Are you sure you want to provide this Account?" @onConfirm="provideConfirm" confirmColor="success">
+        </confirmation-dialog>
     </div>
 </template>
 
@@ -122,9 +125,7 @@
                         v => !!v || "Please choose an account.",
                     ],
                 },
-                accounts: [
-
-                ]
+                accounts: []
             };
         },
         mounted() {
@@ -164,15 +165,21 @@
                 },
                 provideSource() {
                     if (!this.form.account) return;
+                    this.provideModal = false;
+                    this.$refs.provideConfirmationDialog.openDialog();
+                },
+                provideConfirm() {
                     axios.post(`${webServices.baseURL}/provide-account`, this.form.account, { headers: { 'Content-Type': 'application/json' } })
                         .then(({ data }) => {
                             const { api_status, message } = data.response;
                             if (api_status) {
-                                this.form.account = null;
                                 this.tableProvideKey++;
-                                this.provideModal = false;
                             }
                         })
+                        .finally(() => {
+                            this.form.account = null;
+                            this.$refs.provideConfirmationDialog.close();
+                        });
                 }
             }
         },
