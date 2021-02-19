@@ -178,7 +178,7 @@
                     this.$refs.copyConfirmationDialog.openDialog();
                 },
                 copyConfirm() {
-                    axios.post(`${webServices.baseURL}/copy-account`,
+                    axios.post(`${webServices.baseURL}/copysources`,
                         { source_account: this.source_account, account: this.form.account },
                         { headers: { 'Content-Type': 'application/json' } })
                         .then(({ data }) => {

@@ -35,25 +35,28 @@ Route::group([
     //admin
     Route::resource('users', 'UserController')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
     Route::get('newusers', 'UserController@newUsers')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
-    Route::get('/accounts/{user_id}', 'AccountController@getAccounts')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
-    Route::post('/accounts/{user_id}', 'AccountController@addAccounts')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
 
     //user
+    Route::get('/profile/me', 'UserController@myProfile');
+    Route::patch('/profile/me', 'UserController@updateMyProfile');
     Route::get('/accounts', 'AccountController@getMyAccounts');
     Route::post('/accounts', 'AccountController@addMyAccounts');
     Route::post('/sources', 'SourceController@addSource');
-    Route::get('/providesources', 'SourceController@getProvideSource');
-    Route::get('/availablesources', 'SourceController@getAvailableSource');
-    Route::get('/copysources', 'SourceController@getCopySource');
+
+    Route::get('/providesources', 'AccountController@getProvideAccount');
+    Route::post('/providesources', 'AccountController@provideAccount');
     Route::get('/accounts-for-provide', 'AccountController@getAccountsForProvide');
-    Route::get('/accounts-for-copy', 'AccountController@getAccountsForCopy');
-    Route::post('/provide-account', 'AccountController@provideAccount');
-    Route::post('/copy-account', 'AccountController@copyAccount');
-    Route::delete('/providesource/{id}', 'SourceController@deleteProvideSource');
-    Route::delete('/copysource/{id}', 'SourceController@deleteCopySource');
+
     Route::post('/signaldetail', 'SourceController@getProvideSourceDetail');
-    Route::get('/profile/me', 'UserController@myProfile');
-    Route::patch('/profile/me', 'UserController@updateMyProfile');
+
+    Route::get('/availablesources', 'AccountController@getAvailableSignal');
+
+    Route::get('/copysources', 'AccountController@getCopyAccount');
+    Route::get('/accounts-for-copy', 'AccountController@getAccountsForCopy');
+    Route::post('/copysources', 'AccountController@copyAccount');
+
+    Route::delete('/providesource/{id}', 'AccountController@deleteProvideAccount');
+    Route::delete('/copysource/{id}', 'AccountController@deleteCopyAccount');
 });
 
 Route::any('/{any}', function () {

@@ -184,7 +184,7 @@
                     this.$refs.provideConfirmationDialog.openDialog();
                 },
                 provideConfirm() {
-                    axios.post(`${webServices.baseURL}/provide-account`, this.form.account, { headers: { 'Content-Type': 'application/json' } })
+                    axios.post(`${webServices.baseURL}/providesources`, this.form.account, { headers: { 'Content-Type': 'application/json' } })
                         .then(({ data }) => {
                             const { api_status, message } = data.response;
                             if (api_status) {
