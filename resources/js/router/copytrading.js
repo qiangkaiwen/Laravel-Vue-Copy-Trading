@@ -9,6 +9,7 @@ const TradingAccount = () => import('Views/trading/TradingAccount');
 const ProvideSignal = () => import('Views/trading/ProvideSignal');
 const SignalDetail = () => import('Views/trading/SignalDetail');
 const CopySignal = () => import('Views/trading/CopySignal');
+const AvailableSignal = () => import('Views/trading/AvailableSignal');
 
 export default {
     path: '/',
@@ -155,6 +156,24 @@ export default {
                     },
                     {
                         breadcrumbActive: 'Copy Signal'
+                    }
+                ]
+            }
+        },
+
+        {
+            path: '/available-signal',
+            name: 'available-signal',
+            component: AvailableSignal,
+            meta: {
+                requiresAuth: true,
+                title: 'message.availableSignals',
+                breadcrumb: [
+                    {
+                        breadcrumbInactive: 'User /'
+                    },
+                    {
+                        breadcrumbActive: 'Available Signals'
                     }
                 ]
             }

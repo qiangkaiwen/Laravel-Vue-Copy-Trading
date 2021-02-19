@@ -43,8 +43,11 @@ Route::group([
     Route::post('/accounts', 'AccountController@addMyAccounts');
     Route::post('/sources', 'SourceController@addSource');
     Route::get('/providesources', 'SourceController@getProvideSource');
+    Route::get('/availablesources', 'SourceController@getAvailableSource');
     Route::get('/accounts-for-provide', 'AccountController@getAccountsForProvide');
+    Route::get('/accounts-for-copy', 'AccountController@getAccountsForCopy');
     Route::post('/provide-account', 'AccountController@provideAccount');
+    Route::post('/copy-account', 'AccountController@copyAccount');
     Route::delete('/providesource/{id}', 'SourceController@deleteProvideSource');
     Route::post('/signaldetail', 'SourceController@getProvideSourceDetail');
     Route::get('/profile/me', 'UserController@myProfile');

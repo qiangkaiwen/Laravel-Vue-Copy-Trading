@@ -109,12 +109,14 @@ class SourceController extends Controller
                 WHERE
                     tbl_user_account.user_id = $user_id 
                 GROUP BY
-                    tbl_source.account_id,
-                    tbl_source.symbol 
+                    tbl_source.account_id
                 ) AS sources ON tbl_account.id = sources.account_id
                 LEFT JOIN ( SELECT COUNT( 1 ) AS copier_number, tbl_copy.master_id FROM tbl_copy GROUP BY tbl_copy.master_id ) AS copiers ON copiers.master_id = sources.account_id 
+                INNER JOIN tbl_user_account ON tbl_account.id = tbl_user_account.account_id 
                 WHERE
-                tbl_account.`status` = '$status'";
+                tbl_account.`status` = '$status' AND 
+                tbl_user_account.user_id = $user_id
+                ";
 
         $total = DB::select("SELECT COUNT(1) as total from 
                             ( " . $query . ") as result");
@@ -281,6 +283,71 @@ class SourceController extends Controller
                 'code' => 200,
                 'api_status' => 1,
                 'message' => "Deleted.",
+            ]
+        ], 200);
+    }
+
+    public function getAvailableSource(Request $request)
+    {
+        $page = $request->get('page', 1);
+        $page = intval($page);
+        $perPage = $request->get('perPage', 10);
+        $perPage = intval($perPage);
+        $offset = ($page - 1) * $perPage;
+
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User not found.",
+                ]
+            ], 400);
+        }
+        $user_id = $user->id;
+        $status = Accounts::STATUS_PROVIDE;
+        $query = "SELECT
+                tbl_account.id,
+                tbl_account.account_number,
+                tbl_account.broker,
+                sources.openTime,
+                IFNULL( sources.signal_number, 0 ) AS signal_number,
+                IFNULL( copiers.copier_number, 0 ) AS copier_number 
+                FROM
+                tbl_account
+                LEFT JOIN (
+                SELECT
+                    tbl_source.account_id,
+                    MIN( tbl_source.openTime ) AS openTime,
+                    COUNT( 1 ) AS signal_number 
+                FROM
+                    tbl_source
+                    INNER JOIN tbl_user_account ON tbl_source.account_id = tbl_user_account.account_id 
+                WHERE
+                    tbl_user_account.user_id != $user_id 
+                GROUP BY
+                    tbl_source.account_id
+                ) AS sources ON tbl_account.id = sources.account_id
+                LEFT JOIN ( SELECT COUNT( 1 ) AS copier_number, tbl_copy.master_id FROM tbl_copy GROUP BY tbl_copy.master_id ) AS copiers ON copiers.master_id = sources.account_id 
+                INNER JOIN tbl_user_account ON tbl_account.id = tbl_user_account.account_id 
+                WHERE
+                tbl_account.`status` = '$status' AND 
+                tbl_user_account.user_id != $user_id
+                ";
+
+        $total = DB::select("SELECT COUNT(1) as total from 
+                            ( " . $query . ") as result");
+        $total = $total[0]->total;
+        $provideSignal = DB::select($query . "LIMIT $offset, $perPage");
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'total' => $total,
+                'page' => $page,
+                'perPage' => $perPage,
+                'availableSignal' => $provideSignal,
             ]
         ], 200);
     }

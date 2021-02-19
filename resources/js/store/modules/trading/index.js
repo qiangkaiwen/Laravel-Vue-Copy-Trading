@@ -30,6 +30,12 @@ const state = {
     copySignal_total: 0,
     copySignal_page: 1,
     copySignal_loading: false,
+
+    availableSignal_data: [],
+    availableSignal_perPage: 10,
+    availableSignal_total: 0,
+    availableSignal_page: 1,
+    availableSignal_loading: false,
 }
 
 const getters = {
@@ -57,6 +63,12 @@ const getters = {
     copySignal_total: state => state.copySignal_total,
     copySignal_page: state => state.copySignal_page,
     copySignal_loading: state => state.copySignal_loading,
+
+    availableSignal_data: state => state.availableSignal_data,
+    availableSignal_perPage: state => state.availableSignal_perPage,
+    availableSignal_total: state => state.availableSignal_total,
+    availableSignal_page: state => state.availableSignal_page,
+    availableSignal_loading: state => state.availableSignal_loading,
 }
 
 const actions = {
@@ -125,6 +137,50 @@ const actions = {
                 Nprogress.done();
             })
     },
+
+    getCopySignalAction(context, option) {
+        context.commit('setCopySignalLoadingHandler', false);
+        Nprogress.start();
+        axios.get(`${webServices.baseURL}/copysources?page=${option.page}&perPage=${option.perPage}`, { headers: { 'Content-Type': 'application/json' } })
+            .then(response => {
+                const { api_status, page, perPage, total, copySignal } = response.data.response;
+                if (api_status) {
+                    context.commit('setCopySignalHandler', { page, perPage, total, copySignal });
+                } else {
+                    context.commit('setCopySignalHandler', { page: 1, perPage: 10, total: 0, copySignal: [] });
+                }
+            })
+            .catch(error => {
+                context.commit('setCopySignalHandler', { page: 1, perPage: 10, total: 0, copySignal: [] });
+                console.log(error);
+                console.log("Failed");
+            })
+            .finally(() => {
+                Nprogress.done();
+            })
+    },
+
+    getAvailableSignalAction(context, option) {
+        context.commit('setAvailableSignalLoadingHandler', false);
+        Nprogress.start();
+        axios.get(`${webServices.baseURL}/availablesources?page=${option.page}&perPage=${option.perPage}`, { headers: { 'Content-Type': 'application/json' } })
+            .then(response => {
+                const { api_status, page, perPage, total, availableSignal } = response.data.response;
+                if (api_status) {
+                    context.commit('setAvailableSignalHandler', { page, perPage, total, availableSignal });
+                } else {
+                    context.commit('setAvailableSignalHandler', { page: 1, perPage: 10, total: 0, availableSignal: [] });
+                }
+            })
+            .catch(error => {
+                context.commit('setAvailableSignalHandler', { page: 1, perPage: 10, total: 0, availableSignal: [] });
+                console.log(error);
+                console.log("Failed");
+            })
+            .finally(() => {
+                Nprogress.done();
+            })
+    },
 }
 
 const mutations = {
@@ -150,6 +206,30 @@ const mutations = {
     },
     setProvideSignalLoadingHandler(state, loading) {
         state.provideSignal_loading = loading;
+    },
+
+    setCopySignalHandler(state, payload) {
+        const { page, perPage, total, copySignal } = payload;
+        state.copySignal_page = page;
+        state.copySignal_perPage = perPage;
+        state.copySignal_total = total;
+        state.copySignal_data = copySignal;
+        state.copySignal_loading = false;
+    },
+    setCopySignalLoadingHandler(state, loading) {
+        state.copySignal_loading = loading;
+    },
+
+    setAvailableSignalHandler(state, payload) {
+        const { page, perPage, total, availableSignal } = payload;
+        state.availableSignal_page = page;
+        state.availableSignal_perPage = perPage;
+        state.availableSignal_total = total;
+        state.availableSignal_data = availableSignal;
+        state.availableSignal_loading = false;
+    },
+    setAvailableSignalLoadingHandler(state, loading) {
+        state.availableSignal_loading = loading;
     },
 
     setSignalDetailHandler(state, payload) {

@@ -39,6 +39,13 @@ export const menus = {
 			exact: true
 		},
 		{
+			action: 'zmdi-view-list',
+			title: 'message.availableSignals',
+			label: 'Old',
+			path: '/available-signal',
+			exact: true
+		},
+		{
 			action: 'zmdi-account-box',
 			title: 'message.myProfile',
 			label: 'Old',

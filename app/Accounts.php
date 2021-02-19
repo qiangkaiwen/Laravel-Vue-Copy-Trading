@@ -19,7 +19,7 @@ class Accounts extends Model
      * @var array
      */
     protected $fillable = [
-        'account_number', 'authorization', 'online_status', 'lots_traded'
+        'account_number', 'broker', 'authorization', 'online_status', 'lots_traded'
     ];
 
     /**

@@ -6,6 +6,7 @@
 	}]">
         <router-view :auth="auth" :authenticated="authenticated"></router-view>
         <notifications group="loggedIn" position="top right" animation-type="velocity" />
+        <notifications group="signals" position="top right" animation-type="velocity" />
     </v-app>
 </template>
 

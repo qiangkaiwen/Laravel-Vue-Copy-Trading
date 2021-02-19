@@ -84,7 +84,13 @@
             ...{
                 getDateFormat(date) {
                     if (!date) return '';
-                    return dateformat(new Date(date), "mmm, dd yyyy HH:MM")
+                    let ndate = parseInt(date);
+                    let dateObj = new Date(ndate);
+                    if (isNaN(dateObj.getTime())) {
+                        console.log(date, ndate);
+                        return '';
+                    }
+                    return dateformat(dateObj, "mmm, dd yyyy HH:MM")
                 }
             }
         },

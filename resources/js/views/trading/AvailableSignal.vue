@@ -1,7 +1,7 @@
 <template>
     <div>
         <page-title-bar></page-title-bar>
-        <app-section-loader :status="provideSignal_loading"></app-section-loader>
+        <app-section-loader :status="availableSignal_loading"></app-section-loader>
         <v-container fluid class="grid-list-xl pt-0 mt-n3">
             <v-row>
                 <app-card :fullBlock="true" colClasses="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
@@ -16,10 +16,8 @@
                                                 </v-text-field>
                                             </div>
                                             <div>
-                                                <v-btn color="primary" class="my-0 ml-0 mr-2" medium><i
-                                                        class="material-icons">search</i>&nbsp;&nbsp;Search</v-btn>
-                                                <v-btn color="primary m-0" medium @click="provideModal = true"><i
-                                                        class="material-icons">add</i>&nbsp;&nbsp;Add</v-btn>
+                                                <v-btn color="primary" class="my-0 ml-0 mr-2" medium>
+                                                    <i class="material-icons">search</i>&nbsp;&nbsp;Search
                                                 </v-btn>
                                             </div>
                                         </div>
@@ -28,10 +26,10 @@
                             </app-card>
                         </v-col>
                     </v-row>
-                    <v-data-table :key="tableProvideKey" :headers="headers" :items="provideSignal_data" :search="search"
-                        item-key="email" :server-items-length="provideSignal_total" :options.sync="options"
-                        :loading="provideSignal_loading" :footer-props="{showFirstLastPage: true,}"
-                        :items-per-page-options="[5, 10, 15, 20, -1]">
+                    <v-data-table :key="tableProvideKey" :headers="headers" :items="availableSignal_data"
+                        :search="search" item-key="email" :server-items-length="availableSignal_total"
+                        :options.sync="options" :loading="availableSignal_loading"
+                        :footer-props="{showFirstLastPage: true,}" :items-per-page-options="[5, 10, 15, 20, -1]">
                         <template slot="headerCell" slot-scope="props" :loading-text="'Loading... Please wait'">
                             <v-tooltip bottom>
                                 <span slot="activator">
@@ -45,6 +43,7 @@
                         <template v-slot:item="props">
                             <tr>
                                 <td>{{ props.index + 1 }}</td>
+                                <td>Provider</td>
                                 <td>{{ props.item.broker }}</td>
                                 <td>{{ props.item.account_number }}</td>
                                 <td>{{ props.item.signal_number }}</td>
@@ -55,8 +54,9 @@
                                         @click="gotoDetail(props.item.account_number, props.item.broker)">
                                         <v-icon class="zmdi zmdi-eye"></v-icon>
                                     </v-btn>
-                                    <v-btn text icon color="error" @click="deleteSource(props.item.id)">
-                                        <v-icon class="zmdi zmdi-delete"></v-icon>
+                                    <v-btn text icon color="success"
+                                        @click="tryCopyAccount(props.item.broker, props.item.account_number)">
+                                        <v-icon class="zmdi zmdi-playlist-plus"></v-icon>
                                     </v-btn>
                                 </td>
                             </tr>
@@ -65,28 +65,26 @@
                 </app-card>
             </v-row>
         </v-container>
-        <delete-confirmation-dialog ref="deleteConfirmationDialog" heading="Are You Sure You Want To Delete?"
-            message="Are you sure you want to delete this Source permanently?" @onConfirm="deleteSourceConfirm">
-        </delete-confirmation-dialog>
+
         <template>
-            <v-dialog v-model="provideModal" max-width="600">
+            <v-dialog v-model="copyModal" max-width="600">
                 <v-card class="pa-6">
                     <v-form v-model="form.valid" ref="form" lazy-validation>
-                        <h2>Please select source account nummber to provide signal source.</h2>
+                        <h2>Please select source account nummber to available signal source.</h2>
                         <v-select class="mb-3" hide-details v-bind:items="accounts" v-model="form.account"
                             :rules="form.accountRules" label="Select Account" single-line menu-props="auto" required>
                         </v-select>
                         </v-row>
-                        <v-btn @click="provideSource" :disabled="!form.valid" color="success" class="mr-3">
-                            Add
+                        <v-btn @click="copySource" :disabled="!form.valid" color="success" class="mr-3">
+                            Copy
                         </v-btn>
-                        <v-btn color="primary" @click="provideModal = false" class="px-4">Cancel</v-btn>
+                        <v-btn color="primary" @click="copyModal = false" class="px-4">Cancel</v-btn>
                     </v-form>
                 </v-card>
             </v-dialog>
         </template>
-        <confirmation-dialog ref="provideConfirmationDialog" heading="Are You Sure You Want To Provide?"
-            message="Are you sure you want to provide this Account?" @onConfirm="provideConfirm" confirmColor="success">
+        <confirmation-dialog ref="copyConfirmationDialog" heading="Are You Sure You Want To Copy?"
+            message="Are you sure you want to copy this Account?" @onConfirm="copyConfirm" confirmColor="success">
         </confirmation-dialog>
     </div>
 </template>
@@ -96,6 +94,7 @@
     import dateformat from "dateformat";
     import axios from "axios";
     import webServices from "WebServices";
+    import Vue from "vue";
 
     export default {
         data() {
@@ -107,6 +106,7 @@
                         align: "left",
                         sortable: false,
                     },
+                    { text: "Provider", sortable: false },
                     { text: "Broker", sortable: false },
                     { text: "Source Account", sortable: false },
                     { text: "Number of Signals", sortable: false },
@@ -117,7 +117,7 @@
                 options: {},
                 delete_id: null,
                 tableProvideKey: 0,
-                provideModal: false,
+                copyModal: false,
                 form: {
                     valid: true,
                     account: null,
@@ -125,11 +125,12 @@
                         v => !!v || "Please choose an account.",
                     ],
                 },
+                source_account: null,
                 accounts: []
             };
         },
         mounted() {
-            axios.get(`${webServices.baseURL}/accounts-for-provide`, { headers: { 'Content-Type': 'application/json' } })
+            axios.get(`${webServices.baseURL}/accounts-for-copy`, { headers: { 'Content-Type': 'application/json' } })
                 .then(({ data }) => {
                     const { api_status, accounts } = data.response;
                     if (api_status) {
@@ -151,7 +152,7 @@
         },
         methods: {
             ...mapActions([
-                'getProvideSignalAction'
+                'getAvailableSignalAction'
             ]),
             ...{
                 getDateFormat(date) {
@@ -167,31 +168,28 @@
                 gotoDetail(account_number, broker) {
                     this.$router.push({ path: `signal-detail/${account_number}/${broker}` });
                 },
-                deleteSource(id) {
-                    this.delete_id = id;
-                    this.$refs.deleteConfirmationDialog.openDialog();
+                tryCopyAccount(broker, account_number) {
+                    this.copyModal = true;
+                    this.source_account = { broker, account_number };
                 },
-                deleteSourceConfirm() {
-                    axios.delete(`${webServices.baseURL}/providesource/${this.delete_id}`).then(() => {
-                        this.$refs.deleteConfirmationDialog.close();
-                        this.tableProvideKey++;
-                    })
-                },
-                provideSource() {
+                copySource() {
                     if (!this.form.account) return;
-                    this.provideModal = false;
-                    this.$refs.provideConfirmationDialog.openDialog();
+                    this.copyModal = false;
+                    this.$refs.copyConfirmationDialog.openDialog();
                 },
-                provideConfirm() {
-                    axios.post(`${webServices.baseURL}/provide-account`, this.form.account, { headers: { 'Content-Type': 'application/json' } })
+                copyConfirm() {
+                    axios.post(`${webServices.baseURL}/copy-account`,
+                        { source_account: this.source_account, account: this.form.account },
+                        { headers: { 'Content-Type': 'application/json' } })
                         .then(({ data }) => {
                             const { api_status, message } = data.response;
+
                             if (api_status) {
                                 this.tableProvideKey++;
                                 Vue.notify({
                                     group: 'signals',
                                     type: 'success',
-                                    text: 'Provide signal success!'
+                                    text: 'Copying signal success!'
                                 });
                             }
                             else {
@@ -216,24 +214,24 @@
                         })
                         .finally(() => {
                             this.form.account = null;
-                            this.$refs.provideConfirmationDialog.close();
+                            this.$refs.copyConfirmationDialog.close();
                         });
                 }
             }
         },
         computed: {
             ...mapGetters([
-                "provideSignal_data",
-                "provideSignal_perPage",
-                "provideSignal_total",
-                "provideSignal_page",
-                "provideSignal_loading"
+                "availableSignal_data",
+                "availableSignal_perPage",
+                "availableSignal_total",
+                "availableSignal_page",
+                "availableSignal_loading"
             ]),
         },
 
         watch: {
             options: function (options) {
-                this.getProvideSignalAction({
+                this.getAvailableSignalAction({
                     page: options.page,
                     perPage: options.itemsPerPage
                 });

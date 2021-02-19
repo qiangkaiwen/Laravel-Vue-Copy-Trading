@@ -5,6 +5,7 @@ export default {
     provideSignal: "Provide Signal",
     signalDetail: "Signal Detail",
     copySignal: "Copy Signal",
+    availableSignals: "Available Signals",
     tradingAccounts: "Trading Accounts",
     overview: 'Overview',
     customizer: 'Customizer',
