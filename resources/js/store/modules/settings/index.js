@@ -18,13 +18,13 @@ const state = {                                       // dark mode
 	languages,                                             // languages
 	selectedLocale: languages[0],                          // selected locale
 	sidebarBackgroundImages,                               // sidebar backgorund images
-	selectedSidebarBgImage: sidebarBackgroundImages[0],    // selected sidebar background image
+	selectedSidebarBgImage: sidebarBackgroundImages[2],    // selected sidebar background image
 	sidebarFilters,                                        // sidebar filters
-	sidebarSelectedFilter: sidebarFilters[0],              // selected sidebar filter
+	sidebarSelectedFilter: sidebarFilters[1],              // selected sidebar filter
 	routerAnimations,                                      // router animations
 	selectedRouterAnimation: routerAnimations[0],          // selected router animation
 	themes,                                                // themes
-	selectedTheme: themes[0],                              // selected theme
+	selectedTheme: themes[4],                              // selected theme
 	headerFilters,                                         // header filters
 	activeHeaderFilter: headerFilters[1],                  // selected header filter
 	mobileSearchForm: false								   // Is Mobile Search Form Open

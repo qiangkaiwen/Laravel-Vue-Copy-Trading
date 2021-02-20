@@ -13,19 +13,16 @@ use Illuminate\Http\Request;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
 Route::group([
     'prefix' => 'auth',
-    'middleware' => 'api',
+    'middleware' => ['api', 'cors'],
 ], function () {
-    Route::any('login', 'AuthController@login')->name('login');
-    Route::any('signup', 'AuthController@signup');
+    Route::post('login', 'AuthController@login')->name('login');
+    Route::post('signup', 'AuthController@signup');
 });
 
 Route::group([
-    'middleware' => 'auth:api'
+    'middleware' => ['auth:api', 'cors'],
 ], function () {
     Route::group([
         'prefix' => 'auth',
@@ -33,8 +30,14 @@ Route::group([
         Route::any('logout', 'AuthController@logout');
     });
     //admin
-    Route::resource('users', 'UserController')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
-    Route::get('newusers', 'UserController@newUsers')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
+    Route::group([
+        'middleware' => 'check_user_role:' . \App\Role\UserRole::ROLE_MANAGER,
+    ], function () {
+        Route::resource('users', 'UserController');
+        Route::get('newusers', 'UserController@newUsers');
+    });
+    // Route::resource('users', 'UserController')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
+    // Route::get('newusers', 'UserController@newUsers')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
 
     //user
     Route::get('/profile/me', 'UserController@myProfile');
@@ -59,12 +62,16 @@ Route::group([
     Route::delete('/copysource/{id}', 'AccountController@deleteCopyAccount');
 });
 
-Route::any('/{any}', function () {
-    return response()->json([
-        'response' => [
-            'api_status' => 0,
-            'code' => 404,
-            'message' => 'not found'
-        ]
-    ], 404);
-})->where('any', '.*');
+Route::group([
+    'middleware' => ['api', 'cors'],
+], function () {
+    Route::any('/{any}', function () {
+        return response()->json([
+            'response' => [
+                'api_status' => 0,
+                'code' => 404,
+                'message' => 'not found'
+            ]
+        ], 404);
+    })->where('any', '.*');
+});
