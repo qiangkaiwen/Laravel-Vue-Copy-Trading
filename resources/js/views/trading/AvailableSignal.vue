@@ -43,7 +43,7 @@
                         <template v-slot:item="props">
                             <tr>
                                 <td>{{ props.index + 1 }}</td>
-                                <td>Provider</td>
+                                <td>{{ props.item.provider }}</td>
                                 <td>{{ props.item.broker }}</td>
                                 <td>{{ props.item.account_number }}</td>
                                 <td>{{ props.item.signal_number }}</td>

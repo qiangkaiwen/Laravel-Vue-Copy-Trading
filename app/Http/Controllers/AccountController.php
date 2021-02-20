@@ -396,6 +396,7 @@ class AccountController extends Controller
                 tbl_account.id,
                 tbl_account.account_number,
                 tbl_account.broker,
+                tbl_users.name AS `provider`,
                 sources.openTime,
                 IFNULL( sources.signal_number, 0 ) AS signal_number,
                 IFNULL( copiers.copier_number, 0 ) AS copier_number 
@@ -416,6 +417,7 @@ class AccountController extends Controller
                 ) AS sources ON tbl_account.id = sources.account_id
                 LEFT JOIN ( SELECT COUNT( 1 ) AS copier_number, tbl_copy.master_id FROM tbl_copy GROUP BY tbl_copy.master_id ) AS copiers ON copiers.master_id = tbl_account.id 
                 INNER JOIN tbl_user_account ON tbl_account.id = tbl_user_account.account_id 
+                INNER JOIN tbl_users ON tbl_users.id = tbl_user_account.user_id
                 WHERE
                 tbl_account.`status` = '$status' AND 
                 tbl_user_account.user_id != $user_id
