@@ -60,9 +60,10 @@
                     </v-tab-item>
                     <v-tab-item value="newusers">
                         <app-card :fullBlock="true" colClasses="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                            <v-data-table :key="newUsersTableKey" :headers="headers" :items="new_users_data" :search="search" item-key="email"
-                                :server-items-length="new_users_total" :options.sync="new_options"
-                                :loading="new_users_loading" :footer-props="{showFirstLastPage: true,}"
+                            <v-data-table :key="newUsersTableKey" :headers="headers" :items="new_users_data"
+                                :search="search" item-key="email" :server-items-length="new_users_total"
+                                :options.sync="new_options" :loading="new_users_loading"
+                                :footer-props="{showFirstLastPage: true,}"
                                 :items-per-page-options="[5, 10, 15, 20, -1]">
                                 <template slot="headerCell" slot-scope="props" loading-text="Loading... Please wait">
                                     <v-tooltip bottom>
@@ -124,6 +125,7 @@
     import dateformat from "dateformat";
     import axios from "axios";
     import webServices from "WebServices";
+    import Vue from "vue";
 
     export default {
         data() {
@@ -170,31 +172,77 @@
                     this.$refs.deleteConfirmationDialog.openDialog();
                 },
                 deleteUserConfirm() {
-                    axios.delete(`${webServices.baseURL}/users/${this.delete_id}`).then(() => {
-                        this.$refs.deleteConfirmationDialog.close();
-                        this.usersTableKey++;
-                    })
+                    axios.delete(`${webServices.baseURL}/users/${this.delete_id}`)
+                        .then(({ data }) => {
+                            Vue.notify({
+                                group: 'signals',
+                                type: 'success',
+                                text: 'User deleted!'
+                            });
+                            this.usersTableKey++;
+                        })
+                        .catch(() => {
+                            Vue.notify({
+                                group: 'signals',
+                                type: 'error',
+                                text: 'Deletion failed!'
+                            });
+                        })
+                        .finally(() => {
+                            this.$refs.deleteConfirmationDialog.close();
+                        })
                 },
                 activeUser(id) {
                     this.active_id = id;
                     this.$refs.activeConfirmationDialog.openDialog();
                 },
                 activeUserConfirm() {
-                    axios.patch(`${webServices.baseURL}/users/${this.active_id}`, { active: 1 }).then(() => {
-                        this.$refs.activeConfirmationDialog.close();
-                        this.usersTableKey++;
-                        this.newUsersTableKey++;
-                    });
+                    axios.patch(`${webServices.baseURL}/users/${this.active_id}`, { active: 1 })
+                        .then(() => {
+                            Vue.notify({
+                                group: 'signals',
+                                type: 'success',
+                                text: 'User activated!'
+                            });
+                            this.usersTableKey++;
+                            this.newUsersTableKey++;
+                        })
+                        .catch(() => {
+                            Vue.notify({
+                                group: 'signals',
+                                type: 'error',
+                                text: 'Activation failed!'
+                            });
+                        })
+                        .finally(() => {
+                            this.$refs.activeConfirmationDialog.close();
+                        })
+                        ;
                 },
                 blockUser(id) {
                     this.block_id = id;
                     this.$refs.blockConfirmationDialog.openDialog();
                 },
                 blockUserConfirm() {
-                    axios.patch(`${webServices.baseURL}/users/${this.block_id}`, { active: -1 }).then(() => {
-                        this.$refs.blockConfirmationDialog.close();
-                        this.newUsersTableKey++;
-                    });
+                    axios.patch(`${webServices.baseURL}/users/${this.block_id}`, { active: -1 })
+                        .then(() => {
+                            Vue.notify({
+                                group: 'signals',
+                                type: 'success',
+                                text: 'User blocked!'
+                            });
+                            this.newUsersTableKey++;
+                        })
+                        .catch(() => {
+                            Vue.notify({
+                                group: 'signals',
+                                type: 'error',
+                                text: 'Block failed!'
+                            });
+                        })
+                        .finally(() => {
+                            this.$refs.blockConfirmationDialog.close();
+                        })
                 }
             }
         },

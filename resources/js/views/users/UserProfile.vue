@@ -77,7 +77,7 @@
                                         <v-btn fab class="mr-3" dark color="cyan" @click="onEditUser()">
                                             <v-icon dark>edit</v-icon>
                                         </v-btn>
-                                        <v-btn fab @click="onDeleteUser()"  dark color="red">
+                                        <v-btn fab @click="onDeleteUser()" dark color="red">
                                             <v-icon class="grey--text font-lg">delete</v-icon>
                                         </v-btn>
                                     </div>
@@ -140,6 +140,7 @@
     import webServices from "WebServices";
     import dateformat from "dateformat";
     import axios from "axios";
+    import Vue from "vue";
 
     export default {
         props: ["user_id"],
@@ -174,7 +175,16 @@
                     headers: { "Content-Type": "application/json" },
                 })
                 .then(({ data }) => {
-                    if (data.response.api_status) this.user = data.response.user;
+                    if (data.response.api_status) {
+                        this.user = data.response.user;
+                    }
+                })
+                .catch(() => {
+                    Vue.notify({
+                        group: 'signals',
+                        type: 'error',
+                        text: 'Can\'t load information!'
+                    });
                 })
                 .finally(() => {
                     this.loading = false;
@@ -189,10 +199,27 @@
                 this.$refs.deleteConfirmationDialog.openDialog();
             },
             deleteUser() {
-                axios.delete(`${webServices.baseURL}/users/${this.user_id}`).then(() => {
-                    this.$refs.deleteConfirmationDialog.close();
-                    this.$router.push('/users-list');
-                })
+                axios.delete(`${webServices.baseURL}/users/${this.user_id}`)
+                    .then(() => {
+                        Vue.notify({
+                            group: 'signals',
+                            type: 'success',
+                            text: 'User deleted!'
+                        });
+                        setTimeout(function () {
+                            this.$router.push('/users-list');
+                        }, 1500);
+                    })
+                    .catch(() => {
+                        Vue.notify({
+                            group: 'signals',
+                            type: 'error',
+                            text: 'Deletion failed!'
+                        });
+                    })
+                    .finally(() => {
+                        this.$refs.deleteConfirmationDialog.close();
+                    })
             },
             onEditUser() {
                 this.openDialog();
@@ -210,10 +237,25 @@
                     if (password && password != '') {
                         userdata = { ...userdata, ...{ password } }
                     }
-                    axios.patch(`${webServices.baseURL}/users/${this.user_id}`, userdata).then(() => {
-                        this.user = { ...this.user, ...userdata };
-                        this.open = false;
-                    })
+                    axios.patch(`${webServices.baseURL}/users/${this.user_id}`, userdata)
+                        .then(() => {
+                            this.user = { ...this.user, ...userdata };
+                            Vue.notify({
+                                group: 'signals',
+                                type: 'success',
+                                text: 'Profile Updated!'
+                            });
+                        })
+                        .catch(() => {
+                            Vue.notify({
+                                group: 'signals',
+                                type: 'error',
+                                text: 'Updated failed'
+                            });
+                        })
+                        .finally(() => {
+                            this.open = false;
+                        })
                 }
             },
             openDialog() {

@@ -112,7 +112,8 @@
                         <v-form v-model="form.valid" ref="form" lazy-validation>
                             <v-text-field label="Name" v-model="form.name" :rules="form.nameRules" :counter="30"
                                 required></v-text-field>
-                            <v-text-field label="E-mail" v-model="form.email" :rules="form.emailRules" required readonly>
+                            <v-text-field label="E-mail" v-model="form.email" :rules="form.emailRules" required
+                                readonly>
                             </v-text-field>
                             <v-text-field label="Phone" v-model="form.phone" required>
                             </v-text-field>
@@ -134,6 +135,7 @@
     import webServices from "WebServices";
     import dateformat from "dateformat";
     import axios from "axios";
+    import Vue from "vue";
 
     export default {
         data() {
@@ -169,6 +171,13 @@
                 .then(({ data }) => {
                     if (data.response.api_status) this.user = data.response.profile;
                 })
+                .catch(() => {
+                    Vue.notify({
+                        group: 'signals',
+                        type: 'error',
+                        text: 'Can\'t load information!'
+                    });
+                })
                 .finally(() => {
                     this.loading = false;
                 });
@@ -194,10 +203,25 @@
                     if (password && password != '') {
                         userdata = { ...userdata, ...{ password } }
                     }
-                    axios.patch(`${webServices.baseURL}/profile/me`, userdata).then(() => {
-                        this.user = { ...this.user, ...userdata };
-                        this.open = false;
-                    })
+                    axios.patch(`${webServices.baseURL}/profile/me`, userdata)
+                        .then(() => {
+                            this.user = { ...this.user, ...userdata };
+                            Vue.notify({
+                                group: 'signals',
+                                type: 'success',
+                                text: 'Profile Updated!'
+                            });
+                        })
+                        .catch(() => {
+                            Vue.notify({
+                                group: 'signals',
+                                type: 'error',
+                                text: 'Update failed'
+                            });
+                        })
+                        .finally(() => {
+                            this.open = false;
+                        })
                 }
             },
             openDialog() {
