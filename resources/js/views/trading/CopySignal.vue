@@ -203,13 +203,12 @@
 
         watch: {
             serverOptions: function (serverOptions) {
-                console.log(serverOptions);
                 this.getCopySignalAction({
                     page: serverOptions.page,
                     perPage: serverOptions.itemsPerPage,
                     hash: serverOptions.hash
                 });
-            }
+            },
         }
     };
 </script>

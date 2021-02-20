@@ -7,6 +7,7 @@ use App\User;
 use App\Accounts;
 use App\UserAccounts;
 use App\Copy;
+use App\Source;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -478,7 +479,7 @@ class AccountController extends Controller
                 ";
 
         if ($account) {
-            $query .= "AND slave_account.account_number = 1234567 ";
+            $query .= "AND slave_account.account_number = $account ";
         }
 
         $total = DB::select("SELECT COUNT(1) as total from 
@@ -523,6 +524,10 @@ class AccountController extends Controller
 
         $account->status = Accounts::STATUS_NONE;
         $account->save();
+
+        Source::where('account_id', $account->id)->delete();
+        Copy::where('master_id', $account->id)->delete();
+
         return response()->json([
             'response' => [
                 'code' => 200,

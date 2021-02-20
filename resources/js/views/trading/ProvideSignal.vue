@@ -11,7 +11,7 @@
                                 <v-row>
                                     <v-col cols="12" md="12" lg="12" class="pb-0">
                                         <div class="d-flex ">
-                                            <div class="w-50">
+                                            <div class="w-75">
                                                 <v-text-field class=" pt-0 pr-3" label="Search Signal">
                                                 </v-text-field>
                                             </div>
@@ -173,10 +173,40 @@
                     this.$refs.deleteConfirmationDialog.openDialog();
                 },
                 deleteSourceConfirm() {
-                    axios.delete(`${webServices.baseURL}/providesource/${this.delete_id}`).then(() => {
-                        this.$refs.deleteConfirmationDialog.close();
-                        this.tableProvideKey++;
-                    })
+                    axios.delete(`${webServices.baseURL}/providesource/${this.delete_id}`)
+                        .then(({ data }) => {
+                            const { api_status, message } = data.response;
+                            if (api_status) {
+                                this.tableProvideKey++;
+                                Vue.notify({
+                                    group: 'signals',
+                                    type: 'success',
+                                    text: 'Delete success!'
+                                });
+                            }
+                            else {
+                                Vue.notify({
+                                    group: 'signals',
+                                    type: 'error',
+                                    text: message
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            let message = 'Delete signal failed.';
+                            if (error.response) {
+                                const { response } = error.response.data;
+                                message = response.message;
+                            }
+                            Vue.notify({
+                                group: 'signals',
+                                type: 'error',
+                                text: message
+                            });
+                        })
+                        .finally(() => {
+                            this.$refs.deleteConfirmationDialog.close();
+                        });
                 },
                 provideSource() {
                     if (!this.form.account) return;
@@ -204,7 +234,7 @@
                             }
                         })
                         .catch((error) => {
-                            let message = 'Copying signal failed.';
+                            let message = 'Provide signal failed.';
                             if (error.response) {
                                 const { response } = error.response.data;
                                 message = response.message;
