@@ -188,4 +188,94 @@ class SourceController extends Controller
             ]
         ], 200);
     }
+
+    public function getProvideSourceDetailWithTime(Request $request)
+    {
+        $me = Auth::user();
+        if (!$me) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User not found.",
+                ]
+            ], 400);
+        }
+
+        $account_number = $request->get('account_number');
+        $broker = $request->get('broker');
+        $delaytime = $request->get('delaytime');
+        if (!$account_number || !$broker || !$delaytime) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account number Broker and Delay time are required.",
+                ]
+            ], 400);
+        }
+        $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
+        if (!$account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account doesn't exist.",
+                ]
+            ], 400);
+        }
+
+        if ($account->status == Accounts::STATUS_NONE) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Signal doesn't exist.",
+                ]
+            ], 400);
+        }
+
+        $account_id = $account->id;
+        $user_account = $account->user_account->first();
+        if (!$user_account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account doesn't exist.",
+                ]
+            ], 400);
+        }
+
+        $user = $user_account->user->first();
+        if (!$user) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User doesn't exist.",
+                ]
+            ], 400);
+        }
+
+        $date = date_create();
+        $date_stamp = date_timestamp_get($date);
+        $date_stamp -= $delaytime;
+        $date_str = gmdate("Y-m-d H:i:s", $date_stamp);
+
+        $provideSignalDetailWithTime = Source::where([
+            ['account_id', '=', $account_id],
+            ['created_at', '>=', $date_str]
+        ])
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'signalDetail' => $provideSignalDetailWithTime,
+            ]
+        ], 200);
+    }
 }

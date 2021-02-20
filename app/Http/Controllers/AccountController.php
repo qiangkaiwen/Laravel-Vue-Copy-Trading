@@ -283,6 +283,50 @@ class AccountController extends Controller
         ], 200);
     }
 
+    public function checkAccount(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User not found",
+                ]
+            ], 400);
+        }
+
+        $account_number = $request->account_number;
+        $broker = $request->broker;
+        $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
+        if (!$account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account Number doesn't exist.",
+                ]
+            ], 400);
+        }
+        $user_account = $account->user_account;
+        if ($user_account->user_id != $user->id) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account Number is not yours.",
+                ]
+            ], 400);
+        }
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'message' => $account->status,
+            ]
+        ], 200);
+    }
+
     public function copyAccount(Request $request)
     {
         $user = Auth::user();

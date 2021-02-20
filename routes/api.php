@@ -46,11 +46,14 @@ Route::group([
     Route::post('/accounts', 'AccountController@addMyAccounts');
     Route::post('/sources', 'SourceController@addSource');
 
+    Route::post('/checksources', 'AccountController@checkAccount');
     Route::get('/providesources', 'AccountController@getProvideAccount');
     Route::post('/providesources', 'AccountController@provideAccount');
     Route::get('/accounts-for-provide', 'AccountController@getAccountsForProvide');
 
     Route::post('/signaldetail', 'SourceController@getProvideSourceDetail');
+
+    Route::post('/signaldetailwithtime', 'SourceController@getProvideSourceDetailWithTime');
 
     Route::get('/availablesources', 'AccountController@getAvailableSignal');
 
