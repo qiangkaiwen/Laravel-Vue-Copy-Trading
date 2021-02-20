@@ -11,14 +11,15 @@
                                 <v-row>
                                     <v-col cols="12" md="12" lg="12" class="pb-0">
                                         <div class="d-flex ">
-                                            <div class="w-50">
-                                                <v-text-field class=" pt-0 pr-3" label="Search Signal">
+                                            <div class="w-75">
+                                                <v-text-field class=" pt-0 pr-3" label="Search Signal" v-model="search">
                                                 </v-text-field>
                                             </div>
                                             <div>
-                                                <v-btn color="primary" class="my-0 ml-0 mr-2" medium>
+                                                <!-- <v-btn color="primary" class="my-0 ml-0 mr-2" medium
+                                                    @click="searchfinal = search">
                                                     <i class="material-icons">search</i>&nbsp;&nbsp;Search
-                                                </v-btn>
+                                                </v-btn> -->
                                                 <v-btn color="primary m-0" medium @click="gotoAllProvide">
                                                     <i class="material-icons">add</i>&nbsp;&nbsp;Add
                                                 </v-btn>
@@ -31,8 +32,8 @@
                     </v-row>
                     <v-data-table :key="tableCopyKey" :headers="headers" :items="copySignal_data" :search="search"
                         item-key="email" :server-items-length="copySignal_total" :options.sync="options"
-                        :loading="copySignal_loading" :footer-props="{showFirstLastPage: true,}"
-                        :items-per-page-options="[5, 10, 15, 20, -1]">
+                        :loading="copySignal_loading"
+                        :footer-props="{ showFirstLastPage: true, itemsPerPageOptions: [5, 10, 15, 20] }">
                         <template slot="headerCell" slot-scope="props" :loading-text="'Loading... Please wait'">
                             <v-tooltip bottom>
                                 <span slot="activator">
@@ -84,6 +85,7 @@
         data() {
             return {
                 search: "",
+                hash: "",
                 headers: [
                     {
                         text: "#",
@@ -110,6 +112,12 @@
                 },
                 accounts: []
             };
+        },
+        beforeMount() {
+            let hash = this.$route.hash;
+            if (hash) {
+                this.hash = hash.substring(1);
+            }
         },
         mounted() {
         },
@@ -181,13 +189,25 @@
                 "copySignal_page",
                 "copySignal_loading"
             ]),
+            ...{
+                serverOptions: function () {
+                    return {
+                        ...this.options, ...{
+                            search: this.search,
+                            hash: this.hash,
+                        }
+                    };
+                }
+            }
         },
 
         watch: {
-            options: function (options) {
+            serverOptions: function (serverOptions) {
+                console.log(serverOptions);
                 this.getCopySignalAction({
-                    page: options.page,
-                    perPage: options.itemsPerPage
+                    page: serverOptions.page,
+                    perPage: serverOptions.itemsPerPage,
+                    hash: serverOptions.hash
                 });
             }
         }

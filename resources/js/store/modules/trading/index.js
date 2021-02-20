@@ -141,7 +141,9 @@ const actions = {
     getCopySignalAction(context, option) {
         context.commit('setCopySignalLoadingHandler', false);
         Nprogress.start();
-        axios.get(`${webServices.baseURL}/copysources?page=${option.page}&perPage=${option.perPage}`, { headers: { 'Content-Type': 'application/json' } })
+        let url = `${webServices.baseURL}/copysources?page=${option.page}&perPage=${option.perPage}`;
+        if(option.hash != "") url += `&account=${option.hash}`;
+        axios.get(url, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
                 const { api_status, page, perPage, total, copySignal } = response.data.response;
                 if (api_status) {

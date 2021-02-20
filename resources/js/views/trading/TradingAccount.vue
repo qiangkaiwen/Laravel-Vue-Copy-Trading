@@ -54,6 +54,12 @@
                                             <v-icon class="zmdi zmdi-eye"></v-icon>
                                         </v-btn>
                                     </router-link>
+                                    <router-link v-if="props.item.status == 'COPY'"
+                                        :to="{ name: 'copy-signal', hash: '#' + props.item.account_number }">
+                                        <v-btn text icon color="primary">
+                                            <v-icon class="zmdi zmdi-eye"></v-icon>
+                                        </v-btn>
+                                    </router-link>
                                 </td>
                             </tr>
                         </template>

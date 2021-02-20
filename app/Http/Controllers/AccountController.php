@@ -443,6 +443,7 @@ class AccountController extends Controller
         $perPage = $request->get('perPage', 10);
         $perPage = intval($perPage);
         $offset = ($page - 1) * $perPage;
+        $account = $request->get('account');
 
         $user = Auth::user();
         if (!$user) {
@@ -475,6 +476,10 @@ class AccountController extends Controller
                 WHERE slave_user_account.user_id = $user_id
                 AND tbl_copy.deleted_at IS NULL
                 ";
+
+        if ($account) {
+            $query .= "AND slave_account.account_number = 1234567 ";
+        }
 
         $total = DB::select("SELECT COUNT(1) as total from 
                             ( " . $query . ") as result");
