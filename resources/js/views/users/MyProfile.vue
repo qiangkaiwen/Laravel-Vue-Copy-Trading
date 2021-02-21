@@ -61,6 +61,22 @@
                                                     class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-70">{{
                                                     getFormattedDate(user.created_at) }}</span>
                                             </li>
+                                            <li class="d-flex px-4 align-center">
+                                                <span class="mr-3 d-custom-flex align-items-left w-30">
+                                                    <span><i class="zmdi zmdi-calendar-check"></i> Client ID</span>
+                                                </span>
+                                                <span
+                                                    class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-70">{{
+                                                    user.client_id }}</span>
+                                            </li>
+                                            <li class="d-flex px-4 align-center">
+                                                <span class="mr-3 d-custom-flex align-items-left w-30">
+                                                    <span><i class="zmdi zmdi-calendar-check"></i> Client Secure</span>
+                                                </span>
+                                                <span
+                                                    class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-70">{{
+                                                    user.client_secure }}</span>
+                                            </li>
                                         </ul>
                                         <ul class="d-custom-flex social-info list-unstyled">
                                             <li><a class="facebook" href="www.facebook.com"><i

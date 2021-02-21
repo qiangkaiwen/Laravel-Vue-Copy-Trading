@@ -25,11 +25,10 @@ const getters = {
 // actions
 const actions = {
     signupUserWithLaravelPassport(context, payload) {
+        context.commit('signUpUser');
         axios.post(`${webServices.baseURL}/auth/signup`, payload.userDetail, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
                 if (response.data.response.api_status) {
-                    context.commit('signUpUser');
-                    Nprogress.done();
                     setTimeout(() => {
                         context.commit('signUpUserSuccess', payload);
                     }, 500);
@@ -38,8 +37,17 @@ const actions = {
                 }
             })
             .catch(error => {
-                console.log(error);
-                console.log("Failed");
+                let payload = {
+                    message: 'Signup failed.'
+                }
+                if (error.response) {
+                    const { response } = error.response.data;
+                    payload.message = response.message;
+                }
+                context.commit('signUpUserFailure', payload);
+            })
+            .finally(() => {
+                Nprogress.done();
             })
     },
     signInWithLaravelPassport(context, payload) {
@@ -49,7 +57,6 @@ const actions = {
             .then(response => {
                 const { api_status, access_token, name, email, roles } = response.data.response;
                 if (api_status) {
-                    Nprogress.done();
                     localStorage.setItem("access_token", access_token);
                     setTimeout(() => {
                         context.commit('loginUserSuccess', { name, email, roles });
@@ -59,9 +66,17 @@ const actions = {
                 }
             })
             .catch(error => {
-                context.commit('loginUserFailure', response.data.response);
-                console.log(error);
-                console.log("Failed");
+                let payload = {
+                    message: 'Login failed.'
+                }
+                if (error.response) {
+                    const { response } = error.response.data;
+                    payload.message = response.message;
+                }
+                context.commit('loginUserFailure', payload);
+            })
+            .finally(() => {
+                Nprogress.done();
             })
     },
     signOutWithLaravelPassport(context) {
