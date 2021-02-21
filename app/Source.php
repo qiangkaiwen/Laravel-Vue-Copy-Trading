@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Source extends Model
 {
-    use SoftDeletes;
     protected $table = "tbl_source";
     /**
      * The attributes that are mass assignable.

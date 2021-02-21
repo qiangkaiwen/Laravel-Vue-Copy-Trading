@@ -22,7 +22,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['auth:api', 'cors'],
+    'middleware' => ['addAccessToken', 'auth:api', 'cors'],
 ], function () {
     Route::group([
         'prefix' => 'auth',
