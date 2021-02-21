@@ -1,3 +1,3 @@
 export default {
-    baseURL: 'http://10.10.11.83:8000/api'
+    baseURL: process.env.NODE_ENV === 'development' ? 'http://10.10.11.83:8000/api' : 'http://m.zereeshekhbzenee.com/api'
 };
