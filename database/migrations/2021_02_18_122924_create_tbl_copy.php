@@ -18,7 +18,6 @@ class CreateTblCopy extends Migration
             $table->integer('master_id');
             $table->integer('slave_id');
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

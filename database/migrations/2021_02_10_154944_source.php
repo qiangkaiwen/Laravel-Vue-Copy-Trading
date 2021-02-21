@@ -38,7 +38,6 @@ class Source extends Migration
             $table->bigInteger('sourceOriginalTicket');
             $table->double('sourceOriginalLots');
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }

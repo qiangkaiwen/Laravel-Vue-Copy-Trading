@@ -519,9 +519,8 @@ class AccountController extends Controller
                 INNER JOIN tbl_users AS master_user ON master_user_account.user_id = master_user.id
                 INNER JOIN tbl_account AS slave_account ON slave_account.id = tbl_copy.slave_id
                 INNER JOIN tbl_user_account AS slave_user_account ON slave_user_account.account_id = tbl_copy.slave_id
-                LEFT JOIN ( SELECT COUNT( 1 ) AS signal_number, account_id FROM tbl_source WHERE deleted_at IS NULL GROUP BY account_id ) AS sources ON sources.account_id = tbl_copy.master_id
+                LEFT JOIN ( SELECT COUNT( 1 ) AS signal_number, account_id FROM tbl_source GROUP BY account_id ) AS sources ON sources.account_id = tbl_copy.master_id
                 WHERE slave_user_account.user_id = $user_id
-                AND tbl_copy.deleted_at IS NULL
                 ";
 
         if ($account) {
