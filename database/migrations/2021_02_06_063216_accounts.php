@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Accounts as AccountModel;
 
 class Accounts extends Migration
 {
@@ -17,6 +18,8 @@ class Accounts extends Migration
             $table->increments('id');
             $table->integer('account_number');
             $table->string('broker');
+            $table->enum('status', [AccountModel::STATUS_NONE, AccountModel::STATUS_COPY, AccountModel::STATUS_PROVIDE])
+                ->default(AccountModel::STATUS_NONE);
             $table->integer('authorization')->nullable();
             $table->timestamp('expiry')->nullable();
             $table->integer('online_status')->nullable();

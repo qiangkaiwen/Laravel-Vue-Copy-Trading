@@ -139,8 +139,8 @@ class SourceController extends Controller
         }
 
         $detail = DB::select("SELECT * FROM
-                            (SELECT COUNT( 1 ) AS copier_number FROM tbl_copy WHERE master_id = $account_id AND deleted_at IS NULL) AS copier,
-                            (SELECT MIN(openTime) as openTime FROM tbl_source WHERE account_id = $account_id AND deleted_at IS NULL) AS source");
+                            (SELECT COUNT( 1 ) AS copier_number FROM tbl_copy WHERE master_id = $account_id) AS copier,
+                            (SELECT MIN(openTime) as openTime FROM tbl_source WHERE account_id = $account_id) AS source");
         $detail = $detail[0];
 
         $page = $request->get('page', 1);
@@ -163,7 +163,6 @@ class SourceController extends Controller
                 tbl_source
                 WHERE
                 tbl_source.account_id = $account_id 
-                AND tbl_source.deleted_at IS NULL
                 ORDER BY openTime DESC ";
         $total = DB::select("SELECT COUNT(1) as total from 
                             ( " . $query . ") as result");

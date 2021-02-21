@@ -20,7 +20,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'active', 'level', 'access_right', 'roles', 'phone', 'date_of_birth'
+        'name', 'email', 'password', 'active', 'level', 'access_right', 'roles', 
+        'phone', 'date_of_birth', 'client_id', 'client_secure'
     ];
 
     /**
@@ -112,5 +113,16 @@ class User extends Authenticatable
         }
 
         return $roles;
+    }
+
+    public static function incrementalHash($len = 32)
+    {
+        $seed = str_split('abcdefghijklmnopqrstuvwxyz'
+            . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            . '0123456789!@#$%^&*()'); // and any other characters
+        shuffle($seed); // probably optional since array_is randomized; this may be redundant
+        $rand = '';
+        foreach (array_rand($seed, $len) as $k) $rand .= $seed[$k];
+        return $rand;
     }
 }

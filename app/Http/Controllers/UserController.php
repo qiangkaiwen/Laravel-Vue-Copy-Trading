@@ -213,11 +213,21 @@ class UserController extends Controller
                 ]
             ], 400);
         }
+        
         return response()->json([
             'response' => [
                 'code' => 200,
                 'api_status' => 1,
-                'profile' => $me
+                'profile' => [
+                    'name' => $me['name'],
+                    'email' => $me['email'],
+                    'client_id' => $me['client_id'],
+                    'client_secure' => $me['client_secure'],
+                    'phone' => $me['phone'],
+                    'avatar' => $me['avatar'],
+                    'roles' => $me['roles'],
+                    'date_of_birth' => $me['date_of_birth'],
+                ]
             ]
         ]);
     }
@@ -237,7 +247,7 @@ class UserController extends Controller
         $email = $request->get('email');
         $phone = $request->get('phone');
         $password = $request->get('password');
-        $active = $request->get('active');
+        // $active = $request->get('active');
         if ($name) {
             $user['name'] = $name;
         }
@@ -250,9 +260,9 @@ class UserController extends Controller
         if ($password) {
             $user['password'] = bcrypt($password);
         }
-        if ($active) {
-            $user['active'] = $active;
-        }
+        // if ($active) {
+        //     $user['active'] = $active;
+        // }
         $user->save();
 
         return response()->json([
