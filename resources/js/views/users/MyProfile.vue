@@ -63,7 +63,7 @@
                                             </li>
                                             <li class="d-flex px-4 align-center">
                                                 <span class="mr-3 d-custom-flex align-items-left w-30">
-                                                    <span><i class="zmdi zmdi-calendar-check"></i> Client ID</span>
+                                                    <span><i class="zmdi zmdi-key"></i> Client ID</span>
                                                 </span>
                                                 <span
                                                     class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-70">{{
@@ -71,11 +71,19 @@
                                             </li>
                                             <li class="d-flex px-4 align-center">
                                                 <span class="mr-3 d-custom-flex align-items-left w-30">
-                                                    <span><i class="zmdi zmdi-calendar-check"></i> Client Secure</span>
+                                                    <span><i class="zmdi zmdi-shield-security"></i> Client Secure</span>
                                                 </span>
                                                 <span
-                                                    class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-70">{{
-                                                    user.client_secure }}</span>
+                                                    class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-50">
+                                                    {{ showsecure ? user.client_secure: '.....................' }}
+                                                </span>
+                                                <span class="mr-3 d-custom-flex align-items-right w-20">
+                                                    <v-btn class="mr-3" text icon :color="!showsecure ? 'success' : 'error'"
+                                                        @click="showsecure = !showsecure">
+                                                        <v-icon class="zmdi zmdi-eye" v-if="!showsecure"></v-icon>
+                                                        <v-icon class="zmdi zmdi-eye-off" v-else></v-icon>
+                                                    </v-btn>
+                                                </span>
                                             </li>
                                         </ul>
                                         <ul class="d-custom-flex social-info list-unstyled">
@@ -175,7 +183,8 @@
                     ],
                     phone: null,
                     password: false
-                }
+                },
+                showsecure: false,
             };
         },
         mounted() {

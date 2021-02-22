@@ -227,6 +227,7 @@ class UserController extends Controller
                     'avatar' => $me['avatar'],
                     'roles' => $me['roles'],
                     'date_of_birth' => $me['date_of_birth'],
+                    'created_at' => $me['created_at'],
                 ]
             ]
         ]);
