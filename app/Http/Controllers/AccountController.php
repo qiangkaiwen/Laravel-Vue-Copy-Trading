@@ -463,8 +463,7 @@ class AccountController extends Controller
                 INNER JOIN tbl_user_account ON tbl_account.id = tbl_user_account.account_id 
                 INNER JOIN tbl_users ON tbl_users.id = tbl_user_account.user_id
                 WHERE
-                tbl_account.`status` = '$status' AND 
-                tbl_user_account.user_id != $user_id
+                tbl_account.`status` = '$status' 
                 ";
 
         $total = DB::select("SELECT COUNT(1) as total from 
