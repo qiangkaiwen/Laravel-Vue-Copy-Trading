@@ -29,7 +29,7 @@ class Source extends Migration
             $table->bigInteger('openTimeGMT');
             $table->bigInteger('expiration');
             $table->bigInteger('expirationGMT');
-            $table->string('comment_str');
+            $table->string('comment_str')->nullable();
             $table->bigInteger('sourceTicket');
             $table->double('sourceLots');
             $table->string('sourceType');

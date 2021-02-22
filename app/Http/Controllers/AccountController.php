@@ -595,8 +595,8 @@ class AccountController extends Controller
             ], 400);
         }
 
-        $account = Copy::where('id', $id)->first();
-        if (!$account) {
+        $copy = Copy::where('id', $id)->first();
+        if (!$copy) {
             return response()->json([
                 'response' => [
                     'code' => 400,
@@ -606,7 +606,15 @@ class AccountController extends Controller
             ], 400);
         }
 
-        $account->delete();
+        $slave = $copy->slave;
+        $copy->delete();
+
+        $masters = $slave->masters;
+        if(count($masters) == 0) {
+            $slave['status'] = Accounts::STATUS_NONE;
+            $slave->save();
+        }
+
         return response()->json([
             'response' => [
                 'code' => 200,

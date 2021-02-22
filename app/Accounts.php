@@ -45,6 +45,14 @@ class Accounts extends Model
 
     public function sources()
     {
-        return $this->hasOne(Source::class, 'account_number', 'account_number');
+        return $this->hasMany(Source::class, 'account_id');
+    }
+
+    public function followers() {
+        return $this->hasMany(Copy::class, 'master_id');
+    }
+
+    public function masters() {
+        return $this->hasMany(Copy::class, 'slave_id');
     }
 }
