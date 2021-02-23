@@ -238,19 +238,8 @@ class SourceController extends Controller
                 ], 400);
             }
             //check user
-            $user = $user_account->user->first();
-            if (!$user) {
-                return response()->json([
-                    'response' => [
-                        'code' => 400,
-                        'api_status' => 0,
-                        'message' => "User doesn't exist.",
-                    ]
-                ], 400);
-            }
-
             $me = Auth::user();
-            if ($me['id'] != $user['id']) {
+            if ($me['id'] != $user_account['user_id']) {
                 return response()->json([
                     'response' => [
                         'code' => 400,
@@ -294,19 +283,8 @@ class SourceController extends Controller
             }
 
             //check user
-            $user = $user_account->user->first();
-            if (!$user) {
-                return response()->json([
-                    'response' => [
-                        'code' => 400,
-                        'api_status' => 0,
-                        'message' => "User doesn't exist.",
-                    ]
-                ], 400);
-            }
-
             $me = Auth::user();
-            if ($me['id'] != $user['id']) {
+            if ($me['id'] != $user_account['user_id']) {
                 return response()->json([
                     'response' => [
                         'code' => 400,
