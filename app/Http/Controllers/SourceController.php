@@ -26,26 +26,32 @@ class SourceController extends Controller
                 ]
             ], 400);
         }
-        $user_accounts = $user->user_accounts;
-        $account_id = null;
-        $account_status = Accounts::STATUS_NONE;
-        for ($i = 0; $i < count($user_accounts); $i++) {
-            $account = $user_accounts[$i]->account;
-            if ($account['account_number'] == $input['account_number'] && $account['broker'] == $input['broker']) {
-                $account_id = $account['id'];
-                $account_status = $account['status'];
-                break;
-            }
-        }
-        if (!$account_id) {
+
+        $account_number = $input['account_number'];
+        $broker = $input['broker'];
+        $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
+        if (!$account) {
             return response()->json([
                 'response' => [
                     'code' => 400,
                     'api_status' => 0,
-                    'message' => "Account Number doesn't match.",
+                    'message' => "Account doesn't exist.",
                 ]
             ], 400);
         }
+
+        $user_account = $account->user_account->first();
+        if ($user_account['user_id'] != $user['id']) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account is not yours.",
+                ]
+            ], 400);
+        }
+        $account_status = $account['status'];
+
         if ($account_status != Accounts::STATUS_PROVIDE) {
             return response()->json([
                 'response' => [
@@ -56,11 +62,13 @@ class SourceController extends Controller
             ], 400);
         }
 
-        $input['account_id'] = $account_id;
+        $input['account_id'] = $account['id'];
         unset($input['account_number']);
         unset($input['broker']);
 
+        Source::where('account_id', $account['id'])->delete();
         Source::create($input);
+
         return response()->json([
             'response' => [
                 'code' => 201,
@@ -210,7 +218,7 @@ class SourceController extends Controller
                 'response' => [
                     'code' => 400,
                     'api_status' => 0,
-                    'message' => "Account number Broker and Delay time are required.",
+                    'message' => "Account number, Broker and Delay time are required.",
                 ]
             ], 400);
         }
@@ -329,5 +337,61 @@ class SourceController extends Controller
                 ]
             ], 400);
         }
+    }
+
+    public function deleteSources(Request $request)
+    {
+        $me = Auth::user();
+        if (!$me) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User not found.",
+                ]
+            ], 400);
+        }
+
+        $account_number = $request->get('account_number');
+        $broker = $request->get('broker');
+        if (!$account_number || !$broker) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account number and Broker are required.",
+                ]
+            ], 400);
+        }
+        $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
+        if (!$account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account doesn't exist.",
+                ]
+            ], 400);
+        }
+
+        $user_account = $account->user_account->first();
+        if ($user_account['user_id'] != $me['id']) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account is not yours.",
+                ]
+            ], 400);
+        }
+
+        Source::where('account_id', $account['id'])->delete();
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'message' => "success.",
+            ]
+        ], 200);
     }
 }

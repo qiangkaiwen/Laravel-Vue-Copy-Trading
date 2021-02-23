@@ -63,6 +63,7 @@ Route::group([
 
     Route::delete('/providesource/{id}', 'AccountController@deleteProvideAccount');
     Route::delete('/copysource/{id}', 'AccountController@deleteCopyAccount');
+    Route::post('/deletesources', 'SourceController@deleteSources');
 });
 
 Route::group([
