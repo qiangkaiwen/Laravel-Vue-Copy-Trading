@@ -17,7 +17,7 @@
             <!-- app customizer -->
             <app-customizer></app-customizer>
             <!-- User Tour -->
-            <tour></tour>
+            <!-- <tour></tour> -->
         </template>
     </div>
 </template>
