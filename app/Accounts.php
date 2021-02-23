@@ -40,7 +40,7 @@ class Accounts extends Model
 
     public function user_account()
     {
-        return $this->hasOne(UserAccounts::class, 'account_id');
+        return $this->hasMany(UserAccounts::class, 'account_id');
     }
 
     public function sources()

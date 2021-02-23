@@ -16,7 +16,8 @@
                                                 </v-text-field>
                                             </div>
                                             <div>
-                                                <v-btn color="primary" class="my-0 ml-0 mr-2" medium><i class="material-icons">search</i>&nbsp;&nbsp;Search</v-btn>
+                                                <v-btn color="primary" class="my-0 ml-0 mr-2" medium><i
+                                                        class="material-icons">search</i>&nbsp;&nbsp;Search</v-btn>
                                             </div>
                                         </div>
                                     </v-col>
@@ -91,7 +92,7 @@
                     { text: "Created At", value: "created_at", sortable: false },
                     { text: "", sortable: false },
                 ],
-                options: {}
+                options: {},
             };
         },
         mounted() {
