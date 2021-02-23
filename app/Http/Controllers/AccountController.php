@@ -253,7 +253,7 @@ class AccountController extends Controller
                 ]
             ], 400);
         }
-        $user_account = $account->user_account;
+        $user_account = $account->user_account->first();
         if ($user_account->user_id != $user->id) {
             return response()->json([
                 'response' => [

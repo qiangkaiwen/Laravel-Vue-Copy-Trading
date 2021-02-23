@@ -11,7 +11,7 @@
                                 <v-row>
                                     <v-col cols="12" md="12" lg="12" class="pb-0">
                                         <div class="d-flex ">
-                                            <div class="w-50">
+                                            <div class="w-75">
                                                 <v-text-field class=" pt-0 pr-3" label="Search Signal">
                                                 </v-text-field>
                                             </div>
