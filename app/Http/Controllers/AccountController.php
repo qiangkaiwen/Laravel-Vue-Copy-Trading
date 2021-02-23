@@ -308,7 +308,16 @@ class AccountController extends Controller
                 ]
             ], 400);
         }
-        $user_account = $account->user_account;
+        $user_account = $account->user_account->first();
+        if (!$user_account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account Number is not correct.",
+                ]
+            ], 400);
+        }
         if ($user_account->user_id != $user->id) {
             return response()->json([
                 'response' => [
@@ -609,7 +618,7 @@ class AccountController extends Controller
         $copy->delete();
 
         $masters = $slave->masters;
-        if(count($masters) == 0) {
+        if (count($masters) == 0) {
             $slave['status'] = Accounts::STATUS_NONE;
             $slave->save();
         }
