@@ -33,7 +33,7 @@
                         <template v-slot:item="props">
                             <tr>
                                 <td>{{ props.index + 1 }}</td>
-                                <td>{{ getDateFormat(props.item.openTime) }}</td>
+                                <td>{{ getDateFormat(props.item.created_at) }}</td>
                                 <td>{{ props.item.symbol }}</td>
                                 <td style="text-transform: uppercase;">{{ props.item.type }}</td>
                                 <td>{{ props.item.lots }}</td>
@@ -84,12 +84,7 @@
             ...{
                 getDateFormat(date) {
                     if (!date) return '';
-                    let ndate = parseInt(date);
-                    let dateObj = new Date(ndate);
-                    if (isNaN(dateObj.getTime())) {
-                        console.log(date, ndate);
-                        return '';
-                    }
+                    let dateObj = new Date(date);
                     return dateformat(dateObj, "mmm, dd yyyy HH:MM")
                 }
             }

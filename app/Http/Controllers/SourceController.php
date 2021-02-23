@@ -158,12 +158,13 @@ class SourceController extends Controller
                 tbl_source.openPrice,
                 tbl_source.takeProfitPrice,
                 tbl_source.stopLossPrice,
-                tbl_source.ticket 
+                tbl_source.ticket,
+                tbl_source.created_at 
                 FROM
                 tbl_source
                 WHERE
                 tbl_source.account_id = $account_id 
-                ORDER BY openTime DESC ";
+                ORDER BY created_at DESC ";
         $total = DB::select("SELECT COUNT(1) as total from 
                             ( " . $query . ") as result");
         $total = $total[0]->total;
