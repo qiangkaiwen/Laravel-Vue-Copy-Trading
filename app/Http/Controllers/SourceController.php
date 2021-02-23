@@ -224,7 +224,124 @@ class SourceController extends Controller
             ], 400);
         }
 
-        if ($account->status == Accounts::STATUS_NONE) {
+        if ($account->status == Accounts::STATUS_PROVIDE) {
+            $account_id = $account->id;
+            $user_account = $account->user_account->first();
+            //check account
+            if (!$user_account) {
+                return response()->json([
+                    'response' => [
+                        'code' => 400,
+                        'api_status' => 0,
+                        'message' => "Account doesn't exist.",
+                    ]
+                ], 400);
+            }
+            //check user
+            $user = $user_account->user->first();
+            if (!$user) {
+                return response()->json([
+                    'response' => [
+                        'code' => 400,
+                        'api_status' => 0,
+                        'message' => "User doesn't exist.",
+                    ]
+                ], 400);
+            }
+
+            $me = Auth::user();
+            if ($me['id'] != $user['id']) {
+                return response()->json([
+                    'response' => [
+                        'code' => 400,
+                        'api_status' => 0,
+                        'message' => "Account is not yours.",
+                    ]
+                ], 400);
+            }
+
+            $date = date_create();
+            $date_stamp = date_timestamp_get($date);
+            $date_stamp -= $delaytime;
+            $date_str = gmdate("Y-m-d H:i:s", $date_stamp);
+
+            $provideSignalDetailWithTime = Source::where([
+                ['account_id', '=', $account_id],
+                ['created_at', '>=', $date_str]
+            ])
+                ->orderBy('created_at', 'DESC')
+                ->get();
+
+            return response()->json([
+                'response' => [
+                    'code' => 200,
+                    'api_status' => 1,
+                    'signalDetail' => $provideSignalDetailWithTime,
+                ]
+            ], 200);
+        } else if ($account->status == Accounts::STATUS_COPY) {
+            $account_id = $account->id;
+            $user_account = $account->user_account->first();
+            //check account
+            if (!$user_account) {
+                return response()->json([
+                    'response' => [
+                        'code' => 400,
+                        'api_status' => 0,
+                        'message' => "Account doesn't exist.",
+                    ]
+                ], 400);
+            }
+
+            //check user
+            $user = $user_account->user->first();
+            if (!$user) {
+                return response()->json([
+                    'response' => [
+                        'code' => 400,
+                        'api_status' => 0,
+                        'message' => "User doesn't exist.",
+                    ]
+                ], 400);
+            }
+
+            $me = Auth::user();
+            if ($me['id'] != $user['id']) {
+                return response()->json([
+                    'response' => [
+                        'code' => 400,
+                        'api_status' => 0,
+                        'message' => "Account is not yours.",
+                    ]
+                ], 400);
+            }
+
+            $copies = Copy::where('slave_id', $account_id)->get('master_id');
+            $account_ids = array();
+            for ($i = 0; $i < count($copies); $i++) {
+                $account_ids[] = $copies[$i]['master_id'];
+            }
+
+            $date = date_create();
+            $date_stamp = date_timestamp_get($date);
+            $date_stamp -= $delaytime;
+            $date_str = gmdate("Y-m-d H:i:s", $date_stamp);
+
+            $copySignalDetailWithTime = Source::where([
+                ['created_at', '>=', $date_str]
+            ])
+                ->whereIn('account_id', $account_ids)
+                ->orderBy('created_at', 'DESC')
+                ->get();
+
+            return response()->json([
+                'response' => [
+                    'code' => 200,
+                    'api_status' => 1,
+                    'signalDetail' => $copySignalDetailWithTime,
+                ]
+            ], 200);
+        } else {
             return response()->json([
                 'response' => [
                     'code' => 400,
@@ -233,48 +350,5 @@ class SourceController extends Controller
                 ]
             ], 400);
         }
-
-        $account_id = $account->id;
-        $user_account = $account->user_account->first();
-        if (!$user_account) {
-            return response()->json([
-                'response' => [
-                    'code' => 400,
-                    'api_status' => 0,
-                    'message' => "Account doesn't exist.",
-                ]
-            ], 400);
-        }
-
-        $user = $user_account->user->first();
-        if (!$user) {
-            return response()->json([
-                'response' => [
-                    'code' => 400,
-                    'api_status' => 0,
-                    'message' => "User doesn't exist.",
-                ]
-            ], 400);
-        }
-
-        $date = date_create();
-        $date_stamp = date_timestamp_get($date);
-        $date_stamp -= $delaytime;
-        $date_str = gmdate("Y-m-d H:i:s", $date_stamp);
-
-        $provideSignalDetailWithTime = Source::where([
-            ['account_id', '=', $account_id],
-            ['created_at', '>=', $date_str]
-        ])
-            ->orderBy('created_at', 'DESC')
-            ->get();
-
-        return response()->json([
-            'response' => [
-                'code' => 200,
-                'api_status' => 1,
-                'signalDetail' => $provideSignalDetailWithTime,
-            ]
-        ], 200);
     }
 }
