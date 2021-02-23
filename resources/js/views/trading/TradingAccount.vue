@@ -47,7 +47,7 @@
                                     <v-badge :value=false :class="props.item.statusColor">{{ props.item.status }}
                                     </v-badge>
                                 </td>
-                                <td>{{ convertDate(props.item.created_at) }}</td>
+                                <td>{{ getDateFormat(props.item.created_at) }}</td>
                                 <td>
                                     <router-link v-if="props.item.status == 'PROVIDE'"
                                         :to="{ name: 'signal-detail', params: { account_number: props.item.account_number, broker: props.item.broker } }">
@@ -102,9 +102,14 @@
                 'getAccountsAction'
             ]),
             ...{
-                convertDate(date) {
+                getDateFormat(date) {
                     if (!date) return '';
-                    return dateformat(new Date(date), "mediumDate");
+                    return dateformat(new Date(date), "mmm, dd yyyy HH:MM")
+                },
+                getDateFormatWithMS(date) {
+                    if (!date) return '';
+                    date = parseInt(date);
+                    return dateformat(date, "mmm, dd yyyy HH:MM")
                 },
             }
         },

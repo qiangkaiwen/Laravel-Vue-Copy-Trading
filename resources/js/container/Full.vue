@@ -48,7 +48,7 @@
                 this.loading = false;
                 setTimeout(() => {
                     if (AppConfig.enableUserTour) {
-                        this.$tours["vuelyTour"].start();
+                        // this.$tours["vuelyTour"].start();
                     }
                 }, 1000);
             }, 2000);

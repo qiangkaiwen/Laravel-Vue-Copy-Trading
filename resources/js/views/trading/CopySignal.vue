@@ -51,7 +51,7 @@
                                 <td>{{ props.item.account_number }}</td>
                                 <td>{{ props.item.provider_name }}</td>
                                 <td>{{ props.item.src_account_number }}</td>
-                                <td>{{ getDateFormat(props.item.created_at) }}</td>
+                                <td>{{ getDateFormatWithMS(props.item.created_at) }}</td>
                                 <td>{{ props.item.signal_number }}</td>
                                 <td>
                                     <v-btn text icon color="primary"
@@ -128,11 +128,12 @@
             ...{
                 getDateFormat(date) {
                     if (!date) return '';
-                    let dateObj = new Date(date);
-                    if (isNaN(dateObj.getTime())) {
-                        return '';
-                    }
-                    return dateformat(dateObj, "mmm, dd yyyy HH:MM")
+                    return dateformat(new Date(date), "mmm, dd yyyy HH:MM")
+                },
+                getDateFormatWithMS(date) {
+                    if (!date) return '';
+                    date = parseInt(date);
+                    return dateformat(date, "mmm, dd yyyy HH:MM")
                 },
                 gotoDetail(account_number, broker) {
                     this.$router.push({ path: `signal-detail/${account_number}/${broker}` });

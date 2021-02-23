@@ -41,7 +41,7 @@
                                             {{ props.item.email }}
                                         </td>
                                         <td>{{ props.item.phone }}</td>
-                                        <td>{{ convertDate(props.item.created_at) }}</td>
+                                        <td>{{ getDateFormat(props.item.created_at) }}</td>
                                         <td>
                                             <router-link
                                                 :to="{ name: 'user-profile', params: { user_id: props.item.id } }">
@@ -92,7 +92,7 @@
                                             </router-link>
                                         </td>
                                         <td>{{ props.item.phone }}</td>
-                                        <td>{{ convertDate(props.item.created_at) }}</td>
+                                        <td>{{ getDateFormat(props.item.created_at) }}</td>
                                         <v-btn text icon color="success" @click="activeUser(props.item.id)">
                                             <v-icon class="zmdi zmdi-check-circle-u"></v-icon>
                                         </v-btn>
@@ -163,9 +163,14 @@
                 'getNewUsersAction',
             ]),
             ...{
-                convertDate(date) {
+                getDateFormat(date) {
                     if (!date) return '';
-                    return dateformat(new Date(date), "mediumDate");
+                    return dateformat(new Date(date), "mmm, dd yyyy HH:MM")
+                },
+                getDateFormatWithMS(date) {
+                    if (!date) return '';
+                    date = parseInt(date);
+                    return dateformat(date, "mmm, dd yyyy HH:MM")
                 },
                 deleteUser(id) {
                     this.delete_id = id;

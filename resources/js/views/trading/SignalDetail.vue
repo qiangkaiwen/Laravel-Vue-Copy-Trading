@@ -10,7 +10,7 @@
                             Provider:&nbsp;<b>{{ signalDetail_information.provider }}</b> &nbsp;&nbsp;&nbsp;&nbsp;
                             Source&nbsp;Account:&nbsp;<b>{{ signalDetail_information.account_number }}</b>
                             &nbsp;&nbsp;&nbsp;&nbsp;
-                            Since:&nbsp;<b>{{ getDateFormat(signalDetail_information.openTime) }}</b>
+                            Since:&nbsp;<b>{{ getDateFormatWithMS(signalDetail_information.openTime) }}</b>
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             Copied:&nbsp;<b>{{ signalDetail_information.copier_number }}</b>&nbsp;Times
                             &nbsp;&nbsp;&nbsp;&nbsp;
@@ -84,8 +84,12 @@
             ...{
                 getDateFormat(date) {
                     if (!date) return '';
-                    let dateObj = new Date(date);
-                    return dateformat(dateObj, "mmm, dd yyyy HH:MM")
+                    return dateformat(new Date(date), "mmm, dd yyyy HH:MM")
+                },
+                getDateFormatWithMS(date) {
+                    if (!date) return '';
+                    date = parseInt(date);
+                    return dateformat(date, "mmm, dd yyyy HH:MM")
                 }
             }
         },

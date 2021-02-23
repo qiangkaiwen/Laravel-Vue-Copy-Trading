@@ -51,7 +51,7 @@
                                                 </span>
                                                 <span
                                                     class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-70">{{
-                                                    getFormattedDate(user.date_of_birth) }}</span>
+                                                    getDateFormat(user.date_of_birth) }}</span>
                                             </li>
                                             <li class="d-flex px-4 align-center">
                                                 <span class="mr-3 d-custom-flex align-items-left w-30">
@@ -59,7 +59,7 @@
                                                 </span>
                                                 <span
                                                     class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-70">{{
-                                                    getFormattedDate(user.created_at) }}</span>
+                                                    getDateFormat(user.created_at) }}</span>
                                             </li>
                                         </ul>
                                         <ul class="d-custom-flex social-info list-unstyled">
@@ -191,9 +191,14 @@
                 });
         },
         methods: {
-            getFormattedDate(date) {
+            getDateFormat(date) {
                 if (!date) return '';
-                return dateformat(new Date(date), "longDate");
+                return dateformat(new Date(date), "mmm, dd yyyy HH:MM")
+            },
+            getDateFormatWithMS(date) {
+                if (!date) return '';
+                date = parseInt(date);
+                return dateformat(date, "mmm, dd yyyy HH:MM")
             },
             onDeleteUser() {
                 this.$refs.deleteConfirmationDialog.openDialog();

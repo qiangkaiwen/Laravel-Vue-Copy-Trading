@@ -51,7 +51,7 @@
                                                 </span>
                                                 <span
                                                     class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-70">{{
-                                                    getFormattedDate(user.date_of_birth) }}</span>
+                                                    getDateFormat(user.date_of_birth) }}</span>
                                             </li>
                                             <li class="d-flex px-4 align-center">
                                                 <span class="mr-3 d-custom-flex align-items-left w-30">
@@ -59,7 +59,7 @@
                                                 </span>
                                                 <span
                                                     class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-70">{{
-                                                    getFormattedDate(user.created_at) }}</span>
+                                                    getDateFormat(user.created_at) }}</span>
                                             </li>
                                             <li class="d-flex px-4 align-center">
                                                 <span class="mr-3 d-custom-flex align-items-left w-30">
@@ -78,7 +78,8 @@
                                                     {{ showsecure ? user.client_secure: '.....................' }}
                                                 </span>
                                                 <span class="mr-3 d-custom-flex align-items-right w-20">
-                                                    <v-btn class="mr-3" text icon :color="!showsecure ? 'success' : 'error'"
+                                                    <v-btn class="mr-3" text icon
+                                                        :color="!showsecure ? 'success' : 'error'"
                                                         @click="showsecure = !showsecure">
                                                         <v-icon class="zmdi zmdi-eye" v-if="!showsecure"></v-icon>
                                                         <v-icon class="zmdi zmdi-eye-off" v-else></v-icon>
@@ -208,9 +209,14 @@
                 });
         },
         methods: {
-            getFormattedDate(date) {
+            getDateFormat(date) {
                 if (!date) return '';
-                return dateformat(new Date(date), "longDate");
+                return dateformat(new Date(date), "mmm, dd yyyy HH:MM")
+            },
+            getDateFormatWithMS(date) {
+                if (!date) return '';
+                date = parseInt(date);
+                return dateformat(date, "mmm, dd yyyy HH:MM")
             },
             onEditUser() {
                 this.openDialog();
