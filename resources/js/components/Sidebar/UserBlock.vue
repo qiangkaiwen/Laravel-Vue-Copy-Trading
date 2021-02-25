@@ -8,10 +8,15 @@
 		</v-list-item-content>
 		<v-menu bottom offset-y left content-class="userblock-dropdown" nudge-top="-10" nudge-right="0"
 			transition="slide-y-transition">
-			<template v-slot:activator="{ on }">
-				<v-btn dark icon v-on="on" class="ma-0">
-					<v-icon>more_vert</v-icon>
-				</v-btn>
+			<template v-slot:activator="{ on: menuon }">
+				<v-tooltip right>
+					<template v-slot:activator="{ on: tipon }">
+						<v-btn dark icon v-on="{...menuon, ...tipon}" class="ma-0">
+							<v-icon>more_vert</v-icon>
+						</v-btn>
+					</template>
+					<span>More actions</span>
+				</v-tooltip>
 			</template>
 			<div class="dropdown-content">
 				<div class="dropdown-top white--text primary">
@@ -20,7 +25,7 @@
 				</div>
 				<v-list class="dropdown-list">
 					<template v-for="userLink in userLinks">
-						<template v-if="userLink.id !== 4">
+						<template v-if="userLink.id !== 'logout'">
 							<v-list-item :to="getMenuLink(userLink.path)" :key="userLink.id">
 								<i :class="userLink.icon"></i>
 								<span>{{$t(userLink.title)}}</span>
@@ -48,7 +53,13 @@
 			return {
 				userLinks: [
 					{
-						id: 4,
+						id: 'profile',
+						title: 'message.myProfile',
+						path: 'my-profile',
+						icon: 'ti-user mr-3 success--text'
+					},
+					{
+						id: 'logout',
 						title: 'message.logOut',
 						icon: 'ti-power-off mr-3 error--text'
 					}

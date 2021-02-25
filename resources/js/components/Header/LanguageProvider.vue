@@ -8,7 +8,7 @@
 		<div class="dropdown-content">
 			<div class="dropdown-top d-custom-flex justify-space-between primary">
 				<span class="white--text fw-bold">Languages</span>
-				<span class="v-badge warning">2 NEW</span>
+				<!-- <span class="v-badge warning">2 NEW</span> -->
 			</div>
 			<v-list class="dropdown-list">
 				<v-list-item v-for="language in languages" :key="language.name" @click="changeLanguage(language)">

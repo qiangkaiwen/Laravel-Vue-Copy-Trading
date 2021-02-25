@@ -10,12 +10,46 @@ use App\Source;
 use App\Copy;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Validator;
 
 class SourceController extends Controller
 {
     public function addSource(Request $request)
     {
         $input = $request->all();
+        $validator = Validator::make($input, [
+            'account_number' => 'required',
+            'broker' => 'required',
+            'symbol' => 'required',
+            'lots' => 'required',
+            'ticket' => 'required',
+            'direction' => 'required',
+            'type' => 'required',
+            'magic' => 'required',
+            'openPrice' => 'required',
+            'stopLossPrice' => 'required',
+            'takeProfitPrice' => 'required',
+            'openTime' => 'required',
+            'openTimeGMT' => 'required',
+            'expiration' => 'required',
+            'expirationGMT' => 'required',
+            'sourceTicket' => 'required',
+            'sourceLots' => 'required',
+            'sourceType' => 'required',
+            'originalTicket' => 'required',
+            'originalLots' => 'required',
+            'sourceOriginalTicket' => 'required',
+            'sourceOriginalLots' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => 'Data is not in the proper format.',
+                ]
+            ]);
+        }
         $user = Auth::user();
         if (!$user) {
             return response()->json([
@@ -66,7 +100,13 @@ class SourceController extends Controller
         unset($input['account_number']);
         unset($input['broker']);
 
-        Source::where('account_id', $account['id'])->delete();
+        //Source::where('account_id', $account['id'])->delete();
+        $source = Source::where([
+            'account_id' => $account['id'],
+            'symbol' => $input['symbol'],
+            'ticket' => $input['ticket'],
+            'magic' => $input['magic'],
+        ])->delete();
         Source::create($input);
 
         return response()->json([

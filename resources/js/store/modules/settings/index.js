@@ -24,7 +24,7 @@ const state = {                                       // dark mode
 	routerAnimations,                                      // router animations
 	selectedRouterAnimation: routerAnimations[0],          // selected router animation
 	themes,                                                // themes
-	selectedTheme: themes[4],                              // selected theme
+	selectedTheme: themes[0],                              // selected theme
 	headerFilters,                                         // header filters
 	activeHeaderFilter: headerFilters[1],                  // selected header filter
 	mobileSearchForm: false								   // Is Mobile Search Form Open

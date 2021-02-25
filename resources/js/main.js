@@ -24,6 +24,7 @@ import fullscreen from 'vue-fullscreen'
 import InstantSearch from 'vue-instantsearch'
 import VueVideoPlayer from 'vue-video-player';
 import Croppa from 'vue-croppa';
+import Draggable from "vuedraggable";
 // global components
 import GlobalComponents from './globalComponents'
 // router
@@ -104,6 +105,7 @@ Vue.use(fullscreen);
 Vue.use(GlobalComponents);
 Vue.use(VueVideoPlayer);
 Vue.use(Croppa);
+Vue.use(Draggable);
 Vue.use(VueGoogleMaps, {
 	load: {
 		key: 'AIzaSyBtdO5k6CRntAMJCF-H5uZjTCoSGX95cdk' // Add your here your google map api key
