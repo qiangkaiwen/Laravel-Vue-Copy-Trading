@@ -336,6 +336,88 @@ class AccountController extends Controller
         ], 200);
     }
 
+    public function getCopySetting(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User not found",
+                ]
+            ], 400);
+        }
+
+        $src_account_body = $request->source_account;
+        $src_account_number = $src_account_body['account_number'];
+        $src_broker = $src_account_body['broker'];
+        $src_account = Accounts::where(['account_number' => $src_account_number, 'broker' => $src_broker])->first();
+
+        if (!$src_account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Source Account Number doesn't exist.",
+                ]
+            ], 400);
+        }
+
+        if ($src_account->status != Accounts::STATUS_PROVIDE) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Source Account Number is not for provide.",
+                ]
+            ], 400);
+        }
+
+        $account_body = $request['account'];
+        $account_number = $account_body['account_number'];
+        $broker = $account_body['broker'];
+        $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
+
+        if (!$account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account Number doesn't exist.",
+                ]
+            ], 400);
+        }
+
+        if ($account->status != Accounts::STATUS_COPY) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account Number is not for copy.",
+                ]
+            ], 400);
+        }
+
+        $copy_info = Copy::where(['master_id' => $src_account->id, 'slave_id' => $account->id])->first();
+        if (!$copy_info) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Copy Information not found.",
+                ]
+            ], 400);
+        }
+
+        unset($copy_info['id']);
+        unset($copy_info['master_id']);
+        unset($copy_info['slave_id']);
+        unset($copy_info['created_at']);
+        unset($copy_info['updated_at']);
+        return response()->json($copy_info);
+    }
+
     public function copyAccount(Request $request)
     {
         $user = Auth::user();
