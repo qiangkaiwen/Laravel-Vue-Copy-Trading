@@ -374,53 +374,41 @@ class AccountController extends Controller
             ], 400);
         }
 
-        $account_body = $request->account;
-        $account_number = $account_body['account_number'];
-        $broker = $account_body['broker'];
-        $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
+        $accounts = $request['accounts'];
+        $setting = $request['setting'];
+        $success = 0;
+        $total = 0;
+        foreach ($accounts as $index => $account_body) {
+            $total++;
+            $account_number = $account_body['account_number'];
+            $broker = $account_body['broker'];
+            $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
 
-        if (!$account) {
-            return response()->json([
-                'response' => [
-                    'code' => 400,
-                    'api_status' => 0,
-                    'message' => "Account Number doesn't exist.",
-                ]
-            ], 400);
+            if (!$account) {
+                continue;
+            }
+
+            if ($account->status == Accounts::STATUS_PROVIDE) {
+                continue;
+            }
+
+            $cid = Copy::where(['master_id' => $src_account->id, 'slave_id' => $account->id])->exists();
+            if ($cid) {
+                continue;
+            }
+
+            Copy::create(array_merge(['master_id' => $src_account->id, 'slave_id' => $account->id], $setting));
+
+            $account->status = Accounts::STATUS_COPY;
+            $account->save();
+            $success++;
         }
-
-        if ($account->status == Accounts::STATUS_PROVIDE) {
-            return response()->json([
-                'response' => [
-                    'code' => 400,
-                    'api_status' => 0,
-                    'message' => "Account Number is already in use.",
-                ]
-            ], 400);
-        }
-
-
-        $cid = Copy::where(['master_id' => $src_account->id, 'slave_id' => $account->id])->exists();
-        if ($cid) {
-            return response()->json([
-                'response' => [
-                    'code' => 400,
-                    'api_status' => 0,
-                    'message' => "Account Number is already copying source.",
-                ]
-            ], 400);
-        }
-
-        Copy::create(['master_id' => $src_account->id, 'slave_id' => $account->id]);
-
-        $account->status = Accounts::STATUS_COPY;
-        $account->save();
 
         return response()->json([
             'response' => [
                 'code' => 200,
                 'api_status' => 1,
-                'message' => "Copied",
+                'message' => "Copied $success / $total accounts",
             ]
         ], 200);
     }

@@ -722,50 +722,55 @@
                     this.formstep++
                 },
                 copySource() {
-                    console.log(this.form);
-                    // this.copyModal = false;
+                    var setting = Object.assign({}, this.form);
+                    delete setting.valid;
                     this.isFormSubmitting = true;
                     Nprogress.start();
-                },
-                copyConfirm() {
-                    // axios.post(`${webServices.baseURL}/copysources`,
-                    //     { source_account: this.source_account, account: this.form.account },
-                    //     { headers: { 'Content-Type': 'application/json' } })
-                    //     .then(({ data }) => {
-                    //         const { api_status, message } = data.response;
 
-                    //         if (api_status) {
-                    //             this.tableProvideKey++;
-                    //             Vue.notify({
-                    //                 group: 'signals',
-                    //                 type: 'success',
-                    //                 text: 'Copying signal success!'
-                    //             });
-                    //         }
-                    //         else {
-                    //             Vue.notify({
-                    //                 group: 'signals',
-                    //                 type: 'error',
-                    //                 text: message
-                    //             });
-                    //         }
-                    //     })
-                    //     .catch((error) => {
-                    //         let message = 'Copying signal failed.';
-                    //         if (error.response) {
-                    //             const { response } = error.response.data;
-                    //             message = response.message;
-                    //         }
-                    //         Vue.notify({
-                    //             group: 'signals',
-                    //             type: 'error',
-                    //             text: message
-                    //         });
-                    //     })
-                    //     .finally(() => {
-                    //         this.copied_account = [];
-                    //         this.$refs.copyConfirmationDialog.close();
-                    //     });
+                    axios.post(`${webServices.baseURL}/copysources`,
+                        {
+                            source_account: this.source_account,
+                            accounts: this.copyingaccounts,
+                            setting: setting
+                        },
+                        { headers: { 'Content-Type': 'application/json' } })
+                        .then(({ data }) => {
+                            const { api_status, message } = data.response;
+
+                            if (api_status) {
+                                this.tableProvideKey++;
+                                Vue.notify({
+                                    group: 'signals',
+                                    type: 'success',
+                                    text: message
+                                });
+                            }
+                            else {
+                                Vue.notify({
+                                    group: 'signals',
+                                    type: 'error',
+                                    text: message
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            let message = 'Copying signal failed.';
+                            if (error.response) {
+                                const { response } = error.response.data;
+                                message = response.message;
+                            }
+                            Vue.notify({
+                                group: 'signals',
+                                type: 'error',
+                                text: message
+                            });
+                        })
+                        .finally(() => {
+                            this.copyModal = false;
+                            this.copied_account = [];
+                            this.isFormSubmitting = false;
+                            Nprogress.done();
+                        });
                 },
             }
         },
