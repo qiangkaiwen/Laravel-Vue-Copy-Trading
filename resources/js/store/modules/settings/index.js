@@ -11,7 +11,7 @@ import {
 } from "./data";
 
 const state = {                                       // dark mode
-	collapseSidebar: false,                                // mini sidevar
+	collapseSidebar: true,                                // mini sidevar
 	rtlLayout: false,                                    // rtl layout
 	backgroundImage: true,                                // enable sidebar background image
 	horizontalLayoutSidebar: false,                        // horizontal layout sidebar
@@ -20,7 +20,7 @@ const state = {                                       // dark mode
 	sidebarBackgroundImages,                               // sidebar backgorund images
 	selectedSidebarBgImage: sidebarBackgroundImages[2],    // selected sidebar background image
 	sidebarFilters,                                        // sidebar filters
-	sidebarSelectedFilter: sidebarFilters[1],              // selected sidebar filter
+	sidebarSelectedFilter: sidebarFilters[0],              // selected sidebar filter
 	routerAnimations,                                      // router animations
 	selectedRouterAnimation: routerAnimations[0],          // selected router animation
 	themes,                                                // themes

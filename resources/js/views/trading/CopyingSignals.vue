@@ -1,7 +1,7 @@
 <template>
     <div>
         <page-title-bar></page-title-bar>
-        <app-section-loader :status="copySignal_loading"></app-section-loader>
+        <app-section-loader :status="copyingSignal_loading"></app-section-loader>
         <v-container fluid class="grid-list-xl pt-0 mt-n3">
             <v-row>
                 <app-card :fullBlock="true" colClasses="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
@@ -30,9 +30,9 @@
                             </app-card>
                         </v-col>
                     </v-row>
-                    <v-data-table :key="tableCopyKey" :headers="headers" :items="copySignal_data" :search="search"
-                        item-key="email" :server-items-length="copySignal_total" :options.sync="options"
-                        :loading="copySignal_loading"
+                    <v-data-table :key="tableCopyKey" :headers="headers" :items="copyingSignal_data" :search="search"
+                        item-key="email" :server-items-length="copyingSignal_total" :options.sync="options"
+                        :loading="copyingSignal_loading"
                         :footer-props="{ showFirstLastPage: true, itemsPerPageOptions: [5, 10, 15, 20] }">
                         <template slot="headerCell" slot-scope="props" :loading-text="'Loading... Please wait'">
                             <v-tooltip bottom>
@@ -123,7 +123,7 @@
         },
         methods: {
             ...mapActions([
-                'getCopySignalAction'
+                'getCopyingSignalAction'
             ]),
             ...{
                 getDateFormat(date) {
@@ -139,7 +139,7 @@
                     this.$router.push({ path: `signal-detail/${account_number}/${broker}` });
                 },
                 gotoAllProvide() {
-                    this.$router.push({ name: `available-signal` });
+                    this.$router.push({ name: `available-sources` });
                 },
                 deleteSource(id) {
                     this.delete_id = id;
@@ -184,11 +184,11 @@
         },
         computed: {
             ...mapGetters([
-                "copySignal_data",
-                "copySignal_perPage",
-                "copySignal_total",
-                "copySignal_page",
-                "copySignal_loading"
+                "copyingSignal_data",
+                "copyingSignal_perPage",
+                "copyingSignal_total",
+                "copyingSignal_page",
+                "copyingSignal_loading"
             ]),
             ...{
                 serverOptions: function () {
@@ -204,7 +204,7 @@
 
         watch: {
             serverOptions: function (serverOptions) {
-                this.getCopySignalAction({
+                this.getCopyingSignalAction({
                     page: serverOptions.page,
                     perPage: serverOptions.itemsPerPage,
                     hash: serverOptions.hash

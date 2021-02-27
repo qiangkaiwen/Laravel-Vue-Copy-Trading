@@ -8,13 +8,13 @@ const Statistics = () => import('Views/statistics/Statistics');
 const TradingAccount = () => import('Views/trading/TradingAccount');
 const ProvideSignal = () => import('Views/trading/ProvideSignal');
 const SignalDetail = () => import('Views/trading/SignalDetail');
-const CopySignal = () => import('Views/trading/CopySignal');
-const AvailableSignal = () => import('Views/trading/AvailableSignal');
+const copyingSignals = () => import('Views/trading/copyingSignals');
+const AvailableSignals = () => import('Views/trading/AvailableSignals');
 
 export default {
     path: '/',
     component: Full,
-    redirect: '/users-list',
+    redirect: '/trading-accounts',
     children: [
         // users
         {
@@ -144,12 +144,12 @@ export default {
         },
 
         {
-            path: '/copy-signal',
-            name: 'copy-signal',
-            component: CopySignal,
+            path: '/copying-signal',
+            name: 'copying-signal',
+            component: copyingSignals,
             meta: {
                 requiresAuth: true,
-                title: 'message.copySignal',
+                title: 'message.copyingSignals',
                 breadcrumb: [
                     {
                         breadcrumbInactive: 'User /'
@@ -162,12 +162,12 @@ export default {
         },
 
         {
-            path: '/available-signal',
-            name: 'available-signal',
-            component: AvailableSignal,
+            path: '/available-sources',
+            name: 'available-sources',
+            component: AvailableSignals,
             meta: {
                 requiresAuth: true,
-                title: 'message.availableSignals',
+                title: 'message.availableSources',
                 breadcrumb: [
                     {
                         breadcrumbInactive: 'User /'

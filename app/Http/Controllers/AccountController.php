@@ -8,6 +8,7 @@ use App\Accounts;
 use App\UserAccounts;
 use App\Copy;
 use App\Source;
+use App\Copy_Settings;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -349,34 +350,8 @@ class AccountController extends Controller
             ], 400);
         }
 
-        $src_account_body = $request->source_account;
-        $src_account_number = $src_account_body['account_number'];
-        $src_broker = $src_account_body['broker'];
-        $src_account = Accounts::where(['account_number' => $src_account_number, 'broker' => $src_broker])->first();
-
-        if (!$src_account) {
-            return response()->json([
-                'response' => [
-                    'code' => 400,
-                    'api_status' => 0,
-                    'message' => "Source Account Number doesn't exist.",
-                ]
-            ], 400);
-        }
-
-        if ($src_account->status != Accounts::STATUS_PROVIDE) {
-            return response()->json([
-                'response' => [
-                    'code' => 400,
-                    'api_status' => 0,
-                    'message' => "Source Account Number is not for provide.",
-                ]
-            ], 400);
-        }
-
-        $account_body = $request['account'];
-        $account_number = $account_body['account_number'];
-        $broker = $account_body['broker'];
+        $account_number = $request['account_number'];
+        $broker = $request['broker'];
         $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
 
         if (!$account) {
@@ -399,15 +374,64 @@ class AccountController extends Controller
             ], 400);
         }
 
-        $copy_info = Copy::where(['master_id' => $src_account->id, 'slave_id' => $account->id])->first();
+        $copy_info = Copy_Settings::where(['account_id' => $account['id']])->first();
         if (!$copy_info) {
             return response()->json([
                 'response' => [
-                    'code' => 400,
-                    'api_status' => 0,
-                    'message' => "Copy Information not found.",
+                    'code' => 200,
+                    'api_status' => 1,
+                    'setting' => [
+                        "isOpenTradesInDestination" => 0,
+                        "isOpenPendingOrdersInDestination" => 0,
+                        "copyDirection" => 2,
+                        "isCopyTPToDestination" => 1,
+                        "overrideDestinationTP" => 0,
+                        "isCopySLToDestination" => 1,
+                        "overrideDestinationSL" => 0,
+                        "isCloseTradesInDestination" => 1,
+                        "isDeletePendingOrdersInDestination" => 1,
+                        "isInvertTradeCopyDirection" => 0,
+                        "lotSizeType" => 0,
+                        "lotSizeRisk" => 0.5,
+                        "lotSizeMultipleOfSource" => 1,
+                        "fixedLotSize" => 0.01,
+                        "minimumLotSize" => 0.01,
+                        "maximumLotSize" => 100,
+                        "maximumOrdersInDestination" => 0,
+                        "maximumOpenPriceSlippage" => 0,
+                        "maximumOpenPriceDeviationToCopy" => 0,
+                        "maximumTimeAfterSourceOpen" => 30,
+                        "dailyProfitToStop" => 0,
+                        "isCloseTradesWhenDailyProfitIsReached" => 0,
+                        "dailyLossToStop" => 0,
+                        "isCloseTradesWhenDailyLossIsReached" => 0,
+                        "isSendAlertForNewTrades" => 0,
+                        "isSendAlertForClosedTrades" => 0,
+                        "isSendAlertForPartiallyClosedTrades" => 0,
+                        "isSendAlertForDailyProfitReached" => 0,
+                        "isSendAlertForDailyLossReached" => 0,
+                        "isAlertSound" => 0,
+                        "isAlertPopup" => 0,
+                        "isAlertEmail" => 0,
+                        "isAlertMobile" => 0,
+                        "brokerServerSummerTimeZone" => 1,
+                        "brokerServerWinterTimeZone" => 2,
+                        "brokerSymbolPrefix" => null,
+                        "brokerSymbolSuffix" => null,
+                        "messageColor" => "#000000FF",
+                        "applyTrailingStop" => 0,
+                        "profitTrailing" => 1,
+                        "trailingStop" => 8,
+                        "trailingStep" => 2,
+                        "onTime" => "02:00",
+                        "offTime" => "17:30",
+                        "applyDestinationPair" => 0,
+                        "destinationPair" => "EURUSD",
+                        "applyMessageLog" => 1,
+                        "applyOrderCloseBy" => 0
+                    ],
                 ]
-            ], 400);
+            ]);
         }
 
         unset($copy_info['id']);
@@ -415,7 +439,71 @@ class AccountController extends Controller
         unset($copy_info['slave_id']);
         unset($copy_info['created_at']);
         unset($copy_info['updated_at']);
-        return response()->json($copy_info);
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'setting' => $copy_info,
+            ]
+        ]);
+    }
+
+    public function saveCopySetting(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User not found",
+                ]
+            ], 400);
+        }
+
+        $account_number = $request['account_number'];
+        $broker = $request['broker'];
+        $setting = $request->all();
+        unset($setting['account_number']);
+        unset($setting['broker']);
+        $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
+
+        if (!$account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account Number doesn't exist.",
+                ]
+            ], 400);
+        }
+
+        if ($account->status != Accounts::STATUS_COPY) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account Number is not for copy.",
+                ]
+            ], 400);
+        }
+
+        $copy_setting = Copy_Settings::where(['account_id' => $account['id']])->first();
+        if ($copy_setting) {
+            $copy_setting->update($setting);
+        }
+        else {
+            $setting['account_id'] = $account['id'];
+            Copy_Settings::create($setting);
+        }
+
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'message' => "Setting Saved.",
+            ]
+        ]);
     }
 
     public function copyAccount(Request $request)
@@ -457,7 +545,6 @@ class AccountController extends Controller
         }
 
         $accounts = $request['accounts'];
-        $setting = $request['setting'];
         $success = 0;
         $total = 0;
         foreach ($accounts as $index => $account_body) {
@@ -479,7 +566,7 @@ class AccountController extends Controller
                 continue;
             }
 
-            Copy::create(array_merge(['master_id' => $src_account->id, 'slave_id' => $account->id], $setting));
+            Copy::create(['master_id' => $src_account->id, 'slave_id' => $account->id]);
 
             $account->status = Accounts::STATUS_COPY;
             $account->save();
@@ -608,7 +695,7 @@ class AccountController extends Controller
         $total = DB::select("SELECT COUNT(1) as total from 
                             ( " . $query . ") as result");
         $total = $total[0]->total;
-        $copySignal = DB::select($query . "LIMIT $offset, $perPage");
+        $copyingSignal = DB::select($query . "LIMIT $offset, $perPage");
         return response()->json([
             'response' => [
                 'code' => 200,
@@ -616,7 +703,7 @@ class AccountController extends Controller
                 'total' => $total,
                 'page' => $page,
                 'perPage' => $perPage,
-                'copySignal' => $copySignal,
+                'copyingSignal' => $copyingSignal,
             ]
         ], 200);
     }
@@ -691,6 +778,7 @@ class AccountController extends Controller
         if (count($masters) == 0) {
             $slave['status'] = Accounts::STATUS_NONE;
             $slave->save();
+            Copy_Settings::where('account_id', $slave['id'])->delete();
         }
 
         return response()->json([

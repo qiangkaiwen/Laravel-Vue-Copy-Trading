@@ -25,11 +25,11 @@ const state = {
     signalDetail_information: {},
     signalDetail_loading: false,
 
-    copySignal_data: [],
-    copySignal_perPage: 10,
-    copySignal_total: 0,
-    copySignal_page: 1,
-    copySignal_loading: false,
+    copyingSignal_data: [],
+    copyingSignal_perPage: 10,
+    copyingSignal_total: 0,
+    copyingSignal_page: 1,
+    copyingSignal_loading: false,
 
     availableSignal_data: [],
     availableSignal_perPage: 10,
@@ -58,11 +58,11 @@ const getters = {
     signalDetail_loading: state => state.signalDetail_loading,
     signalDetail_information: state => state.signalDetail_information,
 
-    copySignal_data: state => state.copySignal_data,
-    copySignal_perPage: state => state.copySignal_perPage,
-    copySignal_total: state => state.copySignal_total,
-    copySignal_page: state => state.copySignal_page,
-    copySignal_loading: state => state.copySignal_loading,
+    copyingSignal_data: state => state.copyingSignal_data,
+    copyingSignal_perPage: state => state.copyingSignal_perPage,
+    copyingSignal_total: state => state.copyingSignal_total,
+    copyingSignal_page: state => state.copyingSignal_page,
+    copyingSignal_loading: state => state.copyingSignal_loading,
 
     availableSignal_data: state => state.availableSignal_data,
     availableSignal_perPage: state => state.availableSignal_perPage,
@@ -138,22 +138,22 @@ const actions = {
             })
     },
 
-    getCopySignalAction(context, option) {
-        context.commit('setCopySignalLoadingHandler', false);
+    getCopyingSignalAction(context, option) {
+        context.commit('setCopyingSignalLoadingHandler', false);
         Nprogress.start();
         let url = `${webServices.baseURL}/copysources?page=${option.page}&perPage=${option.perPage}`;
         if(option.hash != "") url += `&account=${option.hash}`;
         axios.get(url, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
-                const { api_status, page, perPage, total, copySignal } = response.data.response;
+                const { api_status, page, perPage, total, copyingSignal } = response.data.response;
                 if (api_status) {
-                    context.commit('setCopySignalHandler', { page, perPage, total, copySignal });
+                    context.commit('setCopyingSignalHandler', { page, perPage, total, copyingSignal });
                 } else {
-                    context.commit('setCopySignalHandler', { page: 1, perPage: 10, total: 0, copySignal: [] });
+                    context.commit('setCopyingSignalHandler', { page: 1, perPage: 10, total: 0, copyingSignal: [] });
                 }
             })
             .catch(error => {
-                context.commit('setCopySignalHandler', { page: 1, perPage: 10, total: 0, copySignal: [] });
+                context.commit('setCopyingSignalHandler', { page: 1, perPage: 10, total: 0, copyingSignal: [] });
                 console.log(error);
                 console.log("Failed");
             })
@@ -210,16 +210,16 @@ const mutations = {
         state.provideSignal_loading = loading;
     },
 
-    setCopySignalHandler(state, payload) {
-        const { page, perPage, total, copySignal } = payload;
-        state.copySignal_page = page;
-        state.copySignal_perPage = perPage;
-        state.copySignal_total = total;
-        state.copySignal_data = copySignal;
-        state.copySignal_loading = false;
+    setCopyingSignalHandler(state, payload) {
+        const { page, perPage, total, copyingSignal } = payload;
+        state.copyingSignal_page = page;
+        state.copyingSignal_perPage = perPage;
+        state.copyingSignal_total = total;
+        state.copyingSignal_data = copyingSignal;
+        state.copyingSignal_loading = false;
     },
-    setCopySignalLoadingHandler(state, loading) {
-        state.copySignal_loading = loading;
+    setCopyingSignalLoadingHandler(state, loading) {
+        state.copyingSignal_loading = loading;
     },
 
     setAvailableSignalHandler(state, payload) {

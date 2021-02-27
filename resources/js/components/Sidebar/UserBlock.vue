@@ -8,15 +8,10 @@
 		</v-list-item-content>
 		<v-menu bottom offset-y left content-class="userblock-dropdown" nudge-top="-10" nudge-right="0"
 			transition="slide-y-transition">
-			<template v-slot:activator="{ on: menuon }">
-				<v-tooltip right>
-					<template v-slot:activator="{ on: tipon }">
-						<v-btn dark icon v-on="{...menuon, ...tipon}" class="ma-0">
-							<v-icon>more_vert</v-icon>
-						</v-btn>
-					</template>
-					<span>More actions</span>
-				</v-tooltip>
+			<template v-slot:activator="{ on }">
+				<v-btn dark icon v-on="on" class="ma-0">
+					<v-icon>more_vert</v-icon>
+				</v-btn>
 			</template>
 			<div class="dropdown-content">
 				<div class="dropdown-top white--text primary">

@@ -59,6 +59,8 @@
             ) {
                 this.$store.dispatch("rtlLayout");
             }
+
+            this.$vuetify.theme.dark = true;
         },
         computed: {
             ...mapGetters([

@@ -53,6 +53,6 @@ class Source extends Model
 
     public function account()
     {
-        $this->belongsTo(Accounts::class, 'account_number', 'account_number');
+        $this->belongsTo(Accounts::class, 'account_id');
     }
 }
