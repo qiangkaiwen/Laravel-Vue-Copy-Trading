@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('email', 191)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string("client_id");
-            $table->string("client_secure");
+            $table->string("client_secret");
             $table->string('phone')->default('');
             $table->string('avatar')->default('');
             $table->integer('active')->default(0);

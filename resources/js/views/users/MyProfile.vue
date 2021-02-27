@@ -71,17 +71,17 @@
                                             </li>
                                             <li class="d-flex px-4 align-center">
                                                 <span class="mr-3 d-custom-flex align-items-left w-30">
-                                                    <span><i class="zmdi zmdi-shield-security"></i> Client Secure</span>
+                                                    <span><i class="zmdi zmdi-shield-security"></i> Client Secret</span>
                                                 </span>
                                                 <span
                                                     class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-50">
-                                                    {{ showsecure ? user.client_secure: '.....................' }}
+                                                    {{ showsecret ? user.client_secret: '.....................' }}
                                                 </span>
                                                 <span class="mr-3 d-custom-flex align-items-right w-20">
                                                     <v-btn class="mr-3" text icon
-                                                        :color="!showsecure ? 'success' : 'error'"
-                                                        @click="showsecure = !showsecure">
-                                                        <v-icon class="zmdi zmdi-eye" v-if="!showsecure"></v-icon>
+                                                        :color="!showsecret ? 'success' : 'error'"
+                                                        @click="showsecret = !showsecret">
+                                                        <v-icon class="zmdi zmdi-eye" v-if="!showsecret"></v-icon>
                                                         <v-icon class="zmdi zmdi-eye-off" v-else></v-icon>
                                                     </v-btn>
                                                 </span>
@@ -185,7 +185,7 @@
                     phone: null,
                     password: false
                 },
-                showsecure: false,
+                showsecret: false,
             };
         },
         mounted() {

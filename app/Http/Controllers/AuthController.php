@@ -55,13 +55,13 @@ class AuthController extends Controller
                 } while ($cid_exist);
 
                 do {
-                    $client_secure = User::incrementalHash();
-                    $csec_exist = User::where('client_id', $client_secure)->exists();
+                    $client_secret = User::incrementalHash();
+                    $csec_exist = User::where('client_id', $client_secret)->exists();
                 } while ($csec_exist);
 
                 $input = $request->all();
                 $input['password'] = bcrypt($input['password']);
-                $user = User::create(array_merge($input, ['client_id' => $client_id, 'client_secure' => $client_secure]));
+                $user = User::create(array_merge($input, ['client_id' => $client_id, 'client_secret' => $client_secret]));
                 $user->addRole(UserRole::ROLE_USER);
                 $user->save();
 
@@ -85,7 +85,7 @@ class AuthController extends Controller
             $account_number = $request['account_number'];
             $broker = $request['broker'];
             $client_id = $request['client_id'];
-            $client_secure = $request['client_secure'];
+            $client_secret = $request['client_secret'];
 
             if ($email && $password) {
                 if (Auth::attempt(['email' => $email, 'password' => $password, 'active' => 1], true)) {
@@ -125,8 +125,8 @@ class AuthController extends Controller
                 }
             }
 
-            if ($client_id && $client_secure) {
-                $user = User::where(['client_id' => $client_id, 'client_secure' => $client_secure, 'active' => '1'])->first();
+            if ($client_id && $client_secret) {
+                $user = User::where(['client_id' => $client_id, 'client_secret' => $client_secret, 'active' => '1'])->first();
                 if (!$user) {
                     return response()->json([
                         'response' => [

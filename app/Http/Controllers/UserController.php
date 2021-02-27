@@ -222,7 +222,7 @@ class UserController extends Controller
                     'name' => $me['name'],
                     'email' => $me['email'],
                     'client_id' => $me['client_id'],
-                    'client_secure' => $me['client_secure'],
+                    'client_secret' => $me['client_secret'],
                     'phone' => $me['phone'],
                     'avatar' => $me['avatar'],
                     'roles' => $me['roles'],
