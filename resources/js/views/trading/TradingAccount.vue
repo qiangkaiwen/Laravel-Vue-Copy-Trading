@@ -51,22 +51,36 @@
                                 <td>
                                     <router-link v-if="props.item.status == 'PROVIDE'"
                                         :to="{ name: 'signal-detail', params: { account_number: props.item.account_number, broker: props.item.broker } }">
-                                        <v-btn icon color="primary">
-                                            <v-icon class="zmdi zmdi-eye"></v-icon>
-                                        </v-btn>
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn v-on="on" icon color="primary">
+                                                    <v-icon class="zmdi zmdi-eye"></v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>View This account</span>
+                                        </v-tooltip>
                                     </router-link>
 
                                     <router-link v-if="props.item.status == 'COPY'"
                                         :to="{ name: 'copying-signal', hash: '#' + props.item.account_number }">
-                                        <v-btn icon color="primary">
-                                            <v-icon class="zmdi zmdi-eye"></v-icon>
-                                        </v-btn>
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn v-on="on" icon color="primary">
+                                                    <v-icon class="zmdi zmdi-eye"></v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>View This account</span>
+                                        </v-tooltip>
                                     </router-link>
-
-                                    <v-btn v-if="props.item.status == 'COPY'" icon color="success"
-                                        @click="changeSetting(props.item.account_number, props.item.broker)">
-                                        <v-icon class="zmdi zmdi-settings"></v-icon>
-                                    </v-btn>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn v-on="on" v-if="props.item.status == 'COPY'" icon color="success"
+                                                @click="changeSetting(props.item.account_number, props.item.broker)">
+                                                <v-icon class="zmdi zmdi-settings"></v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Change Copy Settings</span>
+                                    </v-tooltip>
                                 </td>
                             </tr>
                         </template>

@@ -54,13 +54,24 @@
                                 <td>{{ getDateFormatWithMS(props.item.created_at) }}</td>
                                 <td>{{ props.item.signal_number }}</td>
                                 <td>
-                                    <v-btn text icon color="primary"
-                                        @click="gotoDetail(props.item.src_account_number, props.item.src_broker)">
-                                        <v-icon class="zmdi zmdi-eye"></v-icon>
-                                    </v-btn>
-                                    <v-btn text icon color="error" @click="deleteSource(props.item.id)">
-                                        <v-icon class="zmdi zmdi-delete"></v-icon>
-                                    </v-btn>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn v-on="on" text icon color="primary"
+                                                @click="gotoDetail(props.item.src_account_number, props.item.src_broker)">
+                                                <v-icon class="zmdi zmdi-eye"></v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>View Source Detail</span>
+                                    </v-tooltip>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn v-on="on" text icon color="error"
+                                                @click="deleteSource(props.item.id)">
+                                                <v-icon class="zmdi zmdi-delete"></v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Cancel Copying From This Source</span>
+                                    </v-tooltip>
                                 </td>
                             </tr>
                         </template>

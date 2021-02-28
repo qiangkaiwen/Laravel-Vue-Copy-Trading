@@ -50,14 +50,24 @@
                                 <td>{{ getDateFormatWithMS(props.item.openTime) }}</td>
                                 <td>{{ props.item.copier_number }}</td>
                                 <td>
-                                    <v-btn text icon color="primary"
-                                        @click="gotoDetail(props.item.account_number, props.item.broker)">
-                                        <v-icon class="zmdi zmdi-eye"></v-icon>
-                                    </v-btn>
-                                    <v-btn text icon color="success"
-                                        @click="tryCopyAccount(props.item.broker, props.item.account_number)">
-                                        <v-icon class="zmdi zmdi-copy"></v-icon>
-                                    </v-btn>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn v-on="on" text icon color="primary"
+                                                @click="gotoDetail(props.item.account_number, props.item.broker)">
+                                                <v-icon class="zmdi zmdi-eye"></v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>View Source Detail</span>
+                                    </v-tooltip>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn v-on="on" text icon color="success"
+                                                @click="tryCopyAccount(props.item.broker, props.item.account_number)">
+                                                <v-icon class="zmdi zmdi-copy"></v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Copy This Source</span>
+                                    </v-tooltip>
                                 </td>
                             </tr>
                         </template>
@@ -72,7 +82,8 @@
                     <template>
                         <v-card class="mx-auto px-6" v-if="source_account">
                             <v-card-title class="title font-weight-regular justify-space-between">
-                                <span>Source from {{ source_account.account_number }} / {{ source_account.broker }} will be copied to:</span>
+                                <span>Source from {{ source_account.account_number }} / {{ source_account.broker }} will
+                                    be copied to:</span>
                                 <v-avatar color="primary lighten-2" class="subheading white--text" size="40">
                                     <v-icon class="zmdi zmdi-copy"></v-icon>
                                 </v-avatar>

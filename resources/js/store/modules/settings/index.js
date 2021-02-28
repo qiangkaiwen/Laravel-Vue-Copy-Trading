@@ -11,7 +11,7 @@ import {
 } from "./data";
 
 const state = {                                       // dark mode
-	collapseSidebar: true,                                // mini sidevar
+	collapseSidebar: false,                                // mini sidevar
 	rtlLayout: false,                                    // rtl layout
 	backgroundImage: true,                                // enable sidebar background image
 	horizontalLayoutSidebar: false,                        // horizontal layout sidebar

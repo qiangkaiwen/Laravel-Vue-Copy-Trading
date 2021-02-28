@@ -51,13 +51,24 @@
                                 <td>{{ getDateFormatWithMS(props.item.openTime) }}</td>
                                 <td>{{ props.item.copier_number }}</td>
                                 <td>
-                                    <v-btn text icon color="primary"
-                                        @click="gotoDetail(props.item.account_number, props.item.broker)">
-                                        <v-icon class="zmdi zmdi-eye"></v-icon>
-                                    </v-btn>
-                                    <v-btn text icon color="error" @click="deleteSource(props.item.id)">
-                                        <v-icon class="zmdi zmdi-delete"></v-icon>
-                                    </v-btn>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn v-on="on" text icon color="primary"
+                                                @click="gotoDetail(props.item.account_number, props.item.broker)">
+                                                <v-icon class="zmdi zmdi-eye"></v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>View Source Detail</span>
+                                    </v-tooltip>
+
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn v-on="on" text icon color="error" @click="deleteSource(props.item.id)">
+                                                <v-icon class="zmdi zmdi-delete"></v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Cancel Providing This Source</span>
+                                    </v-tooltip>
                                 </td>
                             </tr>
                         </template>
