@@ -6,7 +6,7 @@
 		<div class="session-right text-center">
 			<div class="session-table-cell-signup">
 				<div class="session-content">
-					<!-- <img :src="appLogo" class="img-responsive mb-4" width="78" height="78" /> -->
+					<img :src="appLogo" class="img-responsive mb-4" style="width: 70%; height: auto;" />
 					<h2 class="mb-4">{{$t('message.signUp')}}</h2>
 					<p class="fs-14">{{$t('message.havingAnAccount')}}
 						<router-link to="/session/login">{{$t('message.login')}}</router-link>
@@ -15,8 +15,9 @@
 						<v-text-field label="Username" v-model="name" :rules="nameRules" :counter="30" required>
 						</v-text-field>
 						<v-text-field label="E-mail" v-model="email" :rules="emailRules" required></v-text-field>
-						<v-menu ref="dateref" :close-on-content-click="false" v-model="dateref" transition="scale-transition"
-							offset-y :nudge-right="40" min-width="290px" :return-value.sync="date">
+						<v-menu ref="dateref" :close-on-content-click="false" v-model="dateref"
+							transition="scale-transition" offset-y :nudge-right="40" min-width="290px"
+							:return-value.sync="date">
 							<template v-slot:activator="{ on }">
 								<v-text-field v-on="on" label="Date Of Birth" v-model="date" prepend-icon="event"
 									readonly></v-text-field>
@@ -65,12 +66,18 @@
 				],
 				password: "",
 				passwordRules: [v => !!v || "Password is required"],
-				appLogo: AppConfig.appLogo2,
 				brand: AppConfig.brand,
 				phone: "",
 				dateref: false,
 				date: null,
 			};
+		},
+		computed: {
+			appLogo() {
+				if (this.$vuetify.theme.dark)
+					return AppConfig.appLogo;
+				return AppConfig.darkLogo;
+			}
 		},
 		methods: {
 			signupWithLaravel() {
@@ -85,7 +92,7 @@
 					userDetail
 				});
 			},
-			
+
 		}
 	};
 </script>

@@ -45,13 +45,24 @@
                                         <td>
                                             <router-link
                                                 :to="{ name: 'user-profile', params: { user_id: props.item.id } }">
-                                                <v-btn text icon color="primary">
-                                                    <v-icon class="zmdi zmdi-eye"></v-icon>
-                                                </v-btn>
+                                                <v-tooltip bottom>
+                                                    <template v-slot:activator="{ on }">
+                                                        <v-btn v-on="on" text icon color="primary">
+                                                            <v-icon class="zmdi zmdi-eye"></v-icon>
+                                                        </v-btn>
+                                                    </template>
+                                                    <span>View Profile of This User</span>
+                                                </v-tooltip>
                                             </router-link>
-                                            <v-btn text icon color="error" @click="deleteUser(props.item.id)">
-                                                <v-icon class="zmdi zmdi-delete"></v-icon>
-                                            </v-btn>
+                                            <v-tooltip bottom>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-btn v-on="on" text icon color="error"
+                                                        @click="deleteUser(props.item.id)">
+                                                        <v-icon class="zmdi zmdi-delete"></v-icon>
+                                                    </v-btn>
+                                                </template>
+                                                <span>Delete This User</span>
+                                            </v-tooltip>
                                         </td>
                                     </tr>
                                 </template>
@@ -93,12 +104,26 @@
                                         </td>
                                         <td>{{ props.item.phone }}</td>
                                         <td>{{ getDateFormat(props.item.created_at) }}</td>
-                                        <v-btn text icon color="success" @click="activeUser(props.item.id)">
-                                            <v-icon class="zmdi zmdi-check-circle-u"></v-icon>
-                                        </v-btn>
-                                        <v-btn text icon color="red" @click="blockUser(props.item.id)">
-                                            <v-icon class="zmdi zmdi-block-alt"></v-icon>
-                                        </v-btn>
+                                        <td>
+                                            <v-tooltip bottom>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-btn v-on="on" text icon color="success"
+                                                        @click="activeUser(props.item.id)">
+                                                        <v-icon class="zmdi zmdi-check-circle-u"></v-icon>
+                                                    </v-btn>
+                                                </template>
+                                                <span>Active This User</span>
+                                            </v-tooltip>
+                                            <v-tooltip bottom>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-btn v-on="on" text icon color="red"
+                                                        @click="blockUser(props.item.id)">
+                                                        <v-icon class="zmdi zmdi-block-alt"></v-icon>
+                                                    </v-btn>
+                                                </template>
+                                                <span>Decline</span>
+                                            </v-tooltip>
+                                        </td>
                                     </tr>
                                 </template>
                             </v-data-table>
@@ -145,7 +170,7 @@
                     { text: "Email", value: "email", sortable: false },
                     { text: "Phone", value: "phone", sortable: false },
                     { text: "Joined In", value: "created_at", sortable: false },
-                    { text: "", value: "created_at", sortable: false },
+                    { text: "", sortable: false },
                 ],
                 options: {},
                 new_options: {},

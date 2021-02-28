@@ -2,9 +2,9 @@
  * App Config File
  */
 export default {
-	appLogo: '/static/img/site-logo.png',                                   // App Logo,
-	darkLogo: '/static/img/site-dark-logo.png',							    // dark logo
-	appLogo2: '/static/img/session.png',                                    // App Logo 2 For Login & Signup Page
+	appLogo: '/static/img/White on Transparent.png',                                   // App Logo,
+	darkLogo: '/static/img/Black on Transparent.png',							    // dark logo
+	appLogo2: '/static/img/White on Transparent.png',                                    // App Logo 2 For Login & Signup Page
 	brand: 'Vuely',                                        			        // Brand Name
 	copyrightText: 'Vuely © 2021 All Rights Reserved.',                     // Copyright Text
 	enableUserTour: process.env.NODE_ENV === 'production' ? true : false,   // Enable User Tour

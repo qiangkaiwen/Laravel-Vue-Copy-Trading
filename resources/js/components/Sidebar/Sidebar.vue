@@ -4,6 +4,7 @@
 		<vue-perfect-scrollbar class="scroll-area" :settings="settings">
 			<div class="transparent navigation">
 				<v-list>
+					<app-logo></app-logo>
 					<user-block></user-block>
 					<template v-for="(category, key) in menus">
 						<div v-if="checkAvailable(key)" :key="key">
@@ -74,6 +75,7 @@
 	import UserBlock from "./UserBlock";
 	import { textTruncate, getCurrentAppLayout } from "Helpers/helpers";
 	import { mapGetters } from "vuex";
+	import AppLogo from "Components/AppLogo/AppLogo";
 
 	export default {
 		data() {
@@ -85,6 +87,7 @@
 		},
 		components: {
 			UserBlock,
+			AppLogo
 		},
 		computed: {
 			...mapGetters(["sidebarSelectedFilter", "menus", "getUser"])

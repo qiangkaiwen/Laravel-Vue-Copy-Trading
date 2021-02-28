@@ -1,17 +1,12 @@
 <template>
 	<div class="session-wrapper">
 		<div class="session-left">
-		<session-slider-widget></session-slider-widget>
+			<session-slider-widget></session-slider-widget>
 		</div>
 		<div class="session-right text-center">
 			<div class="session-table-cell">
 				<div class="session-content">
-					<!-- <img 
-						:src="appLogo"
-						class="img-responsive mb-4" 
-						width="78" 
-						height="78" 
-					/> -->
+					<img :src="appLogo" class="img-responsive mb-4" style="width: 70%; height: auto;" />
 					<h2 class="mb-4">{{$t('message.forgotPassword')}}</h2>
 					<p class="fs-14">{{$t('message.enterYourEmailToSendYouAResetLink')}}.</p>
 					<v-form v-model="valid" class="mb-6">
@@ -36,6 +31,13 @@
 		components: {
 			SessionSliderWidget
 		},
+		computed: {
+			appLogo() {
+				if (this.$vuetify.theme.dark)
+					return AppConfig.appLogo;
+				return AppConfig.darkLogo;
+			}
+		},
 		data() {
 			return {
 				email: '',
@@ -46,7 +48,6 @@
 						/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
 						"E-mail must be valid"
 				],
-				appLogo: AppConfig.appLogo2
 			};
 		}
 	};
