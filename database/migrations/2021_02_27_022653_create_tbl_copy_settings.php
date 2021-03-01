@@ -53,11 +53,12 @@ class CreateTblCopySettings extends Migration
             $table->integer('brokerServerWinterTimeZone')->default(2);
             $table->string('brokerSymbolPrefix')->nullable()->default('');
             $table->string('brokerSymbolSuffix')->nullable()->default('');
-            $table->string('messageColor')->default("#000000FF");
+            $table->string('messageColor')->default("#000000");
             $table->integer('applyTrailingStop')->default(0);
             $table->integer('profitTrailing')->default(1);
             $table->integer('trailingStop')->default(8);
             $table->integer('trailingStep')->default(2);
+            $table->integer('applyOnOffTime')->default(0);
             $table->string('onTime')->default("02:00");
             $table->string('offTime')->default("17:30");
             $table->integer('applyDestinationPair')->default(0);

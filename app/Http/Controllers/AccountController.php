@@ -418,12 +418,17 @@ class AccountController extends Controller
                         "brokerServerWinterTimeZone" => 2,
                         "brokerSymbolPrefix" => null,
                         "brokerSymbolSuffix" => null,
-                        "messageColor" => "#000000FF",
+                        "messageColor" => "#000000",
                         "applyTrailingStop" => 0,
                         "profitTrailing" => 1,
                         "trailingStop" => 8,
                         "trailingStep" => 2,
+                        'applyOnOffTime' => 0,
                         "onTime" => "02:00",
+                        "onHour" => "02",
+                        "onMinute" => "00",
+                        "offHour" => "17",
+                        "offMinute" => "30",
                         "offTime" => "17:30",
                         "applyDestinationPair" => 0,
                         "destinationPair" => "EURUSD",
@@ -439,6 +444,15 @@ class AccountController extends Controller
         unset($copy_info['slave_id']);
         unset($copy_info['created_at']);
         unset($copy_info['updated_at']);
+        
+        $onTime = explode(":", $copy_info['onTime']);
+        $copy_info['onHour'] = $onTime[0];
+        $copy_info['onMinute'] = $onTime[1];
+
+        $offTime = explode(":", $copy_info['offTime']);
+        $copy_info['offHour'] = $offTime[0];
+        $copy_info['offMinute'] = $offTime[1];
+
         return response()->json([
             'response' => [
                 'code' => 200,

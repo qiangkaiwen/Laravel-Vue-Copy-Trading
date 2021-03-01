@@ -57,6 +57,7 @@ class Copy_Settings extends Model
         'profitTrailing',
         'trailingStop',
         'trailingStep',
+        'applyOnOffTime',
         'onTime',
         'offTime',
         'applyDestinationPair',
@@ -103,6 +104,7 @@ class Copy_Settings extends Model
         'applyOrderCloseBy' => 'integer',
         'brokerSymbolPrefix' => 'string',
         'brokerSymbolSuffix' => 'string',
+        'applyOnOffTime' => 'integer'
     ];
 
     public function account()

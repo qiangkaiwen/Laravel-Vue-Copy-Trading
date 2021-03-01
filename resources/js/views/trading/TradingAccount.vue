@@ -332,7 +332,7 @@
                                         <v-row>
                                             <v-col class="py-0">
                                                 <span>Message Color</span>
-                                                <v-color-picker class="ma-2" dot-size="10" hide-canvas
+                                                <v-color-picker class="ma-2" dot-size="10" canvas-height="100"
                                                     v-model="form.messageColor"></v-color-picker>
                                             </v-col>
                                         </v-row>
@@ -534,11 +534,12 @@
         brokerServerWinterTimeZone: 2,
         brokerSymbolPrefix: '',
         brokerSymbolSuffix: '',
-        messageColor: '#000000FF',
+        messageColor: '#000000',
         applyTrailingStop: false,
         profitTrailing: true,
         trailingStop: 8,
         trailingStep: 2,
+        applyOnOffTime: false,
         onTime: "02:00",
         offTime: "17:30",
         applyDestinationPair: false,
