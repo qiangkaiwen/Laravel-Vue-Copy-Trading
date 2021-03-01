@@ -497,8 +497,8 @@
     import Nprogress from 'nprogress';
 
     const defaultFormValue = {
-        isOpenTradesInDestination: false,
-        isOpenPendingOrdersInDestination: false,
+        isOpenTradesInDestination: true,
+        isOpenPendingOrdersInDestination: true,
         copyDirection: 2,
         isCopyTPToDestination: true,
         overrideDestinationTP: 0,
@@ -516,7 +516,7 @@
         maximumOrdersInDestination: 0,
         maximumOpenPriceSlippage: 0,
         maximumOpenPriceDeviationToCopy: 0,
-        maximumTimeAfterSourceOpen: 30,
+        maximumTimeAfterSourceOpen: 0,
         dailyProfitToStop: 0,
         isCloseTradesWhenDailyProfitIsReached: false,
         dailyLossToStop: 0,
@@ -572,9 +572,9 @@
                 ],
                 lotSizeTypes: [
                     { text: "Risk % Of Balance", value: 0 },
-                    { text: "Risk % Of Balance(Including Margin Required)", value: 1 },
-                    { text: "Multiple Of Source", value: 2 },
-                    { text: "Fixed", value: 3 }
+                    { text: "Risk % Of Balance(Including Margin Required)", value: 3 },
+                    { text: "Multiple Of Source", value: 1 },
+                    { text: "Fixed", value: 2 }
                 ],
                 brokerServerTimeZones: [
                     { text: 'EEST', value: 1 },

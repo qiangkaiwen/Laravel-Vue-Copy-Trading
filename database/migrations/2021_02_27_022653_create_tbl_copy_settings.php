@@ -16,8 +16,8 @@ class CreateTblCopySettings extends Migration
         Schema::create('tbl_copy_settings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('account_id');
-            $table->integer('isOpenTradesInDestination')->default(0);
-            $table->integer('isOpenPendingOrdersInDestination')->default(0);
+            $table->integer('isOpenTradesInDestination')->default(1);
+            $table->integer('isOpenPendingOrdersInDestination')->default(1);
             $table->integer('copyDirection')->default(2);
             $table->integer('isCopyTPToDestination')->default(1);
             $table->double('overrideDestinationTP')->default(0);
@@ -35,7 +35,7 @@ class CreateTblCopySettings extends Migration
             $table->integer('maximumOrdersInDestination')->default(0);
             $table->integer('maximumOpenPriceSlippage')->default(0);
             $table->integer('maximumOpenPriceDeviationToCopy')->default(0);
-            $table->integer('maximumTimeAfterSourceOpen')->default(30);
+            $table->integer('maximumTimeAfterSourceOpen')->default(0);
             $table->double('dailyProfitToStop')->default(0);
             $table->integer('isCloseTradesWhenDailyProfitIsReached')->default(0);
             $table->double('dailyLossToStop')->default(0);
