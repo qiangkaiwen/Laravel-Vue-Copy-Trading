@@ -374,8 +374,8 @@ class AccountController extends Controller
             ], 400);
         }
 
-        $copy_info = Copy_Settings::where(['account_id' => $account['id']])->first();
-        if (!$copy_info) {
+        $copy_setting = Copy_Settings::where(['account_id' => $account['id']])->first();
+        if (!$copy_setting) {
             return response()->json([
                 'response' => [
                     'code' => 200,
@@ -391,7 +391,10 @@ class AccountController extends Controller
                         "isCloseTradesInDestination" => 1,
                         "isDeletePendingOrdersInDestination" => 1,
                         "isInvertTradeCopyDirection" => 0,
-                        "lotSizeType" => 0,
+                        'isCopyOpenTrades' => 0,
+                        'maxTime' => 10,
+                        'copyDelay' => 60,
+                        "lotSizeType" => 1,
                         "lotSizeRisk" => 0.5,
                         "lotSizeMultipleOfSource" => 1,
                         "fixedLotSize" => 0.01,
@@ -439,25 +442,26 @@ class AccountController extends Controller
             ]);
         }
 
-        unset($copy_info['id']);
-        unset($copy_info['master_id']);
-        unset($copy_info['slave_id']);
-        unset($copy_info['created_at']);
-        unset($copy_info['updated_at']);
-        
-        $onTime = explode(":", $copy_info['onTime']);
-        $copy_info['onHour'] = $onTime[0];
-        $copy_info['onMinute'] = $onTime[1];
+        unset($copy_setting['id']);
+        unset($copy_setting['account_id']);
+        unset($copy_setting['master_id']);
+        unset($copy_setting['slave_id']);
+        unset($copy_setting['created_at']);
+        unset($copy_setting['updated_at']);
 
-        $offTime = explode(":", $copy_info['offTime']);
-        $copy_info['offHour'] = $offTime[0];
-        $copy_info['offMinute'] = $offTime[1];
+        $onTime = explode(":", $copy_setting['onTime']);
+        $copy_setting['onHour'] = $onTime[0];
+        $copy_setting['onMinute'] = $onTime[1];
+
+        $offTime = explode(":", $copy_setting['offTime']);
+        $copy_setting['offHour'] = $offTime[0];
+        $copy_setting['offMinute'] = $offTime[1];
 
         return response()->json([
             'response' => [
                 'code' => 200,
                 'api_status' => 1,
-                'setting' => $copy_info,
+                'setting' => $copy_setting,
             ]
         ]);
     }
@@ -505,8 +509,163 @@ class AccountController extends Controller
         $copy_setting = Copy_Settings::where(['account_id' => $account['id']])->first();
         if ($copy_setting) {
             $copy_setting->update($setting);
+        } else {
+            $setting['account_id'] = $account['id'];
+            Copy_Settings::create($setting);
         }
-        else {
+
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'message' => "Setting Saved.",
+            ]
+        ]);
+    }
+
+    public function getProvideSetting(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User not found",
+                ]
+            ], 400);
+        }
+
+        $account_number = $request['account_number'];
+        $broker = $request['broker'];
+        $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
+
+        if (!$account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account Number doesn't exist.",
+                ]
+            ], 400);
+        }
+
+        if ($account->status != Accounts::STATUS_PROVIDE) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account Number is not for provide.",
+                ]
+            ], 400);
+        }
+
+        $provide_setting = Copy_Settings::where(['account_id' => $account['id']])
+            ->get([
+                "brokerServerSummerTimeZone",
+                "brokerServerWinterTimeZone",
+                "brokerSymbolPrefix",
+                "brokerSymbolSuffix",
+                "messageColor",
+                "applyTrailingStop",
+                "profitTrailing",
+                "trailingStop",
+                "trailingStep",
+                'applyOnOffTime',
+                "onTime",
+                "offTime",
+                "applyMessageLog",
+            ])
+            ->first();
+        if (!$provide_setting) {
+            return response()->json([
+                'response' => [
+                    'code' => 200,
+                    'api_status' => 1,
+                    'setting' => [
+                        "brokerServerSummerTimeZone" => 1,
+                        "brokerServerWinterTimeZone" => 2,
+                        "brokerSymbolPrefix" => null,
+                        "brokerSymbolSuffix" => null,
+                        "messageColor" => "#000000",
+                        "applyTrailingStop" => 0,
+                        "profitTrailing" => 1,
+                        "trailingStop" => 8,
+                        "trailingStep" => 2,
+                        'applyOnOffTime' => 0,
+                        "onTime" => "02:00",
+                        "onHour" => "02",
+                        "onMinute" => "00",
+                        "offHour" => "17",
+                        "offMinute" => "30",
+                        "offTime" => "17:30",
+                        "applyMessageLog" => 1,
+                    ],
+                ]
+            ]);
+        }
+
+        $onTime = explode(":", $provide_setting['onTime']);
+        $provide_setting['onHour'] = $onTime[0];
+        $provide_setting['onMinute'] = $onTime[1];
+
+        $offTime = explode(":", $provide_setting['offTime']);
+        $provide_setting['offHour'] = $offTime[0];
+        $provide_setting['offMinute'] = $offTime[1];
+
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'setting' => $provide_setting,
+            ]
+        ]);
+    }
+
+    public function saveProvideSetting(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User not found",
+                ]
+            ], 400);
+        }
+
+        $account_number = $request['account_number'];
+        $broker = $request['broker'];
+        $setting = $request->all();
+        unset($setting['account_number']);
+        unset($setting['broker']);
+        $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
+
+        if (!$account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account Number doesn't exist.",
+                ]
+            ], 400);
+        }
+
+        if ($account->status != Accounts::STATUS_PROVIDE) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account Number is not for provide.",
+                ]
+            ], 400);
+        }
+
+        $provide_setting = Copy_Settings::where(['account_id' => $account['id']])->first();
+        if ($provide_setting) {
+            $provide_setting->update($setting);
+        } else {
             $setting['account_id'] = $account['id'];
             Copy_Settings::create($setting);
         }

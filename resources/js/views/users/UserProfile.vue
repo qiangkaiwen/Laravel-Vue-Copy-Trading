@@ -51,7 +51,7 @@
                                                 </span>
                                                 <span
                                                     class="fs-20 grey--text fw-normal d-custom-flex align-items-left w-70">{{
-                                                    getDateFormat(user.date_of_birth) }}</span>
+                                                    getDateFormatBirth(user.date_of_birth) }}</span>
                                             </li>
                                             <li class="d-flex px-4 align-center">
                                                 <span class="mr-3 d-custom-flex align-items-left w-30">
@@ -116,6 +116,11 @@
                 <v-dialog v-model="open" max-width="600">
                     <v-card class="pa-6">
                         <v-form v-model="form.valid" ref="form" lazy-validation>
+                            <img src="/static/avatars/user-7.jpg" alt="reviwers" width="100" height="100"
+                                            class="img-responsive rounded-circle mr-3">
+                                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp"
+                                    placeholder="Pick an avatar" prepend-icon="mdi-camera"
+                                    label="Avatar" show-size></v-file-input>
                             <v-text-field label="Name" v-model="form.name" :rules="form.nameRules" :counter="30"
                                 required></v-text-field>
                             <v-text-field label="E-mail" v-model="form.email" :rules="form.emailRules" required>
@@ -194,6 +199,10 @@
             getDateFormat(date) {
                 if (!date) return '';
                 return dateformat(new Date(date), "mmm, dd yyyy HH:MM")
+            },
+            getDateFormatBirth(date) {
+                if (!date) return '';
+                return dateformat(new Date(date), "mmm, dd yyyy")
             },
             getDateFormatWithMS(date) {
                 if (!date) return '';

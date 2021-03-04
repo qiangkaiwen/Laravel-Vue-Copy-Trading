@@ -3,12 +3,7 @@
 		<h3>{{heading}}</h3>
 		<template v-if="!withTabs">
 			<div class="app-contextual-link" v-if="fullScreen || reloadable || closeable">
-				<v-menu
-					transition="scale-transition"
-					origin="right top"
-					bottom
-					left
-				>
+				<v-menu transition="scale-transition" origin="right top" bottom left>
 					<template v-slot:activator="{ on }">
 						<v-btn class="ma-0" icon v-on="on">
 							<v-icon>more_vert</v-icon>
@@ -36,7 +31,8 @@
 				<ul class="custom-tab-wrap list-inline">
 					<template v-for="(tab, key) in tabs">
 						<li @click="onChangeTab(key)" :key="key">
-							<a href="javascript:void(0)" class="fs-12 fw-normal px-2 py-1 rounded mx-1" :class="[{'primary white--text': activeTab === key}]" >{{tab}}</a>
+							<a href="javascript:void(0)" class="fs-12 fw-normal px-2 py-1 rounded mx-1"
+								:class="[{'primary white--text': activeTab === key}]">{{tab}}</a>
 						</li>
 					</template>
 				</ul>
@@ -46,29 +42,29 @@
 </template>
 
 <script>
-export default {
-  props: [
-    "heading",
-    "closeable",
-    "reloadable",
-    "fullScreen",
-    "withTabs",
-    "tabs",
-    "onCollapse",
-    "onReload",
-    "onClose",
-    "onChangeTabCallback"
-  ],
-  data() {
-    return {
-      activeTab: 0
-    };
-  },
-  methods: {
-    onChangeTab(value) {
-      this.activeTab = value;
-      this.$emit("onChangeTabCallback", value);
-    }
-  }
-};
+	export default {
+		props: [
+			"heading",
+			"closeable",
+			"reloadable",
+			"fullScreen",
+			"withTabs",
+			"tabs",
+			"onCollapse",
+			"onReload",
+			"onClose",
+			"onChangeTabCallback"
+		],
+		data() {
+			return {
+				activeTab: 0
+			};
+		},
+		methods: {
+			onChangeTab(value) {
+				this.activeTab = value;
+				this.$emit("onChangeTabCallback", value);
+			}
+		}
+	};
 </script>

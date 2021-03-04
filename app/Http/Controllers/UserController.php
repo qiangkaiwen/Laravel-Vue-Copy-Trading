@@ -92,7 +92,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::where('id', $id)->get(['id', 'name', 'email', 'phone', 'active', 'created_at'])->first();
+        $user = User::where('id', $id)->get(['id', 'name', 'email', 'phone', 'active', 'date_of_birth', 'created_at'])->first();
         return response()->json([
             'response' => [
                 'code' => 200,

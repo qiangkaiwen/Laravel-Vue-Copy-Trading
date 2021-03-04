@@ -12,12 +12,13 @@
 		<v-app-bar class="Vuely-toolbar" app :color="activeHeaderFilter.class" fixed>
 			<div class="d-custom-flex align-items-center navbar-left">
 				<!-- <div v-if="!horizontal"> -->
-					<v-tooltip right>
-						<template v-slot:activator="{ on }">
-							<v-app-bar-nav-icon v-on="on" @click.stop="drawer = !drawer" class="v-step-0"></v-app-bar-nav-icon>
-						</template>
-						<span>Toggle Sidebar</span>
-					</v-tooltip>
+				<v-tooltip right>
+					<template v-slot:activator="{ on }">
+						<v-app-bar-nav-icon v-on="on" @click.stop="drawer = !drawer" class="v-step-0">
+						</v-app-bar-nav-icon>
+					</template>
+					<span>Toggle Sidebar</span>
+				</v-tooltip>
 				<!-- </div> -->
 				<!-- <div class="site-logo-wrap d-custom-flex ml-0 align-items-center" v-else>
 					<router-link to="/horizontal/dashboard/ecommerce" class="grayish-blue site-logo-img">
@@ -49,17 +50,17 @@
 			</div>
 		</v-app-bar>
 		<!-- Chat Searchbar -->
-		<v-navigation-drawer fixed v-model="chatSidebar" :right="!rtlLayout" temporary app class="chat-sidebar-wrap"
+		<!-- <v-navigation-drawer fixed v-model="chatSidebar" :right="!rtlLayout" temporary app class="chat-sidebar-wrap"
 			:width="300">
 			<chat-sidebar></chat-sidebar>
-		</v-navigation-drawer>
+		</v-navigation-drawer> -->
 		<mobile-search-form></mobile-search-form>
 	</div>
 </template>
 
 <script>
 	import Sidebar from "../Sidebar/Sidebar.vue";
-	import ChatSidebar from "../ChatSidebar/ChatSidebar.vue";
+	// import ChatSidebar from "../ChatSidebar/ChatSidebar.vue";
 	import screenfull from "screenfull";
 	import LanguageProvider from "./LanguageProvider";
 	import Notifications from "./Notifications";
@@ -81,7 +82,7 @@
 			return {
 				collapsed: false, // collapse sidebar
 				drawer: null, // sidebar drawer default true
-				chatSidebar: false, // chat component right sidebar
+				// chatSidebar: false, // chat component right sidebar
 				sidebarImages: "", // sidebar background images
 				enableDefaultSidebar: false
 			};
@@ -124,7 +125,7 @@
 		},
 		components: {
 			appSidebar: Sidebar,
-			ChatSidebar,
+			// ChatSidebar,
 			LanguageProvider,
 			Notifications,
 			// Cart,

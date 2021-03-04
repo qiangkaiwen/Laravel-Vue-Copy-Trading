@@ -13,31 +13,33 @@ import ConfirmationDialog from "Components/ConfirmationDialog/ConfirmationDialog
 import PageTitleBar from "Components/PageTitleBar/PageTitleBar";
 
 //crypto slider
-import CryptoSlider from "Components/Widgets/CryptoSlider";
+// import CryptoSlider from "Components/Widgets/CryptoSlider";
 
 // App Card component
 import AppCard from 'Components/AppCard/AppCard';
+import CopySettingDialog from 'Components/CopySettingDialog/CopySettingDialog';
 
 // stats card
-import StatsCard from 'Components/StatsCard/StatsCard';
-import StatsCardV2 from 'Components/StatsCardV2/StatsCardV2';
+// import StatsCard from 'Components/StatsCard/StatsCard';
+// import StatsCardV2 from 'Components/StatsCardV2/StatsCardV2';
 
 // section tooltip
-import SectionTooltip from "Components/SectionTooltip/SectionTooltip"
+// import SectionTooltip from "Components/SectionTooltip/SectionTooltip"
 
 const GlobalComponents = {
     install(Vue) {
         Vue.component('appCard', AppCard);
-        Vue.component('sectionTooltip', SectionTooltip);
-        Vue.component('statsCard', StatsCard);
-        Vue.component('statsCardV2', StatsCardV2);
+        // Vue.component('sectionTooltip', SectionTooltip);
+        // Vue.component('statsCard', StatsCard);
+        // Vue.component('statsCardV2', StatsCardV2);
         Vue.component('deleteConfirmationDialog', DeleteConfirmationDialog);
+        Vue.component('copySettingDialog', CopySettingDialog);
         Vue.component('confirmationDialog', ConfirmationDialog);
         Vue.component('vuePerfectScrollbar', VuePerfectScrollbar);
         Vue.component('appSectionLoader', AppSectionLoader);
         Vue.component('pageTitleBar', PageTitleBar);
         Vue.component('rotateSquare2', RotateSquare2);
-        Vue.component('cryptoSlider', CryptoSlider);
+        // Vue.component('cryptoSlider', CryptoSlider);
     }
 }
 

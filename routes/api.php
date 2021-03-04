@@ -62,6 +62,8 @@ Route::group([
     Route::post('/copysources', 'AccountController@copyAccount');
     Route::post('/copysetting', 'AccountController@getCopySetting');
     Route::post('/savecopysetting', 'AccountController@saveCopySetting');
+    Route::post('/providesetting', 'AccountController@getProvideSetting');
+    Route::post('/saveprovidesetting', 'AccountController@saveProvideSetting');
 
     Route::delete('/providesource/{id}', 'AccountController@deleteProvideAccount');
     Route::delete('/copysource/{id}', 'AccountController@deleteCopyAccount');
