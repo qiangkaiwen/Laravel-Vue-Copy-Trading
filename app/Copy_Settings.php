@@ -59,7 +59,7 @@ class Copy_Settings extends Model
         'applyTrailingStop',
         'profitTrailing',
         'trailingStop',
-        'trailingStep',
+        'trailingProfit',
         'applyOnOffTime',
         'onTime',
         'offTime',

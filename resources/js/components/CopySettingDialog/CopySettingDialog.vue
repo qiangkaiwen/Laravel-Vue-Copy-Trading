@@ -286,7 +286,7 @@
                                     </v-text-field>
                                 </v-col>
                                 <v-col class="py-0">
-                                    <v-text-field v-model="form.trailingStep" type="number" label="TrailingStep">
+                                    <v-text-field v-model="form.trailingProfit" type="number" label="TrailingProfit">
                                     </v-text-field>
                                 </v-col>
                             </v-row>
@@ -477,7 +477,7 @@
                                     </v-text-field>
                                 </v-col>
                                 <v-col class="py-0">
-                                    <v-text-field v-model="form.trailingStep" type="number" label="TrailingStep">
+                                    <v-text-field v-model="form.trailingProfit" type="number" label="TrailingProfit">
                                     </v-text-field>
                                 </v-col>
                             </v-row>
