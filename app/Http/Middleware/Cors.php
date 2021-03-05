@@ -18,7 +18,7 @@ class Cors
         // throw new AuthorizationException('You do not have permission to do this action');
         return $next($request)
             ->header('Access-Control-Allow-Origin', '*')
-            ->header('Access-Control-Allow-Methods', '*')
+            ->header('Access-Control-Allow-Methods', 'OPTION, GET, POST, PATCH, DELETE, PUT')
             ->header('Access-Control-Allow-Headers', '*');
     }
 }

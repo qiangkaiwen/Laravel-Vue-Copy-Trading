@@ -8,6 +8,8 @@ use App\User;
 use App\Accounts;
 use App\UserAccounts;
 use App\Role\UserRole;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Registration;
 use Validator;
 
 class AuthController extends Controller
@@ -198,5 +200,18 @@ class AuthController extends Controller
                 ]
             ], 403);
         }
+    }
+
+    public function email(Request $request)
+    {
+        $details = [
+            'body' => 'Body',
+            'title' => 'Title',
+        ];
+        Mail::to('snowwhite19930514@mail.ru')->send(new Registration($details));
+
+        return response()->json([
+            'message' => 'email sent'
+        ]);
     }
 }
