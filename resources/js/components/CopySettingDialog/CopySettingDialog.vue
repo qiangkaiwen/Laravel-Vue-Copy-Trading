@@ -67,7 +67,6 @@
                                     <v-checkbox v-model="form.isCopyTPToDestination" label="Copy TP To Destination?">
                                     </v-checkbox>
                                     <v-text-field v-model="form.overrideDestinationTP" type="number"
-                                        :disabled="!form.isCopyTPToDestination"
                                         label="Override Destination TP (Points)">
                                     </v-text-field>
                                 </v-col>
@@ -75,7 +74,6 @@
                                     <v-checkbox v-model="form.isCopySLToDestination" label="Copy SL To Destination?">
                                     </v-checkbox>
                                     <v-text-field v-model="form.overrideDestinationSL" type="number"
-                                        :disabled="!form.isCopySLToDestination"
                                         label="Override Destination SL (Points)">
                                     </v-text-field>
                                 </v-col>

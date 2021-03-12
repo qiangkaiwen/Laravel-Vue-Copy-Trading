@@ -29,7 +29,7 @@ class Registration extends Mailable
      */
     public function build()
     {
-        return $this->subject('Mail from maxb47163@gmail.com')
+        return $this->subject('Mail from EAGLEFX')
             ->view('emails.registration');
     }
 }

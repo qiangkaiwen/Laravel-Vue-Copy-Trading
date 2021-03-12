@@ -208,7 +208,7 @@ class AuthController extends Controller
             'body' => 'Body',
             'title' => 'Title',
         ];
-        Mail::to('snowwhite19930514@mail.ru')->send(new Registration($details));
+        Mail::to('andrey.bolkov514@gmail.com')->send(new Registration($details));
 
         return response()->json([
             'message' => 'email sent'
