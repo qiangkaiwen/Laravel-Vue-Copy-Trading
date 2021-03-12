@@ -330,9 +330,9 @@
 								<td>
 									<div class="text" style="padding: 0 2.5em; text-align: center;">
 										<h2>Hello {{ $name }}</h2>
-										<h3>You successfully registered.</h3>
-										<h3>Please wait until your account will be activated.</h3>
-										<!-- <p><a href="#" class="btn btn-primary">Yes! Subscribe Me</a></p> -->
+										<h3>Your account activated.</h3>
+										<h3>You can use EagleFX from now.</h3>
+										<p><a href="https://m.zereeshekhbzenee.com/" class="btn btn-primary">Yes! Go to EagleFX</a></p>
 									</div>
 								</td>
 							</tr>

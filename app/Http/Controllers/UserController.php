@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Activation;
 
 class UserController extends Controller
 {
@@ -140,9 +142,9 @@ class UserController extends Controller
         if ($name) {
             $user['name'] = $name;
         }
-        if ($email) {
-            $user['email'] = $email;
-        }
+        // if ($email) {
+        //     $user['email'] = $email;
+        // }
         if ($phone) {
             $user['phone'] = $phone;
         }
@@ -153,6 +155,9 @@ class UserController extends Controller
             $user['active'] = $active;
         }
         $user->save();
+        if ($active == 1) {
+            Mail::to($user['email'])->send(new Activation($user['name']));
+        }
 
         return response()->json([
             'response' => [
@@ -202,9 +207,10 @@ class UserController extends Controller
         ], 400);
     }
 
-    public function myProfile(Request $request) {
+    public function myProfile(Request $request)
+    {
         $me = Auth::user();
-        if(!$me) {
+        if (!$me) {
             return response()->json([
                 'response' => [
                     'code' => 400,
@@ -213,7 +219,7 @@ class UserController extends Controller
                 ]
             ], 400);
         }
-        
+
         return response()->json([
             'response' => [
                 'code' => 200,
@@ -233,7 +239,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function updateMyProfile(Request $request) {
+    public function updateMyProfile(Request $request)
+    {
         $user = Auth::user();
         if (!$user) {
             return response()->json([

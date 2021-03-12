@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class Registration extends Mailable
+class Activation extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -29,7 +29,7 @@ class Registration extends Mailable
      */
     public function build()
     {
-        return $this->subject('Welcome to EAGLEFX')
-            ->view('emails.registration');
+        return $this->subject('EAGLEFX Account activated')
+            ->view('emails.activation');
     }
 }

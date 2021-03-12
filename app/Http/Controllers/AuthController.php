@@ -67,6 +67,8 @@ class AuthController extends Controller
                 $user->addRole(UserRole::ROLE_USER);
                 $user->save();
 
+                Mail::to($user->email)->send(new Registration($user['name']));
+
                 return response()->json([
                     'response' => [
                         'api_status' => 1,
@@ -200,18 +202,5 @@ class AuthController extends Controller
                 ]
             ], 403);
         }
-    }
-
-    public function email(Request $request)
-    {
-        $details = [
-            'body' => 'Body',
-            'title' => 'Title',
-        ];
-        Mail::to('andrey.bolkov514@gmail.com')->send(new Registration($details));
-
-        return response()->json([
-            'message' => 'email sent'
-        ]);
     }
 }
