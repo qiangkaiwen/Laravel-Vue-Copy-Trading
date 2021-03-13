@@ -83,7 +83,7 @@
             <v-dialog v-model="provideModal" max-width="600">
                 <v-card class="pa-6">
                     <v-form v-model="form.valid" ref="form" lazy-validation>
-                        <h2>Please select source account nummber to provide signal source.</h2>
+                        <h2>Please select source account number to provide signal source.</h2>
                         <v-select class="mb-3" hide-details v-bind:items="accounts" v-model="form.account"
                             :rules="form.accountRules" label="Select Account" single-line menu-props="auto" required>
                         </v-select>

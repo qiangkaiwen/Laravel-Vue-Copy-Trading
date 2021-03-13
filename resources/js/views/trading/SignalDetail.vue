@@ -66,7 +66,7 @@
                     { text: "Time", sortable: false },
                     { text: "Symbol", sortable: false },
                     { text: "Trade Type", sortable: false },
-                    { text: "Volumn", sortable: false },
+                    { text: "Volume", sortable: false },
                     { text: "Entry Price", sortable: false },
                     { text: "Take Profit", sortable: false },
                     { text: "Stoploss", sortable: false },
