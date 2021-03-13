@@ -1,7 +1,7 @@
 <template>
 	<v-list-item class="sidebar-profile">
 		<v-list-item-avatar>
-			<img src="/static/avatars/user-32.jpg" alt="avatar" height="40" width="40" class="img-responsive" />
+			<img :src="getAvatar" alt="avatar" height="40" width="40" class="img-responsive" />
 		</v-list-item-avatar>
 		<v-list-item-content class="ml-3">
 			<v-list-item-title><span>{{ getUser ? getUser.name : '' }}</span></v-list-item-title>
@@ -73,6 +73,14 @@
 			...mapGetters([
 				"getUser",
 			]),
+			...{
+				getAvatar() {
+					if (!this.getUser)
+						return '/static/avatars/default.png';
+					const { avatar } = this.getUser;
+					return avatar ? avatar : '/static/avatars/default.png';
+				}
+			}
 		},
 	};
 </script>

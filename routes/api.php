@@ -35,6 +35,7 @@ Route::group([
     ], function () {
         Route::resource('users', 'UserController');
         Route::get('newusers', 'UserController@newUsers');
+        Route::post('/users/avatar/{id}', 'UserController@updateUserAvatar');
     });
     // Route::resource('users', 'UserController')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
     // Route::get('newusers', 'UserController@newUsers')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
@@ -42,6 +43,7 @@ Route::group([
     //user
     Route::get('/profile/me', 'UserController@myProfile');
     Route::patch('/profile/me', 'UserController@updateMyProfile');
+    Route::post('/profile/avatar', 'UserController@updateMyAvatar');
     Route::get('/accounts', 'AccountController@getMyAccounts');
     Route::post('/accounts', 'AccountController@addMyAccounts');
     Route::post('/sources', 'SourceController@addSource');

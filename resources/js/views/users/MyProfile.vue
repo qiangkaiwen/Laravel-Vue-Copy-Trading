@@ -19,8 +19,17 @@
                                 <div class="avatar-wrap mb-50 pos-relative">
                                     <span class="overlay-content"></span>
                                     <div class="user-info">
-                                        <img src="/static/avatars/user-7.jpg" alt="reviwers" width="100" height="100"
-                                            class="img-responsive rounded-circle mr-3">
+                                        <input type="file" accept="image/*" ref="profileimage" style="display: none"
+                                            @change="changeAvatar">
+                                        <v-tooltip right>
+                                            <template v-slot:activator="{ on }">
+                                                <img v-on="on" @click="$refs.profileimage.click()"
+                                                    :src="user.avatar ? user.avatar : '/static/avatars/user-7.jpg'"
+                                                    alt="reviwers" width="100" height="100"
+                                                    class="img-responsive rounded-circle mr-3" style="cursor: pointer;">
+                                            </template>
+                                            <span>Click Here to change avatar</span>
+                                        </v-tooltip>
                                         <div class="white--text pt-7">
                                             <h1 class="mb-0" style="text-transform: uppercase;">{{ user.name }}</h1>
                                         </div>
@@ -88,13 +97,13 @@
                                             </li>
                                         </ul>
                                         <ul class="d-custom-flex social-info list-unstyled">
-                                            <li><a class="facebook" href="www.facebook.com"><i
+                                            <li><a class="facebook" href="https://www.facebook.com"><i
                                                         class="zmdi zmdi-facebook-box"></i></a></li>
-                                            <li><a class="twitter" href="www.twitter.com"><i
+                                            <li><a class="twitter" href="https://www.twitter.com"><i
                                                         class="zmdi zmdi-twitter-box"></i></a></li>
-                                            <li><a class="linkedin" href="www.linkedin.com"><i
+                                            <li><a class="linkedin" href="https://www.linkedin.com"><i
                                                         class="zmdi zmdi-linkedin-box"></i></a></li>
-                                            <li><a class="instagram" href="www.instagram.com"><i
+                                            <li><a class="instagram" href="https://www.instagram.com"><i
                                                         class="zmdi zmdi-instagram"></i></a></li>
                                         </ul>
                                     </div>
@@ -161,6 +170,8 @@
     import dateformat from "dateformat";
     import axios from "axios";
     import Vue from "vue";
+    import Nprogress from 'nprogress';
+    import { mapActions } from "vuex";
 
     export default {
         data() {
@@ -191,6 +202,7 @@
         },
         mounted() {
             this.loading = true;
+            Nprogress.start();
             axios
                 .get(`${webServices.baseURL}/profile/me`, {
                     headers: { "Content-Type": "application/json" },
@@ -210,63 +222,101 @@
                 })
                 .finally(() => {
                     this.loading = false;
+                    Nprogress.done();
                 });
         },
         methods: {
-            getDateFormat(date) {
-                if (!date) return '';
-                return dateformat(new Date(date), "mmm, dd yyyy HH:MM")
-            },
-            getDateFormatWithMS(date) {
-                if (!date) return '';
-                date = parseInt(date);
-                return dateformat(date, "mmm, dd yyyy HH:MM")
-            },
-            onEditUser() {
-                this.openDialog();
-            },
-            editUser() {
-                if (this.$refs.form.validate()) {
-                    const { name, email, phone, password } = this.form;
-                    let userdata = {
-                        name,
-                        email,
-                    };
-                    if (phone && phone != '') {
-                        userdata = { ...userdata, ...{ phone } }
+            ...mapActions([
+                'changeAvatarAction'
+            ]),
+            ...{
+                getDateFormat(date) {
+                    if (!date) return '';
+                    return dateformat(new Date(date), "mmm, dd yyyy HH:MM")
+                },
+                getDateFormatWithMS(date) {
+                    if (!date) return '';
+                    date = parseInt(date);
+                    return dateformat(date, "mmm, dd yyyy HH:MM")
+                },
+                onEditUser() {
+                    this.openDialog();
+                },
+                editUser() {
+                    if (this.$refs.form.validate()) {
+                        const { name, email, phone, password } = this.form;
+                        let userdata = {
+                            name,
+                            email,
+                        };
+                        if (phone && phone != '') {
+                            userdata = { ...userdata, ...{ phone } }
+                        }
+                        if (password && password != '') {
+                            userdata = { ...userdata, ...{ password } }
+                        }
+                        Nprogress.start();
+                        axios.patch(`${webServices.baseURL}/profile/me`, userdata)
+                            .then(() => {
+                                this.user = { ...this.user, ...userdata };
+                                Vue.notify({
+                                    group: 'signals',
+                                    type: 'success',
+                                    text: 'Profile Updated!'
+                                });
+                            })
+                            .catch(() => {
+                                Vue.notify({
+                                    group: 'signals',
+                                    type: 'error',
+                                    text: 'Update failed'
+                                });
+                            })
+                            .finally(() => {
+                                this.open = false;
+                                Nprogress.done();
+                            })
                     }
-                    if (password && password != '') {
-                        userdata = { ...userdata, ...{ password } }
-                    }
-                    axios.patch(`${webServices.baseURL}/profile/me`, userdata)
-                        .then(() => {
-                            this.user = { ...this.user, ...userdata };
-                            Vue.notify({
-                                group: 'signals',
-                                type: 'success',
-                                text: 'Profile Updated!'
-                            });
-                        })
-                        .catch(() => {
-                            Vue.notify({
-                                group: 'signals',
-                                type: 'error',
-                                text: 'Update failed'
-                            });
-                        })
-                        .finally(() => {
-                            this.open = false;
-                        })
-                }
-            },
-            openDialog() {
-                this.form.name = this.user.name;
-                this.form.email = this.user.email;
-                this.form.phone = this.user.phone;
-                this.form.password = this.user.password;
+                },
+                changeAvatar(event) {
+                    var files = event.target.files || event.dataTransfer.files;
+                    if (!files.length)
+                        return;
+                    var formData = new FormData();
+                    formData.append("avatar", files[0]);
+                    Nprogress.start();
+                    axios.post(`${webServices.baseURL}/profile/avatar`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }).then(({ data }) => {
+                        Vue.notify({
+                            group: 'signals',
+                            type: 'success',
+                            text: 'Successfully Updated!'
+                        });
+                        this.user.avatar = data.response.filename;
+                        this.changeAvatarAction(data.response.filename);
+                    }).catch((error) => {
+                        console.log(error)
+                        Vue.notify({
+                            group: 'signals',
+                            type: 'error',
+                            text: 'Upload failed'
+                        });
+                    }).finally(() => {
+                        Nprogress.done();
+                    })
+                },
+                openDialog() {
+                    this.form.name = this.user.name;
+                    this.form.email = this.user.email;
+                    this.form.phone = this.user.phone;
+                    this.form.password = this.user.password;
 
-                this.open = true;
+                    this.open = true;
+                },
             },
-        },
+        }
     };
 </script>

@@ -27,7 +27,7 @@ class UserController extends Controller
             $users = User::where('active', 1);
         else
             $users = User::where('active', 1)->skip(($page - 1) * $perPage)->take($perPage)
-                ->get(['id', 'name', 'email', 'phone', 'date_of_birth', 'active', 'created_at']);
+                ->get(['id', 'name', 'email', 'phone', 'avatar', 'date_of_birth', 'active', 'created_at']);
         $users->toArray();
         return response()->json([
             'response' => [
@@ -52,7 +52,7 @@ class UserController extends Controller
             $users = User::where('active', 0);
         else
             $users = User::where('active', 0)->skip(($page - 1) * $perPage)->take($perPage)
-                ->get(['id', 'name', 'email', 'phone', 'date_of_birth', 'active', 'created_at']);
+                ->get(['id', 'name', 'email', 'phone', 'avatar', 'date_of_birth', 'active', 'created_at']);
         $users->toArray();
         return response()->json([
             'response' => [
@@ -95,7 +95,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::where('id', $id)->get(['id', 'name', 'email', 'phone', 'active', 'date_of_birth', 'created_at'])->first();
+        $user = User::where('id', $id)->get(['id', 'name', 'email', 'phone', 'avatar', 'active', 'date_of_birth', 'created_at'])->first();
         $info = DB::select("SELECT
                             IFNULL( providers.providers, 0 ) AS providers,
                             IFNULL( copiers.copiers, 0 ) AS copiers,
@@ -355,5 +355,63 @@ class UserController extends Controller
                 'message' => "Successfully updated.",
             ]
         ]);
+    }
+
+    public function updateMyAvatar(Request $request)
+    {
+        $file = $request->file('avatar');
+        $destinationPath = 'uploads';
+        $filename = "Avatar_" . date('Y-m-d_H-i-s') . "." . $file->getClientOriginalExtension();
+
+        try {
+            $file->move($destinationPath, $filename);
+            $user = Auth::user();
+            $user['avatar'] = "/uploads/$filename";
+            $user->save();
+            return response()->json([
+                'response' => [
+                    'code' => 200,
+                    'api_status' => 1,
+                    'filename' => "/uploads/$filename",
+                ]
+            ]);
+        } catch (Exception $error) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Upload failed",
+                ]
+            ]);
+        }
+    }
+
+    public function updateUserAvatar(Request $request, $id)
+    {
+        $file = $request->file('avatar');
+        $destinationPath = 'uploads';
+        $filename = "Avatar_" . date('Y-m-d_H-i-s') . "." . $file->getClientOriginalExtension();
+
+        try {
+            $file->move($destinationPath, $filename);
+            $user = User::where('id', $id)->first();
+            $user['avatar'] = "/uploads/$filename";
+            $user->save();
+            return response()->json([
+                'response' => [
+                    'code' => 200,
+                    'api_status' => 1,
+                    'filename' => "/uploads/$filename",
+                ]
+            ]);
+        } catch (Exception $error) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Upload failed",
+                ]
+            ]);
+        }
     }
 }

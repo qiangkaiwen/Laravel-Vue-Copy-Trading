@@ -115,6 +115,7 @@ class AuthController extends Controller
                             'name' => $user->name,
                             'email' => $user->email,
                             'roles' => $user->roles,
+                            'avatar' => $user->avatar,
                         ]
                     ], 200);
                 } else {
@@ -164,6 +165,7 @@ class AuthController extends Controller
                         'name' => $user->name,
                         'email' => $user->email,
                         'roles' => $user->roles,
+                        'avatar' => $user->avatar,
                     ]
                 ], 200);
             }

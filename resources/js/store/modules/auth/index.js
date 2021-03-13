@@ -55,11 +55,11 @@ const actions = {
         context.commit('loginUser');
         axios.post(`${webServices.baseURL}/auth/login`, user, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
-                const { api_status, access_token, name, email, roles } = response.data.response;
+                const { api_status, access_token, name, email, roles, avatar } = response.data.response;
                 if (api_status) {
                     localStorage.setItem("access_token", access_token);
                     setTimeout(() => {
-                        context.commit('loginUserSuccess', { name, email, roles });
+                        context.commit('loginUserSuccess', { name, email, roles, avatar });
                     }, 500);
                 } else {
                     context.commit('loginUserFailure', response.data.response);
@@ -90,6 +90,9 @@ const actions = {
     },
     signOutUserFromAuth0(context) {
         context.commit('signOutUserFromAuth0Success');
+    },
+    changeAvatarAction(context, avatar) {
+        context.commit('changeAvatar', avatar)
     }
 }
 
@@ -158,6 +161,12 @@ const mutations = {
     signOutUserFromAuth0Success(state) {
         state.user = null
         localStorage.removeItem('user')
+    },
+    changeAvatar(state, avatar) {
+        if (state.user) {
+            state.user.avatar = avatar;
+            localStorage.setItem('user', JSON.stringify(state.user));
+        }
     }
 }
 

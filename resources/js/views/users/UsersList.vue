@@ -33,7 +33,7 @@
                                         <td>{{props.item.name}}</td>
                                         <td>
                                             <v-list-item-avatar>
-                                                <img src="/static/avatars/user-32.jpg" alt="avatar" height="30"
+                                                <img :src="props.item.avatar ? props.item.avatar : '/static/avatars/default.png'" alt="avatar" height="30"
                                                     width="30" class="img-responsive" />
                                             </v-list-item-avatar>
                                         </td>
@@ -92,7 +92,7 @@
                                         <td>{{props.item.name}}</td>
                                         <td>
                                             <v-list-item-avatar>
-                                                <img src="/static/avatars/user-31.jpg" alt="avatar" height="30"
+                                                <img :src="props.item.avatar ? props.item.avatar : '/static/avatars/default.png'" alt="avatar" height="30"
                                                     width="30" class="img-responsive" />
                                             </v-list-item-avatar>
                                         </td>

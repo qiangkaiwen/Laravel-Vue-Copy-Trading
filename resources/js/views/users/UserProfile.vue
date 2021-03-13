@@ -19,8 +19,17 @@
                                 <div class="avatar-wrap mb-50 pos-relative">
                                     <span class="overlay-content"></span>
                                     <div class="user-info">
-                                        <img src="/static/avatars/user-7.jpg" alt="reviwers" width="100" height="100"
-                                            class="img-responsive rounded-circle mr-3">
+                                        <input type="file" accept="image/*" ref="profileimage" style="display: none"
+                                            @change="changeAvatar">
+                                        <v-tooltip right>
+                                            <template v-slot:activator="{ on }">
+                                                <img v-on="on" @click="$refs.profileimage.click()"
+                                                    :src="user.avatar ? user.avatar : '/static/avatars/user-7.jpg'"
+                                                    alt="reviwers" width="100" height="100"
+                                                    class="img-responsive rounded-circle mr-3" style="cursor: pointer;">
+                                            </template>
+                                            <span>Click Here to change avatar</span>
+                                        </v-tooltip>
                                         <div class="white--text pt-7">
                                             <h1 class="mb-0" style="text-transform: uppercase;">{{ user.name }}</h1>
                                         </div>
@@ -63,13 +72,13 @@
                                             </li>
                                         </ul>
                                         <ul class="d-custom-flex social-info list-unstyled">
-                                            <li><a class="facebook" href="www.facebook.com"><i
+                                            <li><a class="facebook" href="https://www.facebook.com"><i
                                                         class="zmdi zmdi-facebook-box"></i></a></li>
-                                            <li><a class="twitter" href="www.twitter.com"><i
+                                            <li><a class="twitter" href="https://www.twitter.com"><i
                                                         class="zmdi zmdi-twitter-box"></i></a></li>
-                                            <li><a class="linkedin" href="www.linkedin.com"><i
+                                            <li><a class="linkedin" href="https://www.linkedin.com"><i
                                                         class="zmdi zmdi-linkedin-box"></i></a></li>
-                                            <li><a class="instagram" href="www.instagram.com"><i
+                                            <li><a class="instagram" href="https://www.instagram.com"><i
                                                         class="zmdi zmdi-instagram"></i></a></li>
                                         </ul>
                                     </div>
@@ -143,6 +152,7 @@
     import dateformat from "dateformat";
     import axios from "axios";
     import Vue from "vue";
+    import Nprogress from 'nprogress';
 
     export default {
         props: ["user_id"],
@@ -173,6 +183,7 @@
         },
         mounted() {
             this.loading = true;
+            Nprogress.start();
             axios
                 .get(`${webServices.baseURL}/users/${this.user_id}`, {
                     headers: { "Content-Type": "application/json" },
@@ -192,6 +203,7 @@
                 })
                 .finally(() => {
                     this.loading = false;
+                    Nprogress.done();
                 });
         },
         methods: {
@@ -212,6 +224,7 @@
                 this.$refs.deleteConfirmationDialog.openDialog();
             },
             deleteUser() {
+                Nprogress.start();
                 axios.delete(`${webServices.baseURL}/users/${this.user_id}`)
                     .then(() => {
                         Vue.notify({
@@ -232,6 +245,7 @@
                     })
                     .finally(() => {
                         this.$refs.deleteConfirmationDialog.close();
+                        Nprogress.done();
                     })
             },
             onEditUser() {
@@ -250,6 +264,7 @@
                     if (password && password != '') {
                         userdata = { ...userdata, ...{ password } }
                     }
+                    Nprogress.start();
                     axios.patch(`${webServices.baseURL}/users/${this.user_id}`, userdata)
                         .then(() => {
                             this.user = { ...this.user, ...userdata };
@@ -268,8 +283,37 @@
                         })
                         .finally(() => {
                             this.open = false;
+                            Nprogress.done();
                         })
                 }
+            },
+            changeAvatar(event) {
+                var files = event.target.files || event.dataTransfer.files;
+                if (!files.length)
+                    return;
+                var formData = new FormData();
+                formData.append("avatar", files[0]);
+                Nprogress.start();
+                axios.post(`${webServices.baseURL}/users/avatar/${this.user_id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }).then(({ data }) => {
+                    Vue.notify({
+                        group: 'signals',
+                        type: 'success',
+                        text: 'Successfully Updated!'
+                    });
+                    this.user.avatar = data.response.filename;
+                }).catch(() => {
+                    Vue.notify({
+                        group: 'signals',
+                        type: 'error',
+                        text: 'Upload failed'
+                    });
+                }).finally(() => {
+                    Nprogress.done();
+                })
             },
             openDialog() {
                 this.form.name = this.user.name;
