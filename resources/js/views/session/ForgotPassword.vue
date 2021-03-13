@@ -6,7 +6,7 @@
 		<div class="session-right text-center">
 			<div class="session-table-cell">
 				<div class="session-content">
-					<img :src="appLogo" class="img-responsive mb-4" style="width: 70%; height: auto;" />
+					<img :src="appLogoF" class="img-responsive mb-4" style="width: 70%; height: auto;" />
 					<h2 class="mb-4">{{$t('message.forgotPassword')}}</h2>
 					<p class="fs-14">{{$t('message.enterYourEmailToSendYouAResetLink')}}.</p>
 					<v-form v-model="valid" class="mb-6">
@@ -25,17 +25,20 @@
 
 <script>
 	import SessionSliderWidget from "Components/Widgets/SessionSlider";
-	import AppConfig from "Constants/AppConfig";
+	import { mapGetters } from "vuex";
 
 	export default {
 		components: {
 			SessionSliderWidget
 		},
 		computed: {
-			appLogo() {
-				if (this.$vuetify.theme.dark)
-					return AppConfig.appLogo;
-				return AppConfig.darkLogo;
+			...mapGetters(["appLogo", "darkLogo"]),
+			...{
+				appLogoF() {
+					if (this.$vuetify.theme.dark)
+						return this.appLogo;
+					return this.darkLogo;
+				}
 			}
 		},
 		data() {

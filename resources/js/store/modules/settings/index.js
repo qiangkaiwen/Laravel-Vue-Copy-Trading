@@ -27,7 +27,9 @@ const state = {                                       // dark mode
 	selectedTheme: themes[0],                              // selected theme
 	headerFilters,                                         // header filters
 	activeHeaderFilter: headerFilters[1],                  // selected header filter
-	mobileSearchForm: false								   // Is Mobile Search Form Open
+	mobileSearchForm: false,							   // Is Mobile Search Form Open
+	appLogo: '/static/img/White on Transparent.png',
+	darkLogo: '/static/img/Black on Transparent.png',
 }
 
 // getters
@@ -85,6 +87,12 @@ const getters = {
 	},
 	mobileSearchForm: state => {
 		return state.mobileSearchForm;
+	},
+	appLogo: state => {
+		return state.appLogo
+	},
+	darkLogo: state => {
+		return state.darkLogo
 	}
 }
 

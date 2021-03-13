@@ -9,17 +9,14 @@
 </template>
 
 <script>
-    import AppConfig from "Constants/AppConfig";
     import { mapGetters } from "vuex";
 
     export default {
         computed: {
-            ...mapGetters(["sidebarSelectedFilter"])
+            ...mapGetters(["sidebarSelectedFilter", "appLogo", "darkLogo"])
         },
         data() {
             return {
-                appLogo: AppConfig.appLogo,
-                darkLogo: AppConfig.darkLogo
             }
         }
     }

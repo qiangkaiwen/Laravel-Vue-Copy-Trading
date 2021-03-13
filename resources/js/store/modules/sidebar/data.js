@@ -17,6 +17,14 @@ export const menus = {
 			exact: true,
 			tooltip: 'Show Statistics',
 		},
+		{
+			action: 'zmdi-settings',
+			title: 'message.settings',
+			label: 'Old',
+			path: '/settings',
+			exact: true,
+			tooltip: 'Show Settings',
+		},
 	],
 	'message.user': [
 		{

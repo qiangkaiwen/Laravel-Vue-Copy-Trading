@@ -5,6 +5,7 @@ const UserProfile = () => import('Views/users/UserProfile');
 const UsersList = () => import('Views/users/UsersList');
 const MyProfile = () => import('Views/users/MyProfile');
 const Statistics = () => import('Views/statistics/Statistics');
+const Settings = () => import('Views/settings/Settings');
 const TradingAccount = () => import('Views/trading/TradingAccount');
 const ProvideSignal = () => import('Views/trading/ProvideSignal');
 const SignalDetail = () => import('Views/trading/SignalDetail');
@@ -84,6 +85,24 @@ export default {
                     },
                     {
                         breadcrumbActive: 'Statistics'
+                    }
+                ]
+            }
+        },
+
+        {
+            path: '/settings',
+            name: 'settings',
+            component: Settings,
+            meta: {
+                requiresAuth: true,
+                title: 'message.settings',
+                breadcrumb: [
+                    {
+                        breadcrumbInactive: 'Admin /'
+                    },
+                    {
+                        breadcrumbActive: 'Settings'
                     }
                 ]
             }

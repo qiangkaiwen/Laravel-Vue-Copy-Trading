@@ -6,7 +6,7 @@
         <div class="session-right text-center">
             <div class="session-table-cell">
                 <div class="session-content">
-                    <img :src="appLogo" class="img-responsive mb-4" style="width: 70%; height: auto;" />
+                    <img :src="appLogoF" class="img-responsive mb-4" style="width: 70%; height: auto;" />
                     <h2 class="mb-4">{{ $t("message.loginWithOrigin") }}</h2>
                     <!-- <p class="fs-14">{{$t('message.enterUsernameAndPasswordToAccessControlPanelOf')}} {{brand}}.</p> -->
                     <v-form v-model="valid" class="mb-5">
@@ -33,6 +33,7 @@
 <script>
     import SessionSliderWidget from "Components/Widgets/SessionSlider";
     import AppConfig from "Constants/AppConfig";
+    import { mapGetters } from "vuex";
 
     export default {
         components: {
@@ -54,11 +55,14 @@
             };
         },
         computed: {
-            appLogo() {
-                console.log(this.$vuetify.theme.dark);
-                if (this.$vuetify.theme.dark)
-                    return AppConfig.appLogo;
-                return AppConfig.darkLogo;
+            ...mapGetters(["appLogo", "darkLogo"]),
+            ...{
+                appLogoF() {
+                    console.log(this.$vuetify.theme.dark);
+                    if (this.$vuetify.theme.dark)
+                        return this.appLogo;
+                    return this.darkLogo;
+                }
             }
         },
         methods: {
