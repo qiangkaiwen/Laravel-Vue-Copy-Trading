@@ -84,15 +84,15 @@
                                     <ul
                                         class="d-custom-flex list-unstyled footer-content text-center w-100 border-top-1 align-end">
                                         <li>
-                                            <h5 class="mb-0">80</h5>
+                                            <h5 class="mb-0">{{trading_info.providers}}</h5>
                                             <span class="fs-12 grey--text fw-normal">Providers</span>
                                         </li>
                                         <li>
-                                            <h5 class="mb-0">150</h5>
+                                            <h5 class="mb-0">{{trading_info.followers}}</h5>
                                             <span class="fs-12 grey--text fw-normal">Followers</span>
                                         </li>
                                         <li>
-                                            <h5 class="mb-0">2k</h5>
+                                            <h5 class="mb-0">{{trading_info.copiers}}</h5>
                                             <span class="fs-12 grey--text fw-normal">Copiers</span>
                                         </li>
                                     </ul>
@@ -117,10 +117,7 @@
                     <v-card class="pa-6">
                         <v-form v-model="form.valid" ref="form" lazy-validation>
                             <img src="/static/avatars/user-7.jpg" alt="reviwers" width="100" height="100"
-                                            class="img-responsive rounded-circle mr-3">
-                                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp"
-                                    placeholder="Pick an avatar" prepend-icon="mdi-camera"
-                                    label="Avatar" show-size></v-file-input>
+                                class="img-responsive rounded-circle mr-3">
                             <v-text-field label="Name" v-model="form.name" :rules="form.nameRules" :counter="30"
                                 required></v-text-field>
                             <v-text-field label="E-mail" v-model="form.email" :rules="form.emailRules" required>
@@ -152,6 +149,7 @@
         data() {
             return {
                 user: null,
+                trading_info: null,
                 loading: false,
                 open: false,
                 form: {
@@ -182,6 +180,7 @@
                 .then(({ data }) => {
                     if (data.response.api_status) {
                         this.user = data.response.user;
+                        this.trading_info = data.response.trading_info;
                     }
                 })
                 .catch(() => {

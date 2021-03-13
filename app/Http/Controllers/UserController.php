@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Activation;
@@ -95,11 +96,48 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::where('id', $id)->get(['id', 'name', 'email', 'phone', 'active', 'date_of_birth', 'created_at'])->first();
+        $info = DB::select("SELECT
+                            IFNULL( providers.providers, 0 ) AS providers,
+                            IFNULL( copiers.copiers, 0 ) AS copiers,
+                            IFNULL( followers.followers, 0 ) AS followers 
+                            FROM
+                            (
+                            SELECT
+                                COUNT( 1 ) AS providers 
+                            FROM
+                                tbl_account
+                                INNER JOIN tbl_user_account ON tbl_user_account.account_id = tbl_account.id 
+                            WHERE
+                                tbl_user_account.user_id = $id 
+                                AND tbl_account.`status` = 'PROVIDE' 
+                            ) AS providers,
+                            (
+                            SELECT
+                                COUNT( 1 ) AS copiers 
+                            FROM
+                                `tbl_copy`
+                                INNER JOIN tbl_account ON tbl_account.id = tbl_copy.slave_id
+                                INNER JOIN tbl_user_account ON tbl_user_account.account_id = tbl_account.id 
+                            WHERE
+                                tbl_user_account.user_id = $id 
+                            ) AS copiers,
+                            (
+                            SELECT
+                                COUNT( 1 ) AS followers 
+                            FROM
+                                `tbl_copy`
+                                INNER JOIN tbl_account ON tbl_account.id = tbl_copy.master_id
+                                INNER JOIN tbl_user_account ON tbl_user_account.account_id = tbl_account.id 
+                            WHERE
+                            tbl_user_account.user_id = $id 
+                            ) AS followers");
+
         return response()->json([
             'response' => [
                 'code' => 200,
                 'api_status' => 1,
                 'user' => $user,
+                'trading_info' => $info[0]
             ]
         ]);
     }
@@ -219,6 +257,42 @@ class UserController extends Controller
                 ]
             ], 400);
         }
+        $id = $me['id'];
+        $info = DB::select("SELECT
+                            IFNULL( providers.providers, 0 ) AS providers,
+                            IFNULL( copiers.copiers, 0 ) AS copiers,
+                            IFNULL( followers.followers, 0 ) AS followers 
+                            FROM
+                            (
+                            SELECT
+                                COUNT( 1 ) AS providers 
+                            FROM
+                                tbl_account
+                                INNER JOIN tbl_user_account ON tbl_user_account.account_id = tbl_account.id 
+                            WHERE
+                                tbl_user_account.user_id = $id 
+                                AND tbl_account.`status` = 'PROVIDE' 
+                            ) AS providers,
+                            (
+                            SELECT
+                                COUNT( 1 ) AS copiers 
+                            FROM
+                                `tbl_copy`
+                                INNER JOIN tbl_account ON tbl_account.id = tbl_copy.slave_id
+                                INNER JOIN tbl_user_account ON tbl_user_account.account_id = tbl_account.id 
+                            WHERE
+                                tbl_user_account.user_id = $id 
+                            ) AS copiers,
+                            (
+                            SELECT
+                                COUNT( 1 ) AS followers 
+                            FROM
+                                `tbl_copy`
+                                INNER JOIN tbl_account ON tbl_account.id = tbl_copy.master_id
+                                INNER JOIN tbl_user_account ON tbl_user_account.account_id = tbl_account.id 
+                            WHERE
+                            tbl_user_account.user_id = $id 
+                            ) AS followers");
 
         return response()->json([
             'response' => [
@@ -234,7 +308,8 @@ class UserController extends Controller
                     'roles' => $me['roles'],
                     'date_of_birth' => $me['date_of_birth'],
                     'created_at' => $me['created_at'],
-                ]
+                ],
+                'trading_info' => $info[0]
             ]
         ]);
     }

@@ -106,15 +106,15 @@
                                     <ul
                                         class="d-custom-flex list-unstyled footer-content text-center w-100 border-top-1 align-end">
                                         <li>
-                                            <h5 class="mb-0">80</h5>
+                                            <h5 class="mb-0">{{trading_info.providers}}</h5>
                                             <span class="fs-12 grey--text fw-normal">Providers</span>
                                         </li>
                                         <li>
-                                            <h5 class="mb-0">150</h5>
+                                            <h5 class="mb-0">{{trading_info.followers}}</h5>
                                             <span class="fs-12 grey--text fw-normal">Followers</span>
                                         </li>
                                         <li>
-                                            <h5 class="mb-0">2k</h5>
+                                            <h5 class="mb-0">{{trading_info.copiers}}</h5>
                                             <span class="fs-12 grey--text fw-normal">Copiers</span>
                                         </li>
                                     </ul>
@@ -166,6 +166,7 @@
         data() {
             return {
                 user: null,
+                trading_info: null,
                 loading: false,
                 open: false,
                 form: {
@@ -195,7 +196,10 @@
                     headers: { "Content-Type": "application/json" },
                 })
                 .then(({ data }) => {
-                    if (data.response.api_status) this.user = data.response.profile;
+                    if (data.response.api_status) {
+                        this.user = data.response.profile;
+                        this.trading_info = data.response.trading_info;
+                    }
                 })
                 .catch(() => {
                     Vue.notify({
