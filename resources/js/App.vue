@@ -11,7 +11,7 @@
 </template>
 
 <script>
-    import { mapGetters } from "vuex";
+    import { mapGetters, mapActions } from "vuex";
 
     import AuthService from "./auth/AuthService";
 
@@ -40,6 +40,10 @@
                     }
                 }
             };
+        },
+        beforeMount() {
+            this.getWhiteLogo();
+            this.getBlackLogo();
         },
         mounted() {
             // This if block is for IE 11
@@ -71,5 +75,9 @@
             ]),
             // isDark(){ return (this.$vuetify.theme.dark) ? 'dark' : 'light' }
         },
+        methods: {
+            ...mapActions(['getWhiteLogo', 'getBlackLogo']),
+            ...{}
+        }
     };
 </script>

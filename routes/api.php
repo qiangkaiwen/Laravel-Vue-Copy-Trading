@@ -15,10 +15,18 @@ use Illuminate\Http\Request;
 
 Route::group([
     'prefix' => 'auth',
-    'middleware' => ['api', ],
+    'middleware' => ['api',],
 ], function () {
     Route::post('login', 'AuthController@login')->name('login');
     Route::post('signup', 'AuthController@signup');
+});
+
+Route::group([
+    'middleware' => ['api', 'cors']
+], function () {
+    //Setting
+    Route::get('/logo/white', 'SettingController@getWhiteLogo');
+    Route::get('/logo/black', 'SettingController@getBlackLogo');
 });
 
 Route::group([
@@ -36,9 +44,10 @@ Route::group([
         Route::resource('users', 'UserController');
         Route::get('newusers', 'UserController@newUsers');
         Route::post('/users/avatar/{id}', 'UserController@updateUserAvatar');
+        //Setting
+        Route::post('/logo/white', 'SettingController@setWhiteLogo');
+        Route::post('/logo/black', 'SettingController@setBlackLogo');
     });
-    // Route::resource('users', 'UserController')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
-    // Route::get('newusers', 'UserController@newUsers')->middleware('check_user_role:' . \App\Role\UserRole::ROLE_MANAGER);
 
     //user
     Route::get('/profile/me', 'UserController@myProfile');

@@ -1,6 +1,9 @@
 /**
  * Settings Module
  */
+import axios from "axios";
+import webServices from "WebServices";
+
 import {
 	languages,
 	sidebarBackgroundImages,
@@ -28,8 +31,8 @@ const state = {                                       // dark mode
 	headerFilters,                                         // header filters
 	activeHeaderFilter: headerFilters[1],                  // selected header filter
 	mobileSearchForm: false,							   // Is Mobile Search Form Open
-	appLogo: '/static/img/White on Transparent.png',
-	darkLogo: '/static/img/Black on Transparent.png',
+	appLogo: '/logos/LogoWhite.png',
+	darkLogo: '/logos/LogoBlack.png',
 }
 
 // getters
@@ -136,7 +139,27 @@ const actions = {
 	},
 	toggleSearchForm(context) {
 		context.commit('toggleSearchFormHandler');
-	}
+	},
+	getWhiteLogo(context) {
+		axios.get(`${webServices.baseURL}/logo/white`, { headers: { 'Content-Type': 'application/json' } })
+			.then(({ data }) => {
+				const whiteLogo = data.response.whiteLogo;
+				context.commit('setWhiteLogo', whiteLogo);
+			});
+	},
+	getBlackLogo(context) {
+		axios.get(`${webServices.baseURL}/logo/black`, { headers: { 'Content-Type': 'application/json' } })
+			.then(({ data }) => {
+				const blackLogo = data.response.blackLogo;
+				context.commit('setBlackLogo', blackLogo);
+			});
+	},
+	setWhiteLogo(context, whiteLogo) {
+		context.commit('setWhiteLogo', whiteLogo);
+	},
+	setBlackLogo(context, blackLogo) {
+		context.commit('setBlackLogo', blackLogo);
+	},
 }
 
 // mutations
@@ -184,7 +207,13 @@ const mutations = {
 	},
 	toggleSearchFormHandler(state) {
 		state.mobileSearchForm = !state.mobileSearchForm;
-	}
+	},
+	setWhiteLogo(state, whiteLogo) {
+		state.appLogo = whiteLogo;
+	},
+	setBlackLogo(state, blackLogo) {
+		state.darkLogo = blackLogo;
+	},
 }
 
 export default {
