@@ -60,6 +60,7 @@ class SettingController extends Controller
             $whitelogo = Settings::where('field', Settings::WHITE_LOGO_FIELD)->first();
             if ($whitelogo) {
                 $whitelogo['value'] = "/logos/$filename";
+                $whitelogo->save();
             } else {
                 Settings::create(['field' => Settings::WHITE_LOGO_FIELD, 'value' => "/logos/$filename"]);
             }
@@ -92,6 +93,7 @@ class SettingController extends Controller
             $blacklogo = Settings::where('field', Settings::BLACK_LOGO_FIELD)->first();
             if ($blacklogo) {
                 $blacklogo['value'] = "/logos/$filename";
+                $blacklogo->save();
             } else {
                 Settings::create(['field' => Settings::BLACK_LOGO_FIELD, 'value' => "/logos/$filename"]);
             }
