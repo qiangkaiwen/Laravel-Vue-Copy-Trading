@@ -44,7 +44,7 @@
 		},
 		methods: {
 			submit() {
-				console.log("Reset Password");
+				// console.log("Reset Password");
 			}
 		}
 	};

@@ -86,8 +86,8 @@ const actions = {
             })
             .catch(error => {
                 context.commit('setAccountsHandler', { page: 1, perPage: 10, total: 0, accounts: [] });
-                console.log(error);
-                console.log("Failed");
+                // console.log(error);
+                // console.log("Failed");
             })
             .finally(() => {
                 Nprogress.done();
@@ -108,8 +108,8 @@ const actions = {
             })
             .catch(error => {
                 context.commit('setProvideSignalHandler', { page: 1, perPage: 10, total: 0, provideSignal: [] });
-                console.log(error);
-                console.log("Failed");
+                // console.log(error);
+                // console.log("Failed");
             })
             .finally(() => {
                 Nprogress.done();
@@ -130,8 +130,8 @@ const actions = {
             })
             .catch(error => {
                 context.commit('setSignalDetailHandler', { page: 1, perPage: 10, total: 0, signalDetail: [], information: {} });
-                console.log(error);
-                console.log("Failed");
+                // console.log(error);
+                // console.log("Failed");
             })
             .finally(() => {
                 Nprogress.done();
@@ -154,8 +154,8 @@ const actions = {
             })
             .catch(error => {
                 context.commit('setCopyingSignalHandler', { page: 1, perPage: 10, total: 0, copyingSignal: [] });
-                console.log(error);
-                console.log("Failed");
+                // console.log(error);
+                // console.log("Failed");
             })
             .finally(() => {
                 Nprogress.done();
@@ -176,8 +176,8 @@ const actions = {
             })
             .catch(error => {
                 context.commit('setAvailableSignalHandler', { page: 1, perPage: 10, total: 0, availableSignal: [] });
-                console.log(error);
-                console.log("Failed");
+                // console.log(error);
+                // console.log("Failed");
             })
             .finally(() => {
                 Nprogress.done();

@@ -298,7 +298,7 @@
                         this.user.avatar = data.response.filename;
                         this.changeAvatarAction(data.response.filename);
                     }).catch((error) => {
-                        console.log(error)
+                        // console.log(error)
                         Vue.notify({
                             group: 'signals',
                             type: 'error',

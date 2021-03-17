@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     onClickSearch() {
-      console.log("work");
+    //   console.log("work");
     },
     toggleSearchForm() {
 		this.$store.dispatch('toggleSearchForm');

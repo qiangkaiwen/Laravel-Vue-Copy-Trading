@@ -49,8 +49,8 @@ const actions = {
             })
             .catch(error => {
                 context.commit('setUsersHandler', { page: 1, perPage: 10, total: 0, users: [] });
-                console.log(error);
-                console.log("Failed");
+                // console.log(error);
+                // console.log("Failed");
             })
             .finally(() => {
                 Nprogress.done();
@@ -71,8 +71,8 @@ const actions = {
             })
             .catch(error => {
                 context.commit('setNewUsersHandler', { page: 1, perPage: 10, total: 0, users: [] });
-                console.log(error);
-                console.log("Failed");
+                // console.log(error);
+                // console.log("Failed");
             })
             .finally(() => {
                 Nprogress.done();

@@ -58,7 +58,7 @@
             ...mapGetters(["appLogo", "darkLogo"]),
             ...{
                 appLogoF() {
-                    console.log(this.$vuetify.theme.dark);
+                    // console.log(this.$vuetify.theme.dark);
                     if (this.$vuetify.theme.dark)
                         return this.appLogo;
                     return this.darkLogo;

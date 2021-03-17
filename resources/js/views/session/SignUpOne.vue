@@ -44,6 +44,7 @@
 <script>
 	import SessionSliderWidget from "Components/Widgets/SessionSlider";
 	import AppConfig from "Constants/AppConfig";
+	import { mapGetters } from "vuex";
 
 	export default {
 		components: {
