@@ -100,8 +100,7 @@ class SourceController extends Controller
         unset($input['account_number']);
         unset($input['broker']);
 
-        //Source::where('account_id', $account['id'])->delete();
-        $source = Source::where([
+        Source::where([
             'account_id' => $account['id'],
             'symbol' => $input['symbol'],
             'ticket' => $input['ticket'],
@@ -410,6 +409,92 @@ class SourceController extends Controller
         }
 
         Source::where('account_id', $account['id'])->delete();
+        return response()->json([
+            'response' => [
+                'code' => 200,
+                'api_status' => 1,
+                'message' => "success.",
+            ]
+        ], 200);
+    }
+
+    public function addMultipleSources(Request $request)
+    {
+        $me = Auth::user();
+        if (!$me) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "User not found.",
+                ]
+            ], 400);
+        }
+
+        $Signal = $request->get('Signal');
+        if (!$Signal) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Signals are required.",
+                ]
+            ], 400);
+        }
+        if (!count($Signal)) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Signals are required.",
+                ]
+            ], 400);
+        }
+
+        $account_number = $Signal[0]['account_number'];
+        $broker = $Signal[0]['broker'];
+        if (!$account_number || !$broker) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account number and Broker are required.",
+                ]
+            ], 400);
+        }
+        $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
+        if (!$account) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account doesn't exist.",
+                ]
+            ], 400);
+        }
+
+        $user_account = $account->user_account->first();
+        if ($user_account['user_id'] != $me['id']) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Account is not yours.",
+                ]
+            ], 400);
+        }
+
+        for ($i = 0; $i < count($Signal); $i++) {
+            $Signal[$i]['account_id'] = $account['id'];
+            unset($Signal[$i]['account_number']);
+            unset($Signal[$i]['broker']);
+        }
+
+        DB::transaction(function () use ($account, &$Signal) {
+            Source::where('account_id', $account['id'])->delete();
+            Source::insert($Signal);
+        });
+
         return response()->json([
             'response' => [
                 'code' => 200,
