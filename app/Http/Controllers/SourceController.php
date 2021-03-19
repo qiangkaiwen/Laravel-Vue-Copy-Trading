@@ -488,6 +488,8 @@ class SourceController extends Controller
             $Signal[$i]['account_id'] = $account['id'];
             unset($Signal[$i]['account_number']);
             unset($Signal[$i]['broker']);
+            $Signal[$i]['created_at'] = date('Y-m-d H:i:s');
+            $Signal[$i]['updated_at'] = $Signal[$i]['created_at'];
         }
 
         DB::transaction(function () use ($account, &$Signal) {
