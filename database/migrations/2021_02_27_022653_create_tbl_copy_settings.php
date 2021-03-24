@@ -60,7 +60,7 @@ class CreateTblCopySettings extends Migration
             $table->integer('applyTrailingStop')->nullable()->default(0);
             $table->integer('profitTrailing')->nullable()->default(1);
             $table->integer('trailingStop')->nullable()->default(8);
-            $table->integer('trailingStep')->nullable()->default(2);
+            $table->integer('trailingProfit')->nullable()->default(2);
             $table->integer('applyOnOffTime')->nullable()->default(0);
             $table->string('onTime')->nullable()->default("02:00");
             $table->string('offTime')->nullable()->default("17:30");

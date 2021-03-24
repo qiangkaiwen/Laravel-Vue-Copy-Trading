@@ -588,6 +588,7 @@
             "saveSettings"
         ],
         data() {
+            console.log(this.form);
             return {
                 onTimeDialog: false,
                 offTimeDialog: false,

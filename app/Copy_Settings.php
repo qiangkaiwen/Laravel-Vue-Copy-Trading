@@ -107,7 +107,31 @@ class Copy_Settings extends Model
         'applyOrderCloseBy' => 'integer',
         'brokerSymbolPrefix' => 'string',
         'brokerSymbolSuffix' => 'string',
-        'applyOnOffTime' => 'integer'
+        'applyOnOffTime' => 'integer',
+        'copyDelay' => 'integer',
+        'copyDirection' => 'integer',
+        'dailyLossToStop' => 'double',
+        'dailyProfitToStop' => 'double',
+        'fixedLotSize' => 'double',
+        'isCopyOpenTrades' => 'integer',
+        'lotSizeMultipleOfSource' => 'double',
+        'lotSizeRisk' => 'double',
+        'lotSizeType' => 'integer',
+        'maxTime' => 'double',
+        'maximumLotSize' => 'double',
+        'maximumOpenPriceDeviationToCopy' => 'integer',
+        'maximumOpenPriceSlippage' => 'integer',
+        'maximumOrdersInDestination' => 'integer',
+        'maximumTimeAfterSourceOpen' => 'integer',
+        'minimumLotSize' => 'double',
+        'offHour' => 'integer',
+        'offMinute' => 'integer',
+        'onHour' => 'integer',
+        'onMinute' => 'integer',
+        'overrideDestinationSL' => 'double',
+        'overrideDestinationTP' => 'double',
+        'trailingStop' => 'integer',
+        'trailingProfit' => 'integer'
     ];
 
     public function account()

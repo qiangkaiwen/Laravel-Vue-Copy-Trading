@@ -72,7 +72,7 @@
                                         </v-tooltip>
                                     </template>
 
-                                    <template v-else>
+                                    <template v-if="props.item.status == 'COPY'">
                                         <router-link
                                             :to="{ name: 'copying-signal', hash: '#' + props.item.account_number }">
                                             <v-tooltip bottom>
