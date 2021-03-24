@@ -304,45 +304,77 @@ class SourceController extends Controller
                 $account_ids[] = $copies[$i]['master_id'];
             }
 
-            $date = date_create();
-            $date_stamp = date_timestamp_get($date);
-            $date_stamp -= $delaytime;
-            $date_str = gmdate("Y-m-d H:i:s", $date_stamp);
+            if ($delaytime != -1) {
+                $date = date_create();
+                $date_stamp = date_timestamp_get($date);
+                $date_stamp -= $delaytime;
+                $date_str = gmdate("Y-m-d H:i:s", $date_stamp);
 
-            $copyingSignalDetailWithTime = Source::where([
-                ['tbl_source.created_at', '>=', $date_str]
-            ])
-                // ->with('account')
-                ->whereIn('tbl_source.account_id', $account_ids)
-                ->orderBy('tbl_source.created_at', 'DESC')
-                ->join('tbl_account', 'tbl_source.account_id', '=', 'tbl_account.id')
-                ->get(
-                    [
-                        "tbl_account.account_number",
-                        "tbl_account.broker",
-                        "symbol",
-                        "lots",
-                        "ticket",
-                        "direction",
-                        "type",
-                        "magic",
-                        "openPrice",
-                        "stopLossPrice",
-                        "takeProfitPrice",
-                        "openTime",
-                        "openTimeGMT",
-                        "expiration",
-                        "expirationGMT",
-                        "comment_str",
-                        "sourceTicket",
-                        "sourceLots",
-                        "sourceType",
-                        "originalLots",
-                        "originalTicket",
-                        "sourceOriginalLots",
-                        "sourceOriginalTicket",
-                    ]
-                );
+                $copyingSignalDetailWithTime = Source::where([
+                    ['tbl_source.created_at', '>=', $date_str]
+                ])
+                    ->whereIn('tbl_source.account_id', $account_ids)
+                    ->orderBy('tbl_source.created_at', 'DESC')
+                    ->join('tbl_account', 'tbl_source.account_id', '=', 'tbl_account.id')
+                    ->get(
+                        [
+                            "tbl_account.account_number",
+                            "tbl_account.broker",
+                            "symbol",
+                            "lots",
+                            "ticket",
+                            "direction",
+                            "type",
+                            "magic",
+                            "openPrice",
+                            "stopLossPrice",
+                            "takeProfitPrice",
+                            "openTime",
+                            "openTimeGMT",
+                            "expiration",
+                            "expirationGMT",
+                            "comment_str",
+                            "sourceTicket",
+                            "sourceLots",
+                            "sourceType",
+                            "originalLots",
+                            "originalTicket",
+                            "sourceOriginalLots",
+                            "sourceOriginalTicket",
+                        ]
+                    );
+            } else {
+                $copyingSignalDetailWithTime = Source::whereIn('tbl_source.account_id', $account_ids)
+                    ->orderBy('tbl_source.created_at', 'DESC')
+                    ->join('tbl_account', 'tbl_source.account_id', '=', 'tbl_account.id')
+                    ->get(
+                        [
+                            "tbl_account.account_number",
+                            "tbl_account.broker",
+                            "symbol",
+                            "lots",
+                            "ticket",
+                            "direction",
+                            "type",
+                            "magic",
+                            "openPrice",
+                            "stopLossPrice",
+                            "takeProfitPrice",
+                            "openTime",
+                            "openTimeGMT",
+                            "expiration",
+                            "expirationGMT",
+                            "comment_str",
+                            "sourceTicket",
+                            "sourceLots",
+                            "sourceType",
+                            "originalLots",
+                            "originalTicket",
+                            "sourceOriginalLots",
+                            "sourceOriginalTicket",
+                        ]
+                    );
+            }
 
             return response()->json([
                 'response' => [
