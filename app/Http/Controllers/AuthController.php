@@ -10,7 +10,7 @@ use App\UserAccounts;
 use App\Role\UserRole;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Registration;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {

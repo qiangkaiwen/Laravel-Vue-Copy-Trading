@@ -3,14 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\User;
 use App\Accounts;
-use App\UserAccounts;
 use App\Source;
 use App\Copy;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class SourceController extends Controller
 {
@@ -381,6 +379,7 @@ class SourceController extends Controller
                     'code' => 200,
                     'api_status' => 1,
                     'signalDetail' => $copyingSignalDetailWithTime,
+                    'Count' => count($copyingSignalDetailWithTime)
                 ]
             ], 200);
         } else {
@@ -464,6 +463,7 @@ class SourceController extends Controller
         }
 
         $Signal = $request->get('Signal');
+        $count = $request->get('Count');
         if (!$Signal) {
             return response()->json([
                 'response' => [
@@ -479,6 +479,15 @@ class SourceController extends Controller
                     'code' => 400,
                     'api_status' => 0,
                     'message' => "Signals are required.",
+                ]
+            ], 400);
+        }
+        if(count($Signal) != $count) {
+            return response()->json([
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "Signal Count doesn't match.",
                 ]
             ], 400);
         }
@@ -524,10 +533,26 @@ class SourceController extends Controller
             $Signal[$i]['updated_at'] = $Signal[$i]['created_at'];
         }
 
-        DB::transaction(function () use ($account, &$Signal) {
+        // DB::transaction(function () use ($account, &$Signal) {
+        //     Source::where('account_id', $account['id'])->delete();
+        //     Source::insert($Signal);
+        // });
+
+        DB::beginTransaction();
+        try {
             Source::where('account_id', $account['id'])->delete();
             Source::insert($Signal);
-        });
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollback();
+            return response()->json([
+	            'response' => [
+	                'code' => 400,
+	                'api_status' => 0,
+	                'message' => "transaction failed.",
+	            ]
+        	], 400);
+        }
 
         return response()->json([
             'response' => [
