@@ -51,7 +51,7 @@
                                 <td>{{ props.item.account_number }}</td>
                                 <td>{{ props.item.provider_name }}</td>
                                 <td>{{ props.item.src_account_number }}</td>
-                                <td>{{ getDateFormatWithMS(props.item.created_at) }}</td>
+                                <td>{{ getDateFormat(props.item.created_at) }}</td>
                                 <td>{{ props.item.signal_number }}</td>
                                 <td>
                                     <v-tooltip bottom>
