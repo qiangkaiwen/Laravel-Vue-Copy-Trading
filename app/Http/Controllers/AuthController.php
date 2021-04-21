@@ -100,10 +100,21 @@ class AuthController extends Controller
                         $user->roles = [UserRole::ROLE_USER];
                     $user->save();
                     if ($account_number && $broker) {
-                        $aid = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->exists();
-                        if (!$aid) {
+                        $account = Accounts::where(['account_number' => $account_number, 'broker' => $broker])->first();
+                        if (!$account) {
                             $account = Accounts::create(['account_number' => $account_number, 'broker' => $broker]);
                             UserAccounts::create(['user_id' => $user['id'], 'account_id' => $account['id']]);
+                        } else {
+                            $accountOwner = $account->user_account->first()->user;
+                            if ($accountOwner['id'] != $user['id'])
+                                return response()->json([
+                                    'response' =>
+                                    [
+                                        'api_status' => 0,
+                                        'code' => 400,
+                                        'message' => 'Account is not belonged to you. Please try again with another account.'
+                                    ]
+                                ], 400);
                         }
                     }
                     return response()->json([

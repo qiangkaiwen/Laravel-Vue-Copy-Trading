@@ -3,11 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Accounts extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
     const STATUS_NONE = "NONE";
     const STATUS_PROVIDE = "PROVIDE";
     const STATUS_COPY = "COPY";

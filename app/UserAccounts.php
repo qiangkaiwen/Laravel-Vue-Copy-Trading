@@ -3,11 +3,10 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserAccounts extends Model
 {
-    use SoftDeletes;
     protected $table = "tbl_user_account";
     /**
      * The attributes that are mass assignable.

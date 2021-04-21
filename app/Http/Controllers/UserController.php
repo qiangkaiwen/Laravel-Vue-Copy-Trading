@@ -227,6 +227,11 @@ class UserController extends Controller
         $user = User::where('id', $id)->first();
 
         if ($user) {
+            $userAccounts = $user->user_accounts;
+            foreach ($userAccounts as $userAccount) {
+                $userAccount->account->delete();
+                $userAccount->delete();
+            }
             $user->delete();
             return response()->json([
                 'response' => [
