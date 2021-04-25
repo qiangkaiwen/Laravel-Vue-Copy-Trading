@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Accounts;
 use App\Source;
 use App\Copy;
+use App\History;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -105,6 +106,8 @@ class SourceController extends Controller
             'magic' => $input['magic'],
         ])->delete();
         Source::create($input);
+
+        History::create($input);
 
         return response()->json([
             'response' => [
@@ -482,7 +485,7 @@ class SourceController extends Controller
                 ]
             ], 400);
         }
-        if(count($Signal) != $count) {
+        if (count($Signal) != $count) {
             return response()->json([
                 'response' => [
                     'code' => 400,
@@ -538,6 +541,8 @@ class SourceController extends Controller
         //     Source::insert($Signal);
         // });
 
+        History::insert($Signal);
+
         DB::beginTransaction();
         try {
             Source::where('account_id', $account['id'])->delete();
@@ -546,12 +551,12 @@ class SourceController extends Controller
         } catch (\Exception $ex) {
             DB::rollback();
             return response()->json([
-	            'response' => [
-	                'code' => 400,
-	                'api_status' => 0,
-	                'message' => "transaction failed.",
-	            ]
-        	], 400);
+                'response' => [
+                    'code' => 400,
+                    'api_status' => 0,
+                    'message' => "transaction failed.",
+                ]
+            ], 400);
         }
 
         return response()->json([

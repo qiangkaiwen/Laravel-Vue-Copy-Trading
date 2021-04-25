@@ -48,11 +48,18 @@ class Accounts extends Model
         return $this->hasMany(Source::class, 'account_id');
     }
 
-    public function followers() {
+    public function histories()
+    {
+        return $this->hasMany(History::class, 'account_id');
+    }
+
+    public function followers()
+    {
         return $this->hasMany(Copy::class, 'master_id');
     }
 
-    public function masters() {
+    public function masters()
+    {
         return $this->hasMany(Copy::class, 'slave_id');
     }
 }
